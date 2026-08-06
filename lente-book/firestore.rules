@@ -1,0 +1,198 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return signedIn()
+        && request.auth.uid == userId;
+    }
+
+    function validVote(value) {
+      return value == 1 || value == -1;
+    }
+
+    /*
+     * User profiles
+     */
+
+    match /users/{userId} {
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == userId;
+
+      allow read: if isOwner(userId);
+
+      allow update: if isOwner(userId)
+        && request.resource.data.uid
+          == resource.data.uid
+        && request.resource.data.email
+          == resource.data.email;
+
+      allow delete: if false;
+
+      /*
+       * Individual poster progress
+       */
+
+      match /posters/{posterId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.posterId
+            == posterId;
+
+        allow update: if isOwner(userId)
+          && request.resource.data.posterId
+            == resource.data.posterId
+          && request.resource.data
+            .diff(resource.data)
+            .affectedKeys()
+            .hasOnly([
+              'collected',
+              'challengeCompleted',
+              'collectedAt',
+              'challengeCompletedAt'
+            ]);
+
+        allow delete: if false;
+      }
+    }
+
+    /*
+     * The 12 official board phrases
+     */
+
+    match /phrases/{phraseId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    /*
+     * Official QR posters
+     */
+
+    match /posters/{posterId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    /*
+     * User-created and remixed words
+     */
+
+    match /words/{wordId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.createdByUid
+          == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() >= 2
+        && request.resource.data.text.size() <= 40
+        && request.resource.data.phraseId is string
+        && request.resource.data.upVotes == 0
+        && request.resource.data.downVotes == 0
+        && request.resource.data.score == 0;
+
+      /*
+       * Vote totals are calculated from the
+       * votes collection. Users cannot directly
+       * edit another word's score.
+       */
+      allow update: if false;
+
+      allow delete: if signedIn()
+        && resource.data.createdByUid
+          == request.auth.uid;
+    }
+
+    /*
+     * One vote per user per word.
+     *
+     * Document ID format:
+     * USER_UID_WORD_ID
+     */
+
+    match /votes/{voteId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.userId
+          == request.auth.uid
+        && voteId
+          == request.auth.uid
+            + "_"
+            + request.resource.data.wordId
+        && validVote(
+          request.resource.data.value
+        );
+
+      allow update: if signedIn()
+        && resource.data.userId
+          == request.auth.uid
+        && request.resource.data.userId
+          == resource.data.userId
+        && request.resource.data.wordId
+          == resource.data.wordId
+        && validVote(
+          request.resource.data.value
+        )
+        && request.resource.data
+          .diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'value',
+            'updatedAt'
+          ]);
+
+      allow delete: if signedIn()
+        && resource.data.userId
+          == request.auth.uid;
+    }
+
+    /*
+     * Photo-wall information
+     */
+
+    match /photos/{photoId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.createdByUid
+          == request.auth.uid
+        && request.resource.data.approved
+          == false;
+
+      allow update: if signedIn()
+        && resource.data.createdByUid
+          == request.auth.uid
+        && request.resource.data.createdByUid
+          == resource.data.createdByUid
+        && request.resource.data
+          .diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'word',
+            'frameColour'
+          ]);
+
+      allow delete: if signedIn()
+        && resource.data.createdByUid
+          == request.auth.uid;
+    }
+
+    /*
+     * Global totals are readable but cannot
+     * be manually changed by website users.
+     */
+
+    match /stats/{statsId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+  }
+}
