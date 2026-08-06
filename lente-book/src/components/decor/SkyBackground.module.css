@@ -1,0 +1,9 @@
+.sky { position: fixed; inset: 0; overflow: hidden; background: var(--color-sky); z-index: -10; }
+.cloud { position: absolute; pointer-events: none; will-change: transform; }
+.star { position: absolute; pointer-events: none; }
+.bob { animation: bob 7s ease-in-out infinite; }
+.twinkle { animation: twinkle 3.5s ease-in-out infinite; }
+
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@keyframes twinkle { 0%,100% { opacity: .45; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .bob, .twinkle { animation: none; } }

@@ -1,0 +1,23 @@
+.wrap { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+.kop { text-align: center; margin-bottom: 1.5rem; }
+.kicker { font-family: var(--font-pixel); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--color-goud); margin: 0 0 .4rem; }
+.titel { font-family: var(--font-display); font-weight: 700; font-size: 2.5rem; line-height: 1; color: var(--color-paper); margin: 0; }
+.onder { color: var(--color-paper); opacity: .9; margin: .5rem 0 0; font-size: .95rem; }
+.tellers { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .75rem; }
+.teller { background: var(--color-card); border: 2px solid var(--color-ink); border-radius: var(--radius-card); padding: .9rem 1rem; text-align: center; }
+.geel { background: var(--color-goud); }
+.tellerGetal { display: block; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; color: var(--color-ink); }
+.tellerEtiket { font-family: var(--font-pixel); font-size: .6rem; text-transform: uppercase; letter-spacing: .06em; color: var(--color-ink); opacity: .7; }
+.balk { height: 12px; background: rgba(255,255,255,.35); border: 2px solid var(--color-ink); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 1.5rem; }
+.vul { height: 100%; background: var(--color-groen); transition: width .3s ease; }
+.hoe { background: var(--color-ink); color: var(--color-paper); border-radius: var(--radius-card); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+.hoeKop { font-family: var(--font-display); font-size: 1rem; }
+.hoeText { font-size: .85rem; opacity: .85; margin: .4rem 0 0; }
+.rooster { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.finale { display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; background: var(--color-pers); color: var(--color-paper); border-radius: var(--radius-card); padding: 1.25rem; box-shadow: var(--shadow-lift); opacity: .85; }
+.oop { opacity: 1; background: var(--color-groen); color: var(--color-ink); }
+.slot { font-size: 2rem; }
+.finaleKop { font-family: var(--font-display); font-size: 1.1rem; }
+.finaleText { font-size: .85rem; margin: .3rem 0 0; }
+@media (min-width: 640px) { .rooster { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 768px) { .wrap { padding: 3rem 2rem 4rem; } .titel { font-size: 3.25rem; } .rooster { grid-template-columns: repeat(3, 1fr); } }

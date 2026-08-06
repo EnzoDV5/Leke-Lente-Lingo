@@ -1,0 +1,13 @@
+.perspektief { perspective: 1000px; }
+.kaart { position: relative; width: 100%; min-height: 190px; transform-style: preserve-3d; transition: transform .5s ease; }
+.gedraai { transform: rotateY(180deg); }
+.klaar .kant { outline: 3px solid var(--color-groen); outline-offset: -3px; }
+.kant { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; gap: .5rem; text-align: left; background: var(--color-card); border: 2px solid var(--color-ink); border-radius: var(--radius-card); padding: 1rem; cursor: pointer; font: inherit; }
+.tag { align-self: flex-start; font-family: var(--font-pixel); font-size: .6rem; text-transform: uppercase; padding: .25rem .6rem; border-radius: var(--radius-pill); }
+.naam { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--color-ink); }
+.merkie { font-family: var(--font-display); font-size: .75rem; color: var(--color-groen); }
+.wenk { margin-top: auto; font-size: .72rem; color: #999; }
+.agter { transform: rotateY(180deg); background: var(--color-ink); }
+.leidraad { font-family: var(--font-body); font-style: italic; font-size: .9rem; line-height: 1.4; color: var(--color-paper); margin: 0; }
+.merkKnop { font-family: var(--font-display); font-weight: 700; font-size: .8rem; background: var(--color-goud); color: var(--color-ink); border: none; padding: .5rem .8rem; border-radius: var(--radius-pill); cursor: pointer; }
+.draaiTerug { margin-top: auto; background: none; border: none; color: var(--color-paper); opacity: .7; font-size: .72rem; cursor: pointer; text-align: left; padding: 0; }

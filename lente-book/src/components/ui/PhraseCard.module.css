@@ -1,0 +1,8 @@
+.card { padding: 1.1rem 1.2rem; border-radius: var(--radius-card); box-shadow: var(--shadow-lift); }
+.frase { font-family: var(--font-body); font-weight: 600; font-size: 1rem; line-height: 1.35; margin: 0 0 1rem; }
+.balk { display: flex; align-items: center; justify-content: space-between; gap: .75rem; background: var(--color-card); color: var(--color-ink); border-radius: 12px; padding: .6rem .75rem; }
+.top { display: flex; align-items: baseline; gap: .4rem; flex-wrap: wrap; min-width: 0; }
+.kroon { font-size: .9rem; }
+.woord { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.meta { font-size: .72rem; color: #666; }
+.knoppie { flex-shrink: 0; font-family: var(--font-display); font-weight: 600; font-size: .8rem; text-decoration: none; color: var(--color-paper); background: var(--color-ink); padding: .45rem .8rem; border-radius: var(--radius-pill); }

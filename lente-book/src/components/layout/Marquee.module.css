@@ -1,0 +1,5 @@
+.bar { background: var(--color-goud); border-top: 3px solid var(--color-ink); border-bottom: 3px solid var(--color-ink); overflow: hidden; white-space: nowrap; }
+.track { display: inline-flex; align-items: center; gap: 1.5rem; padding: .4rem 0; animation: scroll 20s linear infinite; }
+.item { font-family: var(--font-pixel); font-size: .72rem; letter-spacing: .06em; color: var(--color-ink); text-transform: uppercase; }
+@keyframes scroll { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .track { animation: none; } }

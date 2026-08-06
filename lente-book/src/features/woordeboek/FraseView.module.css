@@ -1,0 +1,26 @@
+.wrap { max-width: 720px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.terug { display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: .85rem; color: var(--color-paper); text-decoration: none; margin-bottom: 1rem; opacity: .9; }
+.terug:hover { opacity: 1; }
+.leeg { color: var(--color-paper); text-align: center; padding: 2rem 0; }
+.banier { padding: 1.25rem; border-radius: var(--radius-card); box-shadow: var(--shadow-lift); }
+.frase { font-family: var(--font-body); font-weight: 700; font-size: 1.1rem; line-height: 1.35; margin: 0 0 .75rem; }
+.telling { display: inline-block; font-family: var(--font-pixel); font-size: .7rem; background: rgba(0,0,0,.15); padding: .3rem .6rem; border-radius: var(--radius-pill); }
+.invoer { background: var(--color-card); border: 2px solid var(--color-ink); border-radius: var(--radius-card); padding: 1rem; margin: 1.25rem 0; }
+.etiket { display: block; font-family: var(--font-display); font-weight: 700; font-size: .9rem; color: var(--color-ink); margin-bottom: .6rem; }
+.invoerRy { display: flex; gap: .5rem; }
+.veld { flex: 1; min-width: 0; padding: .7rem .9rem; font-family: var(--font-body); font-size: 1rem; border: 2px solid var(--color-ink); border-radius: var(--radius-pill); outline: none; }
+.veld:focus { border-color: var(--color-oranje); }
+.plaas { flex-shrink: 0; font-family: var(--font-display); font-weight: 700; color: var(--color-paper); background: var(--color-pienk); border: none; padding: 0 1.2rem; border-radius: var(--radius-pill); cursor: pointer; box-shadow: var(--shadow-lift); }
+.as { display: block; font-size: .75rem; color: #777; margin-top: .5rem; }
+.kanselleer { margin-top: .5rem; font-size: .75rem; background: none; border: none; color: var(--color-oranje); cursor: pointer; padding: 0; }
+.alleKop { font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; color: var(--color-paper); margin: 0 0 .75rem; }
+.woordLys { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .6rem; }
+.woordItem { display: flex; align-items: center; gap: .6rem; background: var(--color-card); border-radius: 14px; padding: .7rem .8rem; box-shadow: var(--shadow-lift); }
+.rang { font-family: var(--font-display); font-weight: 700; width: 2rem; text-align: center; flex-shrink: 0; }
+.woordInfo { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.woordNaam { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--color-ink); }
+.woordMeta { font-size: .72rem; color: #777; }
+.verbeter { font-size: .68rem; color: var(--color-oranje); margin-top: .1rem; }
+.steelKnop { flex-shrink: 0; font-family: var(--font-display); font-size: .72rem; font-weight: 600; background: var(--color-ink); color: var(--color-paper); border: none; padding: .4rem .6rem; border-radius: var(--radius-pill); cursor: pointer; }
+.stemKnop { flex-shrink: 0; font-family: var(--font-display); font-weight: 700; font-size: .85rem; background: var(--color-goud); color: var(--color-ink); border: 2px solid var(--color-ink); padding: .35rem .7rem; border-radius: var(--radius-pill); cursor: pointer; }
+@media (min-width: 768px) { .wrap { padding: 2rem 2rem 4rem; } }

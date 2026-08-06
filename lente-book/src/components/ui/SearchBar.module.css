@@ -1,0 +1,9 @@
+.wrap { position: relative; flex: 1; }
+.icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: #999; }
+.input {
+  width: 100%; box-sizing: border-box; padding: .85rem 1rem .85rem 2.6rem;
+  font-family: var(--font-body); font-size: 1rem; color: var(--color-ink);
+  background: var(--color-card); border: 2px solid var(--color-ink);
+  border-radius: var(--radius-pill); outline: none;
+}
+.input:focus { border-color: var(--color-oranje); }

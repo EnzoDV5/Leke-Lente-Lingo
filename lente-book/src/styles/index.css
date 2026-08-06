@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  /* atmosphere + surfaces */
+  --color-sky:     #0A8AF0;
+  --color-paper:   #F9F6EC;
+  --color-card:    #FFFFFF;
+  --color-ink:     #16150F;
+
+  /* Lentedag brights (sampled from the real site) */
+  --color-oranje:  #EE5A2E;
+  --color-pienk:   #F81878;
+  --color-sagpienk:#F898C0;
+  --color-geel:    #F2E23E;
+  --color-goud:    #F5C518;
+  --color-groen:   #18D860;
+  --color-blou:    #1848D8;
+  --color-pers:    #7828B8;
+
+  /* type — swap --font-display for the real Lentedag brand font later */
+  --font-display:  "Fredoka", system-ui, sans-serif;
+  --font-body:     "Nunito", system-ui, sans-serif;
+  --font-pixel:    "Pixelify Sans", monospace;
+
+  /* soft + rounded */
+  --radius-card:   20px;
+  --radius-pill:   999px;
+  --shadow-soft:   0 10px 28px rgba(16,21,40,0.14);
+  --shadow-lift:   0 6px 0 rgba(22,21,15,0.10);
+}
+
+body {
+  margin: 0;
+  background: var(--color-sky);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
