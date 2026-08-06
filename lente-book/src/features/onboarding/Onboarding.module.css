@@ -1,0 +1,377 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns:
+    minmax(360px, 0.9fr)
+    minmax(520px, 1.1fr);
+  background: #f9f1d5;
+  color: #171612;
+}
+
+.stepsSide {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: clamp(40px, 6vw, 90px);
+  background: #171612;
+  color: #ffffff;
+}
+
+.stepsSide::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      #7828b8 0 5px,
+      transparent 6px
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      #f5c518 0 5px,
+      transparent 6px
+    ),
+    radial-gradient(
+      circle at 90% 75%,
+      #f81878 0 6px,
+      transparent 7px
+    );
+  background-size: 120px 120px;
+}
+
+.stepsInner {
+  position: relative;
+  z-index: 1;
+  max-width: 580px;
+}
+
+.year {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #f5c518;
+  color: #171612;
+  border: 3px solid #ffffff;
+  box-shadow: 5px 5px 0 #ee5a2e;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+
+.stepsSide h1 {
+  margin: 35px 0 20px;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 82px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -4px;
+  text-transform: uppercase;
+}
+
+.stepsSide h1 span {
+  color: #f5c518;
+  text-shadow: 4px 4px 0 #ee5a2e;
+}
+
+.introduction {
+  max-width: 470px;
+  color: #d9d7d0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.steps {
+  display: grid;
+  gap: 22px;
+  list-style: none;
+  padding: 0;
+  margin: 45px 0 0;
+}
+
+.steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.stepNumber {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  background: #f81878;
+  border: 3px solid #ffffff;
+  box-shadow: 4px 4px 0 #ee5a2e;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.steps li:nth-child(2) .stepNumber {
+  background: #1848d8;
+}
+
+.steps li:nth-child(3) .stepNumber {
+  background: #18d860;
+  color: #171612;
+}
+
+.steps li:nth-child(4) .stepNumber {
+  background: #f5c518;
+  color: #171612;
+}
+
+.steps strong {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.steps p {
+  margin: 4px 0 0;
+  color: #bdbab2;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.formSide {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 50px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.5%,
+      rgba(238, 90, 46, 0.1) 50%
+    );
+  background-size: 70px 70px;
+}
+
+.card {
+  width: min(100%, 520px);
+  padding: clamp(28px, 4vw, 50px);
+  background: #ffffff;
+  border: 4px solid #171612;
+  box-shadow: 12px 12px 0 #171612;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: #ee321e;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.card h2 {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+}
+
+.description {
+  color: #555555;
+  line-height: 1.55;
+}
+
+.googleButton,
+.finishButton {
+  width: 100%;
+  margin-top: 22px;
+  padding: 17px 20px;
+  border: 3px solid #171612;
+  box-shadow: 6px 6px 0 #171612;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.googleButton {
+  background: #1848d8;
+}
+
+.googleButton span {
+  display: inline-grid;
+  width: 27px;
+  height: 27px;
+  margin-right: 10px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #4285f4;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  text-transform: none;
+}
+
+.card small {
+  display: block;
+  margin-top: 18px;
+  color: #888888;
+  text-align: center;
+}
+
+.label,
+.characterHeading {
+  display: flex;
+  justify-content: space-between;
+  margin: 22px 0 8px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.usernameField {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  border: 3px solid #171612;
+}
+
+.usernameField span {
+  font-weight: 900;
+}
+
+.usernameField input {
+  min-width: 0;
+  flex: 1;
+  padding: 0 6px;
+  border: 0;
+  outline: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.googlePhoto {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 10px;
+  background: #f9f6ec;
+  border: 3px solid #171612;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.googlePhoto img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.selectedPhoto {
+  box-shadow: inset 0 0 0 4px #18d860;
+}
+
+.characters {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+}
+
+.characters button {
+  aspect-ratio: 1;
+  border: 3px solid #171612;
+  border-radius: 50%;
+  font-size: 27px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.selectedCharacter {
+  transform: translateY(-4px) rotate(-4deg);
+  box-shadow: 4px 5px 0 #171612;
+}
+
+.finishButton {
+  background: #ee321e;
+}
+
+.finishButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.logoutButton {
+  display: block;
+  margin: 18px auto 0;
+  border: 0;
+  background: transparent;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.error {
+  padding: 10px 12px;
+  margin-top: 18px;
+  background: #ffe2e2;
+  color: #9d1515;
+  border-left: 4px solid #ee321e;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #0a8af0;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+@media (max-width: 880px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .stepsSide {
+    padding: 35px 24px;
+  }
+
+  .stepsSide h1 {
+    font-size: 48px;
+  }
+
+  .steps {
+    margin-top: 28px;
+    gap: 14px;
+  }
+
+  .steps p {
+    display: none;
+  }
+
+  .formSide {
+    padding: 45px 20px 70px;
+  }
+
+  .card {
+    padding: 28px 20px;
+    box-shadow: 7px 7px 0 #171612;
+  }
+
+  .characters {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
