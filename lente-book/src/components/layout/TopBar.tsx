@@ -10,10 +10,6 @@ const NAV = [
     label: 'Woordeboek',
   },
   {
-    to: '/',
-    label: 'Woordemuur',
-  },
-  {
     to: '/foto',
     label: 'Voeg Foto By',
   },

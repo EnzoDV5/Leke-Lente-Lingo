@@ -24,6 +24,8 @@ import FraseView from './features/woordeboek/FraseView'
 import Woordjag from './features/collections/Woordjag'
 import VoegFotoBy from './features/foto/VoegFotoBy'
 
+import ScanRouter from './features/challenges/ScanRouter'
+
 createRoot(
   document.getElementById('root')!,
 ).render(
@@ -35,6 +37,16 @@ createRoot(
             path="/welkom"
             element={<Onboarding />}
           />
+          <Route element={<ProtectedRoute />}>
+          <Route
+            path="/scan/:challengeId"
+            element={<ScanRouter />}
+          />
+
+          <Route element={<AppShell />}>
+            {/* Keep all your existing routes here */}
+          </Route>
+        </Route>
 
           <Route element={<ProtectedRoute />}>
             <Route element={<AppShell />}>

@@ -1,63 +1,315 @@
-import { useState } from 'react'
+import {
+  useEffect,
+  useState,
+} from 'react'
+
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+} from 'firebase/firestore'
+
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from 'firebase/storage'
+
+import {
+  db,
+  storage,
+} from '../../lib/firebase'
+
+import { useAuth } from '../auth/AuthContext'
 import styles from './VoegFotoBy.module.css'
 
-type Plasing = { id: string; url: string; woord: string }
+const MAX_SIZE = 10 * 1024 * 1024
+
+function cleanFileName(fileName: string) {
+  return fileName
+    .toLowerCase()
+    .replace(/[^a-z0-9.-]/g, '-')
+}
 
 export default function VoegFotoBy() {
-  const [prent, setPrent] = useState<string | null>(null)
-  const [woord, setWoord] = useState('')
-  const [muur, setMuur] = useState<Plasing[]>([])
+  const {
+    user,
+    profile,
+  } = useAuth()
 
-  const kies = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const lêer = e.target.files?.[0]
-    if (!lêer) return
-    const leser = new FileReader()
-    leser.onload = () => setPrent(leser.result as string)
-    leser.readAsDataURL(lêer)
+  const [file, setFile] =
+    useState<File | null>(null)
+
+  const [previewUrl, setPreviewUrl] =
+    useState<string | null>(null)
+
+  const [word, setWord] =
+    useState('')
+
+  const [frameColour, setFrameColour] =
+    useState('pienk')
+
+  const [uploading, setUploading] =
+    useState(false)
+
+  const [message, setMessage] =
+    useState('')
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null)
+      return
+    }
+
+    const nextPreviewUrl =
+      URL.createObjectURL(file)
+
+    setPreviewUrl(nextPreviewUrl)
+
+    return () => {
+      URL.revokeObjectURL(
+        nextPreviewUrl,
+      )
+    }
+  }, [file])
+
+  const selectPhoto = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const selectedFile =
+      event.target.files?.[0]
+
+    setMessage('')
+
+    if (!selectedFile) return
+
+    if (
+      !selectedFile.type.startsWith(
+        'image/',
+      )
+    ) {
+      setMessage(
+        'Kies asseblief ’n geldige foto.',
+      )
+
+      return
+    }
+
+    if (selectedFile.size > MAX_SIZE) {
+      setMessage(
+        'Die foto moet kleiner as 10 MB wees.',
+      )
+
+      return
+    }
+
+    setFile(selectedFile)
   }
 
-  const plaas = () => {
-    if (!prent || !woord.trim()) return
-    setMuur([{ id: `${Date.now()}`, url: prent, woord: woord.trim() }, ...muur])
-    setPrent(null); setWoord('')
+  const uploadPhoto = async () => {
+    if (
+      !file ||
+      !word.trim() ||
+      !user ||
+      !profile
+    ) {
+      return
+    }
+
+    setUploading(true)
+    setMessage('')
+
+    const fileName =
+      `${Date.now()}-${cleanFileName(
+        file.name,
+      )}`
+
+    const storagePath =
+      `photoWall/${user.uid}/${fileName}`
+
+    const storageReference = ref(
+      storage,
+      storagePath,
+    )
+
+    try {
+      await uploadBytes(
+        storageReference,
+        file,
+        {
+          contentType: file.type,
+        },
+      )
+
+      const downloadUrl =
+        await getDownloadURL(
+          storageReference,
+        )
+
+      const avatar =
+        profile.useGooglePhoto &&
+        user.photoURL
+          ? user.photoURL
+          : profile.character
+
+      await addDoc(
+        collection(db, 'photos'),
+        {
+          word: word.trim(),
+
+          storagePath,
+          downloadUrl,
+
+          createdByUid: user.uid,
+          createdByUsername:
+            profile.username,
+          createdByAvatar: avatar,
+
+          frameColour,
+          approved: false,
+
+          createdAt:
+            serverTimestamp(),
+        },
+      )
+
+      setFile(null)
+      setWord('')
+      setFrameColour('pienk')
+
+      setMessage(
+        'Jou foto is op die fotomuur!',
+      )
+    } catch (error) {
+      console.error(
+        'Photo upload failed:',
+        error,
+      )
+
+      try {
+        await deleteObject(
+          storageReference,
+        )
+      } catch {
+        // No uploaded file to remove.
+      }
+
+      setMessage(
+        'Die foto kon nie opgelaai word nie.',
+      )
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
     <section className={styles.wrap}>
       <header className={styles.kop}>
-        <p className={styles.kicker}>★ Foto-doop ★</p>
-        <h1 className={styles.titel}>Voeg ’n Foto By</h1>
-        <p className={styles.onder}>Vang die oomblik, gee dit ’n woord — dit gaan op die Lentedag muur.</p>
+        <p className={styles.kicker}>
+          ★ Foto-doop ★
+        </p>
+
+        <h1 className={styles.titel}>
+          Voeg ’n Foto By
+        </h1>
+
+        <p className={styles.onder}>
+          Vang die oomblik, gee dit ’n
+          woord en plaas dit op die muur.
+        </p>
       </header>
 
       <div className={styles.kaart}>
-        <label className={styles.dropzone}>
-          {prent
-            ? <img src={prent} alt="voorskou" className={styles.voorskou} />
-            : <span className={styles.dropTeks}>📸<br />Tik om ’n foto te kies</span>}
-          <input type="file" accept="image/*" onChange={kies} className={styles.versteek} />
+        <label
+          className={styles.dropzone}
+        >
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Foto-voorskou"
+              className={styles.voorskou}
+            />
+          ) : (
+            <span
+              className={styles.dropTeks}
+            >
+              📸
+              <br />
+              Tik om ’n foto te kies
+            </span>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={selectPhoto}
+            className={styles.versteek}
+          />
         </label>
 
-        <input className={styles.veld} value={woord} placeholder="Gee dit ’n woord…"
-          onChange={(e) => setWoord(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && plaas()} />
-        <span className={styles.as}>as @jy</span>
+        <input
+          className={styles.veld}
+          value={word}
+          placeholder="Gee dit ’n woord…"
+          maxLength={40}
+          onChange={(event) =>
+            setWord(event.target.value)
+          }
+        />
 
-        <button className={styles.plaas} onClick={plaas} disabled={!prent || !woord.trim()}>Plaas op die muur →</button>
+        <span className={styles.as}>
+          as {profile?.username}
+        </span>
+
+        <select
+          className={styles.veld}
+          value={frameColour}
+          onChange={(event) =>
+            setFrameColour(
+              event.target.value,
+            )
+          }
+        >
+          <option value="pienk">
+            Pienk raam
+          </option>
+
+          <option value="goud">
+            Geel raam
+          </option>
+
+          <option value="groen">
+            Groen raam
+          </option>
+
+          <option value="blou">
+            Blou raam
+          </option>
+
+          <option value="pers">
+            Pers raam
+          </option>
+        </select>
+
+        <button
+          className={styles.plaas}
+          disabled={
+            uploading ||
+            !file ||
+            !word.trim()
+          }
+          onClick={() =>
+            void uploadPhoto()
+          }
+        >
+          {uploading
+            ? 'Laai foto op...'
+            : 'Plaas op die muur →'}
+        </button>
+
+        {message && <p>{message}</p>}
       </div>
-
-      {muur.length > 0 && (
-        <>
-          <h2 className={styles.muurKop}>Op die muur</h2>
-          <div className={styles.muur}>
-            {muur.map((p, i) => (
-              <figure key={p.id} className={styles.polaroid} style={{ transform: `rotate(${(i % 3) - 1}deg)` }}>
-                <img src={p.url} alt={p.woord} className={styles.foto} />
-                <figcaption className={styles.byskrif}>{p.woord}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </>
-      )}
     </section>
   )
 }

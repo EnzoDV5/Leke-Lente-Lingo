@@ -1,0 +1,29 @@
+.actionsBand {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-bottom:
+    4px solid var(--color-ink);
+}
+
+.actionsBand::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  right: 5%;
+  width: 26px;
+  height: 26px;
+  background: var(--color-goud);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    100% 50%,
+    61% 65%,
+    50% 100%,
+    39% 65%,
+    0% 50%,
+    39% 35%
+  );
+}
