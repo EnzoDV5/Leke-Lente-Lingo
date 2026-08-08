@@ -1,61 +1,4394 @@
-.blad { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
-.laai { position: relative; min-height: 100vh; display: grid; place-items: center; color: var(--color-paper); font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; }
+.blad {
+  --festival-orange: #ed4924;
+  --festival-pink: #ef96c7;
+  --festival-yellow: #f8e42b;
+  --festival-cream: #fbf7ef;
+  --festival-ink: #17150f;
+  --festival-blue: #087ff0;
+  --festival-green: #19d669;
 
-.raam { position: relative; z-index: 1; width: 100%; max-width: 960px; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+  position: relative;
+  isolation: isolate;
 
-.introKant { color: var(--color-paper); text-align: center; }
-.jaar { font-family: var(--font-pixel); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
-.wordmark { font-family: var(--font-display); font-weight: 700; font-size: 3rem; line-height: .95; margin: .4rem 0 0; }
-.wordmark span { color: var(--color-goud); }
-.intro { opacity: .95; margin: .6rem auto 1.25rem; max-width: 32ch; }
-.stappe { list-style: none; padding: 0; margin: 0 auto; display: grid; gap: .6rem; max-width: 420px; text-align: left; }
-.stappe li { display: flex; gap: .75rem; align-items: flex-start; background: rgba(255,255,255,.16); border-radius: 14px; padding: .7rem .85rem; }
-.stapNo { flex-shrink: 0; width: 1.7rem; height: 1.7rem; display: grid; place-items: center; border-radius: 50%; background: var(--color-goud); color: var(--color-ink); font-family: var(--font-display); font-weight: 700; font-size: .9rem; }
-.stappe strong { font-family: var(--font-display); font-size: .95rem; }
-.stappe p { margin: .1rem 0 0; font-size: .8rem; opacity: .9; }
+  min-height: 100vh;
+  min-height: 100svh;
 
-.kaartKant { display: flex; justify-content: center; }
-.kaart { width: 100%; max-width: 420px; background: var(--color-card); border-radius: var(--radius-card); box-shadow: var(--shadow-soft); padding: 1.75rem; }
-.oog { font-family: var(--font-pixel); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--color-oranje); margin: 0 0 .4rem; }
-.kaartKop { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1.05; color: var(--color-ink); margin: 0 0 .5rem; }
-.beskryf { font-size: .9rem; color: #555; margin: 0 0 1.25rem; }
+  overflow-x: hidden;
+}
 
-.meldKnop { width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: .6rem; font-family: var(--font-display); font-weight: 700; font-size: 1rem; padding: .85rem; border-radius: var(--radius-pill); border: none; cursor: pointer; margin-bottom: .7rem; box-shadow: var(--shadow-lift); transition: transform .12s ease; }
-.meldKnop:active { transform: translateY(3px); }
-.meldKnop:disabled { opacity: .6; cursor: default; }
-.google { background: #fff; color: var(--color-ink); border: 2px solid var(--color-ink); }
-.gIcon { font-family: var(--font-display); font-weight: 800; color: #4285F4; }
-.apple { background: var(--color-ink); color: #fff; }
+.laai {
+  position: relative;
+  isolation: isolate;
 
-.klein { display: block; font-size: .72rem; color: #888; margin-top: .6rem; text-align: center; }
-.fout { color: #c0392b; font-size: .85rem; margin: .5rem 0 0; text-align: center; }
+  min-height: 100vh;
+  min-height: 100svh;
 
-.etiket { display: block; font-family: var(--font-display); font-weight: 700; font-size: .85rem; color: var(--color-ink); margin-bottom: .4rem; }
-.naamVeld { display: flex; align-items: center; gap: .3rem; border: 2px solid var(--color-ink); border-radius: var(--radius-pill); padding: .1rem .3rem .1rem .9rem; }
-.naamVeld span { font-family: var(--font-display); font-weight: 700; color: #999; }
-.naamVeld input { flex: 1; min-width: 0; border: none; outline: none; padding: .7rem .4rem; font-family: var(--font-body); font-size: 1rem; background: transparent; }
+  display: grid;
+  place-items: center;
+  overflow: hidden;
 
-.googleFoto { display: flex; align-items: center; gap: .6rem; width: 100%; box-sizing: border-box; margin-top: .9rem; padding: .5rem .7rem; border: 2px solid #ddd; border-radius: var(--radius-pill); background: #fff; cursor: pointer; font-family: var(--font-body); }
-.googleFoto img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; }
-.gekies { border-color: var(--color-groen); box-shadow: 0 0 0 3px rgba(24,216,96,.25); }
+  color: white;
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
 
-.ofKies { display: flex; align-items: center; gap: .6rem; margin: 1.1rem 0 .7rem; color: #aaa; font-size: .8rem; }
-.ofKies::before, .ofKies::after { content: ''; flex: 1; height: 1px; background: #e5e5e5; }
+.laai span {
+  position: relative;
+  z-index: 2;
 
-.karakters { display: grid; grid-template-columns: repeat(6, 1fr); gap: .5rem; }
-.karakters button { aspect-ratio: 1; border: 2px solid transparent; border-radius: 14px; font-size: 1.4rem; cursor: pointer; display: grid; place-items: center; padding: 0; }
-.gekiesK { border-color: var(--color-ink) !important; box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+  padding: 0.8rem 1.2rem;
 
-.klaarKnop { width: 100%; box-sizing: border-box; margin-top: 1.25rem; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--color-paper); background: var(--color-pienk); border: none; padding: .95rem; border-radius: var(--radius-pill); cursor: pointer; box-shadow: var(--shadow-lift); transition: transform .12s ease; }
-.klaarKnop:active { transform: translateY(3px); }
-.klaarKnop:disabled { opacity: .6; }
-.uitKnop { width: 100%; margin-top: .6rem; background: none; border: none; color: #999; font-size: .8rem; cursor: pointer; }
+  border: 2px solid
+    rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
 
-@media (min-width: 820px) {
-  .raam { grid-template-columns: 1fr 1fr; align-items: center; gap: 2.5rem; }
-  .introKant { text-align: left; }
-  .intro { margin-inline: 0; }
-  .stappe { margin-inline: 0; }
-  .wordmark { font-size: 3.75rem; }
-  .kaartKant { justify-content: flex-end; }
+  background:
+    rgba(9, 63, 180, 0.44);
+
+  backdrop-filter: blur(10px);
+}
+
+.uitleg {
+  position: relative;
+  z-index: 1;
+
+  width: min(100%, 980px);
+  min-height: 100vh;
+  min-height: 100svh;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: 0 auto;
+  padding: 1rem 1rem 0;
+
+  box-sizing: border-box;
+}
+
+.merkArea {
+  position: relative;
+  flex: 0 0 auto;
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1rem 0.5rem 1.4rem;
+
+  box-sizing: border-box;
+}
+
+.lingoLogo {
+  display: block;
+
+  width: clamp(
+    320px,
+    38vw,
+    560px
+  );
+  max-width: 92%;
+  height: auto;
+
+  margin: 0 auto 0.5rem;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 8px 0
+      rgba(0, 87, 181, 0.16)
+    );
+}
+
+.merkLyn {
+  margin: 0.85rem 0 0;
+  padding: 0.55rem 1.2rem;
+
+  border: 2px solid
+    rgba(255, 255, 255, 0.48);
+  border-radius: 12px;
+
+  background:
+    rgba(8, 127, 240, 0.66);
+
+  color: white;
+  font-family: var(--font-pixel);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: center;
+
+  box-shadow:
+    0 5px 0
+    rgba(21, 49, 139, 0.15);
+
+  backdrop-filter: blur(8px);
+}
+
+.bladPaneel {
+  width: 100%;
+  min-height: calc(100svh - 300px);
+
+  margin-top: 0;
+
+  border: 3px solid
+    rgba(255, 255, 255, 0.7);
+  border-bottom: none;
+  border-radius: 34px 34px 0 0;
+
+  background: var(--festival-cream);
+
+  box-shadow:
+    0 -16px 60px
+    rgba(21, 48, 135, 0.2);
+}
+
+.paneelHandvatsel {
+  width: 54px;
+  height: 5px;
+
+  margin: 0.85rem auto 0;
+
+  border-radius: 999px;
+
+  background: #d6d2cb;
+}
+
+.paneelBinne {
+  width: min(100%, 850px);
+
+  display: grid;
+  grid-template-columns:
+    130px
+    minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+
+  margin: 0 auto;
+  padding: 0.8rem 2rem 1.5rem;
+
+  box-sizing: border-box;
+}
+/* Vertical desktop progress steps */
+
+.vordering {
+  position: relative;
+  align-self: start;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  margin: 0;
+  padding-top: 0.15rem;
+}
+
+.vorderingLyn {
+  position: absolute;
+  z-index: 0;
+
+  top: 18px;
+  bottom: auto;
+  left: 17px;
+
+  width: 3px;
+  height: 102px;
+
+  background: #ddd8ce;
+}
+
+.vorderStap {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns:
+    36px
+    minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+
+  color: #aaa59e;
+}
+
+.vorderStap small {
+  font-family: var(--font-pixel);
+  font-size: 0.64rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.vorderSirkel {
+  width: 35px;
+  height: 35px;
+
+  display: grid;
+  place-items: center;
+
+  box-sizing: border-box;
+
+  border: 3px solid #ddd8ce;
+  border-radius: 50%;
+
+  background: var(--festival-cream);
+
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.vorderStap small {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.vorderStap.aktief {
+  color: var(--festival-orange);
+}
+
+.aktief .vorderSirkel {
+  border-color: var(--festival-orange);
+
+  background:
+    var(--festival-yellow);
+
+  color: var(--festival-orange);
+
+  box-shadow:
+    0 4px 0
+    rgba(237, 73, 36, 0.2);
+}
+
+.vorderStap.voltooi {
+  color: var(--festival-orange);
+}
+
+.voltooi .vorderSirkel {
+  border-color: var(--festival-orange);
+
+  background:
+    var(--festival-pink);
+
+  color: white;
+}
+
+/* Current step content */
+
+.stapInhoud {
+  min-width: 0;
+  min-height: 0;
+
+  padding-left: 1.5rem;
+
+  border-left: 2px solid
+    rgba(237, 73, 36, 0.18);
+
+  animation:
+    stapIn 260ms ease both;
+}
+
+@keyframes stapIn {
+  from {
+    opacity: 0;
+    transform:
+      translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0);
+  }
+}
+
+.loginStap,
+.reelsStap,
+.profielStap {
+  width: 100%;
+  max-width: 590px;
+
+  margin: 0 auto;
+}
+
+.loginStap {
+  max-width: 520px;
+
+  padding: 0;
+
+  text-align: center;
+}
+
+.oog {
+  margin: 0 0 0.35rem;
+
+  color: var(--festival-pink);
+
+  font-family: var(--font-pixel);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.paneelTitel {
+  margin: 0;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: clamp(
+    2rem,
+    4.5vw,
+    2.65rem
+  );
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.paneelBeskrywing {
+  max-width: 49ch;
+
+  margin: 0.65rem auto 1rem;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/* Login buttons */
+
+.loginAksies {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.aanmeldKnop,
+.hoofKnop {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 0.82rem 0.8rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 12px;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.18);
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.googleKnop,
+.appleKnop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.googleKnop,
+.hoofKnop {
+  background:
+    var(--festival-yellow);
+}
+
+.appleKnop {
+  background: white;
+  color: var(--festival-ink);
+}
+
+.appleKnop svg {
+  flex-shrink: 0;
+}
+
+.googleG {
+  color: #4285f4;
+
+  font-family:
+    Arial,
+    sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: none;
+}
+
+.aanmeldKnop:hover:not(:disabled),
+.hoofKnop:hover:not(:disabled) {
+  background: #fff14b;
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 8px 0
+    rgba(237, 73, 36, 0.2);
+}
+
+.appleKnop:hover:not(:disabled) {
+  background:
+    var(--festival-pink);
+
+  color: white;
+}
+
+.aanmeldKnop:active:not(:disabled),
+.hoofKnop:active:not(:disabled) {
+  transform:
+    translateY(5px);
+
+  box-shadow:
+    0 1px 0
+    rgba(237, 73, 36, 0.2);
+}
+
+.aanmeldKnop:disabled,
+.hoofKnop:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.privaatheid {
+  display: block;
+
+  max-width: 50ch;
+
+  margin: 1rem auto 0;
+
+  color: #9a948d;
+
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.fout {
+  margin: 0.75rem 0 0;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Rules */
+
+.reelsLys {
+  display: grid;
+  grid-template-columns:
+    repeat(2, 1fr);
+  gap: 0.7rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.reelsLys li {
+  display: grid;
+  grid-template-columns:
+    2.1rem
+    1fr;
+  gap: 0.7rem;
+  align-items: flex-start;
+
+  padding: 0.85rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 14px;
+
+  background:
+    var(--festival-pink);
+}
+
+.reelNommer {
+  width: 1.85rem;
+  height: 1.85rem;
+
+  display: grid;
+  place-items: center;
+
+  border: 2px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  background:
+    var(--festival-yellow);
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.reelsLys strong {
+  display: block;
+
+  color: white;
+
+  font-family: var(--font-pixel);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.reelsLys p {
+  margin: 0.25rem 0 0;
+
+  color: var(--festival-cream);
+
+  font-family: var(--font-pixel);
+  font-size: 0.73rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.reelsStap .hoofKnop,
+.profielStap .hoofKnop {
+  margin-top: 1.15rem;
+}
+
+/* Username and profile */
+
+.etiket {
+  display: block;
+
+  margin-bottom: 0.45rem;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.naamVeld {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  padding:
+    0.1rem
+    0.35rem
+    0.1rem
+    0.9rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 12px;
+
+  background: white;
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.12);
+}
+
+.naamVeld:focus-within {
+  border-color:
+    var(--festival-pink);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(239, 150, 199, 0.25);
+}
+
+.naamVeld span {
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-weight: 700;
+}
+
+.naamVeld input {
+  flex: 1;
+  min-width: 0;
+
+  padding: 0.75rem 0.4rem;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+  color: var(--festival-ink);
+
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+}
+
+.googleFoto {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.7rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 12px;
+
+  background: white;
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-weight: 700;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.googleFoto img {
+  width: 2rem;
+  height: 2rem;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.googleFoto.gekies {
+  background:
+    var(--festival-yellow);
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.16);
+}
+
+.skeiding {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  margin: 1rem 0 0.75rem;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.skeiding::before,
+.skeiding::after {
+  height: 2px;
+  flex: 1;
+
+  content: "";
+
+  background:
+    var(--festival-orange);
+
+  opacity: 0.25;
+}
+
+.karakters {
+  display: grid;
+  grid-template-columns:
+    repeat(6, 1fr);
+  gap: 0.55rem;
+}
+
+.karakters button {
+  aspect-ratio: 1;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 12px;
+
+  font-size: 1.45rem;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.14);
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.karakters button:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 8px 0
+    rgba(237, 73, 36, 0.16);
+}
+
+.karakters .gekiesKarakter {
+  border-color:
+    var(--festival-ink);
+
+  transform:
+    translateY(4px);
+
+  box-shadow:
+    0 1px 0
+    rgba(23, 21, 15, 0.2);
+}
+
+/* Lower actions */
+
+.teksKnop {
+  display: block;
+
+  margin: 0.85rem auto 0;
+  padding: 0.25rem;
+
+  border: none;
+
+  background: none;
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.teksKnop:hover {
+  color: var(--festival-pink);
+
+  text-decoration: underline;
+}
+
+.onderAksies {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+
+  margin-top: 0.85rem;
+}
+
+.onderAksies .teksKnop {
+  margin: 0;
+}
+
+/* Keyboard focus */
+
+.aanmeldKnop:focus-visible,
+.hoofKnop:focus-visible,
+.teksKnop:focus-visible,
+.googleFoto:focus-visible,
+.karakters button:focus-visible {
+  outline: 4px solid
+    var(--festival-pink);
+
+  outline-offset: 3px;
+}
+
+
+@media (min-width: 681px) {
+  .blad {
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .uitleg {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+
+    padding-top: 0.5rem;
+  }
+
+  .merkArea {
+    flex: 0 0 clamp(
+      225px,
+      30svh,
+      280px
+    );
+
+    min-height: 0;
+
+    padding: 0.5rem 0.5rem 0.8rem;
+  }
+
+  .lingoLogo {
+    width: auto;
+    max-width: min(90%, 540px);
+    max-height: clamp(
+      145px,
+      21svh,
+      195px
+    );
+
+    margin: 0 auto;
+  }
+
+  .merkLyn {
+    margin-top: 0.4rem;
+  }
+
+  .bladPaneel {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+  }
+
+  .paneelHandvatsel {
+    margin-top: 0.65rem;
+  }
+
+  .paneelBeskrywing {
+    margin-top: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .privaatheid {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 680px) {
+  .uitleg {
+    padding-inline: 0.7rem;
+  }
+
+.merkArea {
+  min-height: 300px;
+
+  padding:
+    1rem
+    0
+    1rem;
+}
+
+  .lingoLogo {
+    width: min(
+      84vw,
+      410px
+    );
+
+    margin-top: 0;
+  }
+
+  .merkLyn {
+    margin-top: 0.7rem;
+
+    font-size: 0.78rem;
+  }
+
+  .bladPaneel {
+    min-height:
+      calc(100svh - 275px);
+
+    border-radius:
+      28px
+      28px
+      0
+      0;
+  }
+
+  .paneelBinne {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    padding:
+      1rem
+      1.15rem
+      2.2rem;
+  }
+
+  .vorderSirkel {
+  width: 39px;
+  height: 39px;
+
+  font-size: 0.86rem;
+}
+
+.vorderingLyn {
+  top: 19px;
+  right: 16.6%;
+  bottom: auto;
+  left: 16.6%;
+
+  width: auto;
+  height: 3px;
+}
+
+.vorderStap small {
+  font-size: 0.68rem;
+}
+
+  .vordering {
+    grid-template-columns:
+      repeat(3, 1fr);
+    gap: 0;
+
+    margin-bottom: 0.2rem;
+    padding-top: 0;
+  }
+
+  .vorderingLyn {
+    top: 17px;
+    right: 16.6%;
+    bottom: auto;
+    left: 16.6%;
+
+    width: auto;
+    height: 3px;
+  }
+
+  .vorderStap {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.4rem;
+  }
+
+  .vorderStap small {
+    font-size: 0.64rem;
+    text-align: center;
+  }
+
+  .stapInhoud {
+    min-height: 0;
+
+    padding-left: 0;
+
+    border-left: none;
+  }
+
+  .paneelTitel {
+    font-size:
+      clamp(
+        1.9rem,
+        8vw,
+        2.35rem
+      );
+  }
+
+  .reelsLys {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .uitleg {
+    padding-inline: 0.45rem;
+  }
+
+  .merkArea {
+    min-height: 245px;
+
+    padding:
+      0.5rem
+      0
+      0.65rem;
+  }
+
+  .lingoLogo {
+    width: min(
+      88vw,
+      365px
+    );
+  }
+
+  .merkLyn {
+    display: none;
+  }
+
+  .bladPaneel {
+    min-height:
+      calc(100svh - 245px);
+
+    border-radius:
+      25px
+      25px
+      0
+      0;
+  }
+
+  .paneelBinne {
+    gap: 0.85rem;
+
+    padding:
+      0.9rem
+      0.9rem
+      2rem;
+  }
+
+  .vorderStap small {
+    font-size: 0.59rem;
+  }
+
+  .paneelTitel {
+    font-size: 1.85rem;
+  }
+
+  .paneelBeskrywing {
+    font-size: 0.78rem;
+  }
+
+  .aanmeldKnop,
+  .hoofKnop {
+    padding: 0.78rem 0.45rem;
+    font-size: 0.76rem;
+  }
+
+  .loginAksies {
+    gap: 0.45rem;
+  }
+
+  .karakters {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+
+  .karakters button {
+    aspect-ratio: 1.25;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .stapInhoud,
+  .aanmeldKnop,
+  .hoofKnop,
+  .karakters button {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Final desktop onboarding sizing */
+
+/* Final desktop onboarding sizing */
+
+@media (min-width: 681px) {
+  /* Much taller logo area so the
+     white panel begins much lower */
+  .merkArea {
+    flex:
+      0 0
+      clamp(
+        400px,
+        51svh,
+        470px
+      );
+
+    min-height: 0;
+
+    padding:
+      1rem
+      0.5rem
+      1.5rem;
+  }
+
+  /* Larger central logo */
+  .lingoLogo {
+    width: auto;
+
+    max-width:
+      min(
+        94%,
+        720px
+      );
+
+    max-height:
+      clamp(
+        240px,
+        33svh,
+        310px
+      );
+
+    margin:
+      0
+      auto
+      0.5rem;
+  }
+
+  .merkLyn {
+    margin-top: 0.45rem;
+
+    padding:
+      0.55rem
+      1.3rem;
+  }
+
+  /* Shorter panel because it begins lower */
+  .bladPaneel {
+    flex: 1;
+
+    width: 100%;
+    min-height: 0;
+
+    overflow-y: auto;
+  }
+
+  .paneelHandvatsel {
+    width: 62px;
+    height: 5px;
+
+    margin-top: 0.65rem;
+  }
+
+  .paneelBinne {
+    width: min(100%, 900px);
+
+    grid-template-columns:
+      195px
+      minmax(0, 1fr);
+
+    gap: 1.9rem;
+
+    padding:
+      0.9rem
+      2rem
+      1.6rem;
+  }
+
+  /* Longer and more noticeable tracker */
+  .vordering {
+    align-self: start;
+
+    gap: 2.45rem;
+
+    padding-top: 0.1rem;
+  }
+
+  .vorderStap {
+    grid-template-columns:
+      47px
+      minmax(0, 1fr);
+
+    gap: 0.85rem;
+  }
+
+  .vorderSirkel {
+    width: 46px;
+    height: 46px;
+
+    border-width: 3px;
+
+    font-size: 1rem;
+  }
+
+  .vorderStap small {
+    font-size: 0.78rem;
+    line-height: 1.15;
+  }
+
+  /* Longer vertical connection line */
+  .vorderingLyn {
+    top: 23px;
+    bottom: auto;
+    left: 21px;
+
+    width: 4px;
+    height: 170px;
+
+    background: #ddd8ce;
+  }
+
+  .stapInhoud {
+    min-height: 0;
+
+    padding-left: 2rem;
+  }
+}
+
+/* Compact profile-tag editor */
+
+.profielStap .paneelBeskrywing {
+  margin-bottom: 0.7rem;
+}
+
+.profielTag {
+  display: grid;
+  grid-template-columns:
+    235px
+    minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+
+  padding: 0.8rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 18px;
+
+  background: white;
+
+  box-shadow:
+    0 6px 0
+    rgba(237, 73, 36, 0.14);
+}
+
+.avatarRedigeerder {
+  grid-template-columns:
+    30px
+    72px
+    30px;
+
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.avatarPyltjie {
+  width: 34px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 2px solid
+    var(--festival-orange);
+  border-radius: 11px;
+
+  background:
+    var(--festival-yellow);
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 0
+    rgba(237, 73, 36, 0.15);
+}
+
+.avatarPyltjie:active {
+  transform: translateY(3px);
+
+  box-shadow:
+    0 1px 0
+    rgba(237, 73, 36, 0.15);
+}
+
+.avatarVoorskou {
+  min-width: 0;
+
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.avatarSirkel {
+  width: 82px;
+  height: 82px;
+
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  border: 4px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  font-size: 2.3rem;
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.15);
+}
+
+.avatarSirkel img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.avatarVoorskou small {
+  max-width: 125px;
+  overflow: hidden;
+
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.profielVelde {
+  min-width: 0;
+}
+
+.profielVelde .etiket {
+  margin-bottom: 0.3rem;
+
+  font-size: 0.72rem;
+}
+
+.profielVelde .naamVeld {
+  padding-left: 0.7rem;
+}
+
+.profielVelde .naamVeld input {
+  padding: 0.65rem 0.35rem;
+
+  font-size: 0.88rem;
+}
+
+.usernameStatus {
+  min-height: 1rem;
+
+  margin-top: 0.4rem;
+
+  color: #9a948d;
+
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.statusAvailable {
+  color: #15994d;
+}
+
+.statusTaken {
+  color: var(--festival-orange);
+}
+
+.profielStap .hoofKnop {
+  margin-top: 0.85rem;
+}
+
+/* Make the rules fit inside the fixed panel */
+
+.reelsStap .paneelBeskrywing {
+  margin-bottom: 0.65rem;
+}
+
+.reelsLys {
+  gap: 0.5rem;
+}
+
+.reelsLys li {
+  gap: 0.55rem;
+
+  padding: 0.65rem;
+}
+
+.reelsLys p {
+  margin-top: 0.15rem;
+
+  font-size: 0.68rem;
+}
+
+.reelsStap .hoofKnop {
+  margin-top: 0.75rem;
+
+  padding-block: 0.75rem;
+}
+
+/* The fixed desktop panel no longer scrolls */
+
+@media (min-width: 681px) {
+  .bladPaneel {
+    overflow: hidden;
+  }
+
+  .paneelBinne {
+    height: calc(100% - 20px);
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 680px) {
+  .profielTag {
+    grid-template-columns:
+      190px
+      minmax(0, 1fr);
+
+    gap: 0.65rem;
+  }
+
+  .avatarRedigeerder {
+    grid-template-columns:
+      30px
+      minmax(0, 1fr)
+      30px;
+  }
+
+  .avatarPyltjie {
+    width: 30px;
+  }
+
+  .avatarSirkel {
+    width: 68px;
+    height: 68px;
+
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .profielTag {
+    grid-template-columns: 1fr;
+
+    padding: 0.7rem;
+  }
+
+  .avatarRedigeerder {
+    width: min(100%, 190px);
+
+    margin: 0 auto;
+  }
+}
+
+/* Readability and spacing improvements */
+
+@media (min-width: 681px) {
+  /* Use more of the unused horizontal space */
+  .paneelBinne {
+    width: min(100%, 950px);
+
+    grid-template-columns:
+      175px
+      minmax(0, 1fr);
+
+    gap: 1.2rem;
+
+    padding:
+      0.9rem
+      1.35rem
+      1.5rem;
+  }
+
+  .stapInhoud {
+    padding-left: 1.4rem;
+  }
+
+  /* Larger step-tracker text */
+  .vorderStap small {
+    font-size: 0.86rem;
+    line-height: 1.2;
+  }
+
+  /* Larger small heading */
+  .oog {
+    font-size: 0.88rem;
+    line-height: 1.2;
+
+    margin-bottom: 0.45rem;
+  }
+
+  /* Keep the title unchanged,
+     but enlarge its description */
+  .paneelBeskrywing {
+    max-width: 58ch;
+
+    margin-top: 0.65rem;
+    margin-bottom: 0.85rem;
+
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  /* Wider profile tag */
+  .profielTag {
+    grid-template-columns:
+      180px
+      minmax(0, 1fr);
+
+    gap: 1.2rem;
+
+    padding:
+      0.9rem
+      1rem;
+  }
+
+  /* Keep arrows close to the avatar */
+  .avatarRedigeerder {
+    grid-template-columns:
+      34px
+      88px
+      34px;
+
+    justify-content: center;
+    gap: 0.2rem;
+  }
+
+  .avatarPyltjie {
+    width: 34px;
+    height: 44px;
+
+    font-size: 1.65rem;
+  }
+
+  .avatarSirkel {
+    width: 84px;
+    height: 84px;
+  }
+
+  /* Larger character/profile name */
+  .avatarVoorskou small {
+    max-width: 145px;
+
+    font-size: 0.74rem;
+    line-height: 1.2;
+  }
+
+  /* Larger username label */
+  .profielVelde .etiket {
+    margin-bottom: 0.4rem;
+
+    font-size: 0.84rem;
+  }
+
+  /* Larger @ symbol */
+  .profielVelde .naamVeld span {
+    font-size: 1rem;
+  }
+
+  /* Larger username input text */
+  .profielVelde .naamVeld input {
+    padding:
+      0.72rem
+      0.4rem;
+
+    font-size: 1rem;
+  }
+
+  /* Larger username availability message */
+  .usernameStatus {
+    min-height: 1.2rem;
+
+    margin-top: 0.45rem;
+
+    font-size: 0.74rem;
+    line-height: 1.35;
+  }
+
+  /* Larger privacy text in step one */
+  .privaatheid {
+    max-width: 60ch;
+
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  /* Larger rules text */
+  .reelsLys strong {
+    font-size: 0.98rem;
+    line-height: 1.15;
+  }
+
+  .reelsLys p {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  /* Larger back and sign-out links */
+  .teksKnop {
+    font-size: 0.82rem;
+  }
+}
+
+/* Clean profile editor */
+
+.profielTag {
+  grid-template-columns:
+    180px
+    minmax(0, 1fr) !important;
+
+  align-items: center;
+  gap: 1.25rem;
+
+  padding: 0.25rem 0 !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+}
+
+/* Force arrows onto the left and right
+   sides of the profile image */
+
+.avatarRedigeerder {
+  width: 180px;
+
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.3rem !important;
+}
+
+.avatarVoorskou {
+  width: 92px;
+  flex: 0 0 92px;
+}
+
+.avatarPyltjie {
+  width: 34px;
+  height: 44px;
+  flex: 0 0 34px;
+
+  padding: 0;
+}
+
+.avatarSirkel {
+  width: 84px;
+  height: 84px;
+}
+
+/* Remove empty helper-text space
+   when no status is displayed */
+
+.usernameStatus {
+  min-height: 0;
+}
+
+/* Step viewport and pull transition */
+
+.stapVenster {
+  position: relative;
+
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+.stapInhoud {
+  position: relative;
+
+  width: 100%;
+  min-height: 100%;
+
+  box-sizing: border-box;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.trekArm {
+  position: absolute;
+  z-index: 5;
+
+  top: 48%;
+  left: -28px;
+
+  width: 54px;
+  height: 18px;
+
+  opacity: 0;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 999px;
+
+  background:
+    var(--festival-yellow);
+
+  pointer-events: none;
+}
+
+.trekUitVoor {
+  transform-origin:
+    left center;
+
+  animation:
+    trekUitVoor
+    460ms
+    cubic-bezier(
+      0.62,
+      0,
+      0.78,
+      0
+    )
+    forwards;
+}
+
+.trekUitVoor .trekArm {
+  opacity: 1;
+
+  animation:
+    armTrekLinks
+    460ms
+    ease-in
+    forwards;
+}
+
+.trekInVoor {
+  transform-origin:
+    left center;
+
+  animation:
+    trekInVoor
+    620ms
+    cubic-bezier(
+      0.18,
+      0.9,
+      0.26,
+      1.2
+    )
+    both;
+}
+
+.trekInVoor .trekArm {
+  opacity: 1;
+
+  animation:
+    armKomIn
+    500ms
+    ease-out
+    both;
+}
+
+.trekUitTerug {
+  transform-origin:
+    right center;
+
+  animation:
+    trekUitTerug
+    460ms
+    ease-in
+    forwards;
+}
+
+.trekInTerug {
+  transform-origin:
+    right center;
+
+  animation:
+    trekInTerug
+    620ms
+    cubic-bezier(
+      0.18,
+      0.9,
+      0.26,
+      1.2
+    )
+    both;
+}
+
+@keyframes trekUitVoor {
+  0% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1)
+      skewX(0);
+  }
+
+  22% {
+    transform:
+      translateX(-4%)
+      scaleX(1.1)
+      skewX(3deg);
+  }
+
+  48% {
+    opacity: 1;
+
+    transform:
+      translateX(-28%)
+      scaleX(1.18)
+      skewX(-7deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateX(-125%)
+      scaleX(0.82)
+      skewX(-3deg);
+  }
+}
+
+@keyframes trekInVoor {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateX(125%)
+      scaleX(1.3)
+      skewX(-9deg);
+  }
+
+  36% {
+    opacity: 1;
+
+    transform:
+      translateX(20%)
+      scaleX(1.12)
+      skewX(-5deg);
+  }
+
+  64% {
+    transform:
+      translateX(-4%)
+      scaleX(0.97)
+      skewX(2deg);
+  }
+
+  82% {
+    transform:
+      translateX(2%)
+      scaleX(1.02);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1)
+      skewX(0);
+  }
+}
+
+@keyframes trekUitTerug {
+  0% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1);
+  }
+
+  45% {
+    transform:
+      translateX(28%)
+      scaleX(1.17)
+      skewX(7deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateX(125%)
+      scaleX(0.82);
+  }
+}
+
+@keyframes trekInTerug {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateX(-125%)
+      scaleX(1.3)
+      skewX(9deg);
+  }
+
+  60% {
+    opacity: 1;
+
+    transform:
+      translateX(4%)
+      scaleX(0.97);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1);
+  }
+}
+
+@keyframes armTrekLinks {
+  0% {
+    left: -28px;
+
+    width: 54px;
+  }
+
+  50% {
+    left: -55px;
+
+    width: 95px;
+  }
+
+  100% {
+    left: -95px;
+
+    width: 120px;
+  }
+}
+
+@keyframes armKomIn {
+  0% {
+    left: -95px;
+
+    width: 120px;
+  }
+
+  70% {
+    left: -35px;
+
+    width: 70px;
+  }
+
+  100% {
+    left: -28px;
+
+    width: 54px;
+
+    opacity: 0;
+  }
+}
+
+/* Success state */
+
+.successState {
+  min-height: 290px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  animation:
+    successPop
+    420ms
+    cubic-bezier(
+      0.18,
+      0.9,
+      0.26,
+      1.3
+    )
+    both;
+}
+
+.successAnimation {
+  position: relative;
+
+  width: 104px;
+  height: 104px;
+
+  display: grid;
+  place-items: center;
+
+  border: 5px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  background:
+    var(--festival-yellow);
+
+  box-shadow:
+    0 8px 0
+    rgba(237, 73, 36, 0.18);
+
+  animation:
+    successBounce
+    700ms
+    cubic-bezier(
+      0.18,
+      0.9,
+      0.26,
+      1.35
+    )
+    both;
+}
+
+.successAnimation::before,
+.successAnimation::after {
+  position: absolute;
+
+  color: var(--festival-pink);
+
+  font-size: 1.8rem;
+
+  content: "✦";
+
+  animation:
+    successSparkle
+    900ms
+    ease-out
+    both;
+}
+
+.successAnimation::before {
+  top: -17px;
+  right: -20px;
+}
+
+.successAnimation::after {
+  bottom: -13px;
+  left: -22px;
+
+  animation-delay: 120ms;
+}
+
+.successAnimation span {
+  color: var(--festival-orange);
+
+  font-family: var(--font-pixel);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@keyframes successBounce {
+  0% {
+    opacity: 0;
+
+    transform:
+      scale(0.2)
+      rotate(-18deg);
+  }
+
+  55% {
+    opacity: 1;
+
+    transform:
+      scale(1.18)
+      rotate(5deg);
+  }
+
+  75% {
+    transform:
+      scale(0.92)
+      rotate(-2deg);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0);
+  }
+}
+
+@keyframes successSparkle {
+  0% {
+    opacity: 0;
+
+    transform:
+      scale(0)
+      rotate(0);
+  }
+
+  55% {
+    opacity: 1;
+
+    transform:
+      scale(1.35)
+      rotate(90deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      scale(0.7)
+      rotate(150deg);
+  }
+}
+.successTitel {
+  margin:
+    0.2rem
+    0
+    0;
+
+  color:
+    var(--festival-orange);
+
+  font-family:
+    var(--font-pixel);
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      2.8rem
+    );
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.successTeks {
+  margin:
+    0.65rem
+    0
+    0;
+
+  color:
+    var(--festival-orange);
+
+  font-family:
+    var(--font-pixel);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@keyframes successPop {
+  from {
+    opacity: 0;
+
+    transform:
+      scale(0.72)
+      rotate(-3deg);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0);
+  }
+}
+
+/* One fixed long desktop tracker line */
+
+@media (min-width: 681px) {
+  .vordering {
+    align-self: start;
+
+    gap: 3rem;
+  }
+
+  .vorderingLyn {
+    top: 23px;
+    bottom: auto;
+    left: 21px;
+
+    width: 4px;
+    height: 188px;
+  }
+}
+
+/* Fuller mobile layouts */
+
+@media (max-width: 680px) {
+  .paneelBinne {
+    width: 100%;
+
+    grid-template-columns: 1fr;
+
+    gap: 1rem;
+
+    padding:
+      1rem
+      1rem
+      1.8rem;
+  }
+
+  .vordering {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(3, 1fr);
+
+    gap: 0;
+
+    margin-bottom: 0.35rem;
+  }
+
+  .vorderingLyn {
+    top: 21px;
+    right: 13%;
+    bottom: auto;
+    left: 13%;
+
+    width: auto;
+    height: 4px;
+  }
+
+  .vorderSirkel {
+    width: 43px;
+    height: 43px;
+
+    font-size: 0.92rem;
+  }
+
+  .vorderStap small {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .stapVenster {
+    min-height: 390px;
+  }
+
+  .stapInhoud {
+    width: 100%;
+    min-height: 390px;
+
+    padding: 0;
+  }
+
+  .loginStap,
+  .reelsStap,
+  .profielStap {
+    width: 100%;
+    max-width: none;
+
+    box-sizing: border-box;
+  }
+
+  .oog {
+    font-size: 0.84rem;
+  }
+
+  .paneelTitel {
+    font-size:
+      clamp(
+        2rem,
+        9vw,
+        2.55rem
+      );
+  }
+
+  .paneelBeskrywing {
+    max-width: none;
+
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .loginAksies {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .aanmeldKnop {
+    min-height: 50px;
+  }
+
+  .privaatheid {
+    max-width: 46ch;
+
+    font-size: 0.76rem;
+  }
+
+  .reelsLys {
+    width: 100%;
+
+    grid-template-columns: 1fr;
+
+    gap: 0.55rem;
+  }
+
+  .reelsLys li {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 0.75rem;
+  }
+
+  .reelsLys strong {
+    font-size: 0.9rem;
+  }
+
+  .reelsLys p {
+    font-size: 0.72rem;
+  }
+
+  /* Avatar above username */
+
+  .profielTag {
+    width: 100%;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch;
+
+    gap: 0.65rem;
+
+    padding: 0 !important;
+  }
+
+  .avatarRedigeerder {
+    width: 100%;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.3rem !important;
+
+    margin: 0 auto;
+  }
+
+  .avatarVoorskou {
+    width: 96px;
+    flex: 0 0 96px;
+  }
+
+  .avatarSirkel {
+    width: 88px;
+    height: 88px;
+
+    margin: 0 auto;
+  }
+
+  .avatarPyltjie {
+    width: 36px;
+    height: 45px;
+    flex: 0 0 36px;
+  }
+
+  .profielVelde {
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .profielVelde .etiket {
+    text-align: center;
+
+    font-size: 0.78rem;
+  }
+
+  .profielVelde .naamVeld {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .usernameStatus {
+    font-size: 0.7rem;
+
+    text-align: center;
+  }
+
+  .profielStap .hoofKnop {
+    width: 100%;
+
+    margin-top: 0.75rem;
+  }
+
+  .successState {
+    min-height: 360px;
+  }
+
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .trekUitVoor,
+  .trekInVoor,
+  .trekUitTerug,
+  .trekInTerug,
+  .trekArm,
+  .successState {
+    animation: none;
+  }
+}
+
+/* Keep the tracker completely stationary */
+
+.vordering,
+.vorderingLyn,
+.vorderStap,
+.vorderSirkel {
+  transform: none !important;
+  animation: none !important;
+}
+
+/* The dividing line is attached to the
+   fixed viewport instead of the sliding content */
+
+@media (min-width: 681px) {
+  .stapVenster {
+    box-sizing: border-box;
+
+    padding-left: 1.4rem;
+
+    border-left: 2px solid
+      rgba(237, 73, 36, 0.2);
+  }
+
+  .stapInhoud {
+    padding-left: 0 !important;
+
+    border-left: none !important;
+  }
+}
+
+/* Remove the previous pull-arm effect */
+
+.trekArm {
+  display: none !important;
+}
+
+/* Smooth, simple step transitions */
+
+.trekUitVoor {
+  transform-origin: center !important;
+
+  animation:
+    smoothUitLinks
+    360ms
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    )
+    forwards !important;
+}
+
+.trekInVoor {
+  transform-origin: center !important;
+
+  animation:
+    smoothInRegs
+    420ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    )
+    both !important;
+}
+
+.trekUitTerug {
+  transform-origin: center !important;
+
+  animation:
+    smoothUitRegs
+    360ms
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    )
+    forwards !important;
+}
+
+.trekInTerug {
+  transform-origin: center !important;
+
+  animation:
+    smoothInLinks
+    420ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    )
+    both !important;
+}
+
+@keyframes smoothUitLinks {
+  from {
+    opacity: 1;
+
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+
+    transform:
+      translate3d(-105%, 0, 0);
+  }
+}
+
+@keyframes smoothInRegs {
+  from {
+    opacity: 0;
+
+    transform:
+      translate3d(105%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translate3d(0, 0, 0);
+  }
+}
+
+@keyframes smoothUitRegs {
+  from {
+    opacity: 1;
+
+    transform:
+      translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+
+    transform:
+      translate3d(105%, 0, 0);
+  }
+}
+
+@keyframes smoothInLinks {
+  from {
+    opacity: 0;
+
+    transform:
+      translate3d(-105%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translate3d(0, 0, 0);
+  }
+}
+
+/* Loading displayed inside the step panel */
+
+.inlineLoading {
+  width: 100%;
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  color: var(--festival-orange);
+  text-align: center;
+}
+
+.inlineLoading p {
+  margin: 1rem 0 0;
+
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.inlineSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.inlineSpinner span {
+  width: 15px;
+  height: 15px;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  background:
+    var(--festival-yellow);
+
+  animation:
+    loadingSpring
+    750ms
+    ease-in-out
+    infinite;
+}
+
+.inlineSpinner span:nth-child(2) {
+  background:
+    var(--festival-pink);
+
+  animation-delay: 120ms;
+}
+
+.inlineSpinner span:nth-child(3) {
+  background:
+    var(--festival-green);
+
+  animation-delay: 240ms;
+}
+
+@keyframes loadingSpring {
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-12px);
+  }
+}
+
+@media (max-width: 680px) {
+  .stapVenster {
+    padding-left: 0;
+
+    border-left: none;
+  }
+
+  .inlineLoading {
+    min-height: 340px;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .trekUitVoor,
+  .trekInVoor,
+  .trekUitTerug,
+  .trekInTerug,
+  .inlineSpinner span {
+    animation-duration: 1ms !important;
+  }
+}
+
+
+/* ========================================
+   STAGGERED NAPKIN-PULL STEP TRANSITION
+   ======================================== */
+
+/* The actual step container stays still.
+   Only its inner content pieces move. */
+
+.stapInhoud,
+.trekUitVoor,
+.trekInVoor,
+.trekUitTerug,
+.trekInTerug {
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Keep tracker and dividing lines fixed */
+
+.vordering,
+.vorderingLyn,
+.vorderStap,
+.vorderSirkel,
+.stapVenster {
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Base stagger animation for each
+   direct content piece */
+
+.trekUitVoor
+  > div:not(.successState):not(.inlineLoading)
+  > * {
+  transform-origin: left center;
+
+  animation:
+    napkinUitLinks
+    480ms
+    cubic-bezier(
+      0.55,
+      0,
+      0.75,
+      0
+    )
+    both;
+}
+
+.trekInVoor
+  > div:not(.successState):not(.inlineLoading)
+  > * {
+  transform-origin: left center;
+
+  animation:
+    napkinInRegs
+    520ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+/* Reverse transition */
+
+.trekUitTerug
+  > div:not(.successState):not(.inlineLoading)
+  > * {
+  transform-origin: right center;
+
+  animation:
+    napkinUitRegs
+    480ms
+    cubic-bezier(
+      0.55,
+      0,
+      0.75,
+      0
+    )
+    both;
+}
+
+.trekInTerug
+  > div:not(.successState):not(.inlineLoading)
+  > * {
+  transform-origin: right center;
+
+  animation:
+    napkinInLinks
+    520ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+/* Title is pulled first */
+
+.trekUitVoor
+  > div
+  > .paneelTitel,
+.trekUitTerug
+  > div
+  > .paneelTitel,
+.trekInVoor
+  > div
+  > .paneelTitel,
+.trekInTerug
+  > div
+  > .paneelTitel {
+  animation-delay: 0ms;
+}
+
+/* Small step label follows */
+
+.trekUitVoor
+  > div
+  > .oog,
+.trekUitTerug
+  > div
+  > .oog {
+  animation-delay: 45ms;
+}
+
+.trekInVoor
+  > div
+  > .oog,
+.trekInTerug
+  > div
+  > .oog {
+  animation-delay: 55ms;
+}
+
+/* Description follows the title */
+
+.trekUitVoor
+  > div
+  > .paneelBeskrywing,
+.trekUitTerug
+  > div
+  > .paneelBeskrywing {
+  animation-delay: 85ms;
+}
+
+.trekInVoor
+  > div
+  > .paneelBeskrywing,
+.trekInTerug
+  > div
+  > .paneelBeskrywing {
+  animation-delay: 105ms;
+}
+
+/* Main component follows */
+
+.trekUitVoor
+  > div
+  > :nth-child(4),
+.trekUitTerug
+  > div
+  > :nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.trekInVoor
+  > div
+  > :nth-child(4),
+.trekInTerug
+  > div
+  > :nth-child(4) {
+  animation-delay: 175ms;
+}
+
+/* Buttons and lower content follow last */
+
+.trekUitVoor
+  > div
+  > :nth-child(5),
+.trekUitTerug
+  > div
+  > :nth-child(5) {
+  animation-delay: 205ms;
+}
+
+.trekInVoor
+  > div
+  > :nth-child(5),
+.trekInTerug
+  > div
+  > :nth-child(5) {
+  animation-delay: 235ms;
+}
+
+.trekUitVoor
+  > div
+  > :nth-child(6),
+.trekUitTerug
+  > div
+  > :nth-child(6) {
+  animation-delay: 255ms;
+}
+
+.trekInVoor
+  > div
+  > :nth-child(6),
+.trekInTerug
+  > div
+  > :nth-child(6) {
+  animation-delay: 290ms;
+}
+
+/* Success and loader move as one piece */
+
+.trekUitVoor
+  > .successState,
+.trekUitVoor
+  > .inlineLoading {
+  animation:
+    napkinUitLinks
+    540ms
+    cubic-bezier(
+      0.55,
+      0,
+      0.75,
+      0
+    )
+    both;
+}
+
+.trekInVoor
+  > .successState,
+.trekInVoor
+  > .inlineLoading {
+  animation:
+    napkinInRegs
+    580ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+.trekUitTerug
+  > .successState,
+.trekUitTerug
+  > .inlineLoading {
+  animation:
+    napkinUitRegs
+    540ms
+    ease-in
+    both;
+}
+
+.trekInTerug
+  > .successState,
+.trekInTerug
+  > .inlineLoading {
+  animation:
+    napkinInLinks
+    580ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+/* Forward: title catches first,
+   remaining content gets pulled after it */
+
+@keyframes napkinUitLinks {
+  0% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1)
+      rotate(0);
+  }
+
+  18% {
+    opacity: 1;
+
+    transform:
+      translateX(-8px)
+      scaleX(1.035)
+      rotate(-0.2deg);
+  }
+
+  48% {
+    opacity: 0.95;
+
+    transform:
+      translateX(-34%)
+      scaleX(1.1)
+      rotate(-0.7deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateX(-115%)
+      scaleX(0.96)
+      rotate(-1deg);
+  }
+}
+
+@keyframes napkinInRegs {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateX(115%)
+      scaleX(1.12)
+      rotate(1deg);
+  }
+
+  54% {
+    opacity: 1;
+
+    transform:
+      translateX(-3%)
+      scaleX(0.98)
+      rotate(-0.2deg);
+  }
+
+  76% {
+    transform:
+      translateX(1.5%)
+      scaleX(1.015);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1)
+      rotate(0);
+  }
+}
+
+@keyframes napkinUitRegs {
+  0% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1);
+  }
+
+  18% {
+    transform:
+      translateX(8px)
+      scaleX(1.035);
+  }
+
+  48% {
+    transform:
+      translateX(34%)
+      scaleX(1.1)
+      rotate(0.7deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translateX(115%)
+      scaleX(0.96)
+      rotate(1deg);
+  }
+}
+
+@keyframes napkinInLinks {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateX(-115%)
+      scaleX(1.12)
+      rotate(-1deg);
+  }
+
+  54% {
+    opacity: 1;
+
+    transform:
+      translateX(3%)
+      scaleX(0.98);
+  }
+
+  76% {
+    transform:
+      translateX(-1.5%)
+      scaleX(1.015);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateX(0)
+      scaleX(1)
+      rotate(0);
+  }
+}
+
+/* ========================================
+   BIG SMOOTH SUCCESS ANIMATION
+   ======================================== */
+
+.successState {
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.successAnimation {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  display: grid;
+  place-items: center;
+
+  border: 6px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  background:
+    var(--festival-yellow);
+
+  box-shadow:
+    0 10px 0
+      rgba(237, 73, 36, 0.16),
+    0 0 0 16px
+      rgba(248, 228, 43, 0.2),
+    0 0 55px
+      rgba(239, 150, 199, 0.5);
+
+  animation:
+    successLand
+    1000ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+.successAnimation::before {
+  position: absolute;
+
+  inset: -22px;
+
+  border: 4px solid
+    var(--festival-pink);
+  border-radius: 50%;
+
+  content: "";
+
+  animation:
+    successRing
+    1300ms
+    ease-out
+    200ms
+    both;
+}
+
+.successAnimation::after {
+  position: absolute;
+
+  top: -34px;
+  right: -37px;
+
+  color:
+    var(--festival-pink);
+
+  font-size: 2.8rem;
+
+  content: "✦";
+
+  filter:
+    drop-shadow(
+      -138px 122px 0
+      var(--festival-green)
+    );
+
+  animation:
+    successSpark
+    1100ms
+    ease-out
+    320ms
+    both;
+}
+
+.successAnimation span {
+  color:
+    var(--festival-orange);
+
+  font-family:
+    var(--font-pixel);
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+
+  animation:
+    checkLand
+    800ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    280ms
+    both;
+}
+
+.successTitel {
+  margin:
+    1.15rem
+    0
+    0;
+
+  color:
+    var(--festival-orange);
+
+  font-family:
+    var(--font-pixel);
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      2.7rem
+    );
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  animation:
+    successTextIn
+    700ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    520ms
+    both;
+}
+
+@keyframes successLand {
+  0% {
+    opacity: 0;
+
+    transform:
+      translateY(32px)
+      scale(0.18)
+      rotate(-24deg);
+  }
+
+  55% {
+    opacity: 1;
+
+    transform:
+      translateY(-8px)
+      scale(1.14)
+      rotate(5deg);
+  }
+
+  73% {
+    transform:
+      translateY(3px)
+      scale(0.94)
+      rotate(-2deg);
+  }
+
+  88% {
+    transform:
+      translateY(-1px)
+      scale(1.025)
+      rotate(0.5deg);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0);
+  }
+}
+
+@keyframes checkLand {
+  0% {
+    opacity: 0;
+
+    transform:
+      scale(0)
+      rotate(-35deg);
+  }
+
+  62% {
+    opacity: 1;
+
+    transform:
+      scale(1.24)
+      rotate(7deg);
+  }
+
+  100% {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      rotate(0);
+  }
+}
+
+@keyframes successRing {
+  0% {
+    opacity: 0.8;
+
+    transform:
+      scale(0.55);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      scale(1.45);
+  }
+}
+
+@keyframes successSpark {
+  0% {
+    opacity: 0;
+
+    transform:
+      scale(0)
+      rotate(0);
+  }
+
+  48% {
+    opacity: 1;
+
+    transform:
+      scale(1.35)
+      rotate(90deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      scale(0.8)
+      rotate(175deg);
+  }
+}
+
+@keyframes successTextIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(18px)
+      scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+/* Loader remains inside step panel */
+
+.inlineLoading {
+  animation:
+    loaderFadeIn
+    350ms
+    ease-out
+    both;
+}
+
+@keyframes loaderFadeIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+@media (max-width: 680px) {
+  .successAnimation {
+    width: 128px;
+    height: 128px;
+  }
+
+  .successAnimation span {
+    font-size: 4.2rem;
+  }
+
+  .successTitel {
+    font-size: 2rem;
+  }
+
+  .successState {
+    min-height: 350px;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .trekUitVoor
+    > div
+    > *,
+  .trekInVoor
+    > div
+    > *,
+  .trekUitTerug
+    > div
+    > *,
+  .trekInTerug
+    > div
+    > *,
+  .successAnimation,
+  .successAnimation::before,
+  .successAnimation::after,
+  .successAnimation span,
+  .successTitel {
+    animation-duration:
+      1ms !important;
+    animation-delay:
+      0ms !important;
+  }
+}
+
+/* Larger provider/profile image */
+
+@media (min-width: 681px) {
+  .profielTag {
+    grid-template-columns:
+      245px
+      minmax(0, 1fr) !important;
+  }
+
+  .avatarRedigeerder {
+    width: 245px !important;
+
+    gap: 0.4rem !important;
+  }
+
+  .avatarVoorskou {
+    width: 142px;
+    flex: 0 0 142px;
+  }
+
+  .avatarSirkel {
+    width: 132px;
+    height: 132px;
+
+    border-width: 5px;
+
+    font-size: 3.5rem;
+  }
+
+  .avatarPyltjie {
+    width: 39px;
+    height: 50px;
+    flex: 0 0 39px;
+
+    font-size: 1.9rem;
+  }
+
+  .avatarVoorskou small {
+    max-width: 155px;
+
+    font-size: 0.8rem;
+  }
+}
+
+/* Google/Apple fallback inside avatar */
+
+.providerFallback {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+}
+
+.providerFallback svg {
+  width: 54px;
+  height: 54px;
+
+  color: #17150f;
+}
+
+.googleAvatarIcon {
+  color: #4285f4;
+
+  font-family:
+    Arial,
+    sans-serif;
+  font-size: 3.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Larger sign-in icons */
+
+.googleG {
+  font-size: 1.45rem !important;
+}
+
+.appleKnop svg {
+  width: 27px;
+  height: 27px;
+}
+
+/* Larger avatar on mobile too */
+
+@media (max-width: 680px) {
+  .avatarRedigeerder {
+    width: 100% !important;
+
+    gap: 0.35rem !important;
+  }
+
+  .avatarVoorskou {
+    width: 132px;
+    flex: 0 0 132px;
+  }
+
+  .avatarSirkel {
+    width: 122px;
+    height: 122px;
+
+    border-width: 5px;
+
+    font-size: 3.2rem;
+  }
+
+  .avatarPyltjie {
+    width: 38px;
+    height: 48px;
+    flex: 0 0 38px;
+
+    font-size: 1.8rem;
+  }
+
+  .avatarVoorskou small {
+    max-width: 145px;
+
+    font-size: 0.76rem;
+  }
+
+  .providerFallback svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .googleAvatarIcon {
+    font-size: 3.5rem;
+  }
+
+  .googleG {
+    font-size: 1.55rem !important;
+  }
+
+  .appleKnop svg {
+    width: 29px;
+    height: 29px;
+  }
+}
+
+
+/* Larger supporting text */
+
+.paneelBeskrywing {
+  max-width: 62ch;
+
+  font-size: 1.04rem !important;
+  line-height: 1.45 !important;
+}
+
+.privaatheid {
+  max-width: 62ch;
+
+  font-size: 0.84rem !important;
+  line-height: 1.45 !important;
+}
+
+.usernameStatus {
+  font-size: 0.78rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Simple icon-based rules journey */
+
+.reelsLys {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+
+  margin: 0;
+}
+
+.reelsLys li {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+
+  padding: 0.75rem;
+
+  box-sizing: border-box;
+}
+
+.reelIkoon {
+  width: 2.35rem;
+  height: 2.35rem;
+
+  display: grid;
+  place-items: center;
+
+  border: 2px solid
+    var(--festival-orange);
+  border-radius: 11px;
+
+  background:
+    var(--festival-yellow);
+
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.reelsLys strong {
+  font-size: 0.92rem !important;
+  line-height: 1.1 !important;
+}
+
+.reelsLys p {
+  margin-top: 0.2rem;
+
+  font-size: 0.76rem !important;
+  line-height: 1.35 !important;
+}
+
+/* Compact navigation aligned left */
+
+.stapNavigasie {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+
+  margin-top: 0.8rem;
+}
+
+.navPrimar,
+.navSekonder,
+.navTeks {
+  min-height: 41px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+
+  padding: 0.62rem 1rem;
+
+  border-radius: 11px;
+
+  font-family: var(--font-pixel);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.navPrimar {
+  border: 3px solid
+    var(--festival-orange);
+
+  background:
+    var(--festival-yellow);
+  color:
+    var(--festival-orange);
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.17);
+}
+
+.navSekonder {
+  border: 3px solid
+    var(--festival-orange);
+
+  background: white;
+  color:
+    var(--festival-orange);
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.12);
+}
+
+.navTeks {
+  border: none;
+
+  background: transparent;
+  color:
+    var(--festival-orange);
+}
+
+.navPrimar:hover:not(:disabled),
+.navSekonder:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+}
+
+.navPrimar:active:not(:disabled),
+.navSekonder:active:not(:disabled) {
+  transform:
+    translateY(3px);
+
+  box-shadow:
+    0 1px 0
+    rgba(237, 73, 36, 0.15);
+}
+
+.navPrimar:disabled,
+.navSekonder:disabled {
+  opacity: 0.48;
+  cursor: default;
+}
+
+/* Mobile readability and fitting */
+
+@media (max-width: 680px) {
+  .paneelBeskrywing {
+    margin-top: 0.55rem;
+    margin-bottom: 0.75rem;
+
+    font-size: 0.92rem !important;
+    line-height: 1.45 !important;
+  }
+
+  .privaatheid {
+    margin-top: 0.8rem;
+
+    font-size: 0.78rem !important;
+  }
+
+  .reelsLys {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 0.5rem;
+  }
+
+  .reelsLys li {
+    min-height: 105px;
+
+    padding: 0.65rem;
+  }
+
+  .reelIkoon {
+    width: 2.1rem;
+    height: 2.1rem;
+
+    font-size: 1.1rem;
+  }
+
+  .reelsLys strong {
+    font-size: 0.86rem !important;
+  }
+
+  .reelsLys p {
+    font-size: 0.72rem !important;
+  }
+
+  .stapNavigasie {
+    gap: 0.45rem;
+
+    margin-top: 0.7rem;
+  }
+
+  .navPrimar,
+  .navSekonder,
+  .navTeks {
+    min-height: 39px;
+
+    padding:
+      0.56rem
+      0.72rem;
+
+    font-size: 0.72rem;
+  }
+
+  .navPrimar svg,
+  .navSekonder svg,
+  .navTeks svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+/* ========================================
+   FIXED BOTTOM NAVIGATION
+   ======================================== */
+
+.stapVenster {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+.stapInhoud {
+  flex: 1 1 auto;
+
+  width: 100%;
+  min-height: 0 !important;
+
+  overflow: hidden;
+}
+
+.vasteNavigasie {
+  position: relative;
+  z-index: 20;
+
+  width: 100%;
+  min-height: 72px;
+  flex: 0 0 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-top: auto;
+  padding-top: 0.75rem;
+
+  box-sizing: border-box;
+
+  border-top: 2px solid
+    rgba(237, 73, 36, 0.16);
+
+  background:
+    var(--festival-cream);
+}
+
+.vasteNavigasieLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.vasteNavigasie .navPrimar,
+.vasteNavigasie .navSekonder {
+  min-width: 126px;
+  min-height: 50px;
+
+  padding: 0.78rem 1.25rem;
+
+  border-width: 3px;
+  border-radius: 12px;
+
+  font-size: 0.86rem;
+}
+
+.vasteNavigasie .navTeks {
+  min-width: 92px;
+  min-height: 48px;
+
+  padding: 0.7rem 0.8rem;
+
+  font-size: 0.79rem;
+}
+
+.navTeksVersteek {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navNaam {
+  display: block;
+
+  animation:
+    navNaamVerander
+    320ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    )
+    both;
+}
+
+@keyframes navNaamVerander {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+/* ========================================
+   LARGER RULES
+   ======================================== */
+
+.reelsStap .paneelBeskrywing {
+  margin-bottom: 1rem;
+}
+
+.reelsLys {
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 0.75rem;
+}
+
+.reelsLys li {
+  min-height: 128px;
+
+  display: grid;
+  grid-template-columns: 2.35rem 1fr;
+  align-content: start;
+  align-items: start;
+  gap: 0.7rem;
+
+  padding: 1rem 0.9rem;
+}
+
+.reelNommer {
+  width: 2.1rem;
+  height: 2.1rem;
+
+  font-size: 0.9rem;
+}
+
+.reelsLys strong {
+  font-size: 1rem !important;
+  line-height: 1.2 !important;
+}
+
+.reelsLys p {
+  margin-top: 0.4rem;
+
+  font-size: 0.84rem !important;
+  line-height: 1.48 !important;
+}
+
+/* ========================================
+   LARGER CENTRAL LOGO
+   ======================================== */
+
+@media (min-width: 681px) {
+  .lingoLogo {
+    max-width:
+      min(
+        98%,
+        820px
+      );
+
+    max-height:
+      clamp(
+        270px,
+        37svh,
+        350px
+      );
+  }
+}
+
+@media (max-width: 680px) {
+  .lingoLogo {
+    width:
+      min(
+        94vw,
+        440px
+      );
+  }
+}
+
+/* ========================================
+   PROGRESS TRACKER REVEAL
+   ======================================== */
+
+.vorderingLyn {
+  display: none !important;
+}
+
+.vorderStap {
+  position: relative;
+}
+
+.vorderVerbinding {
+  position: absolute;
+  z-index: -1;
+
+  left: 21px;
+  bottom: 50%;
+
+  width: 4px;
+  height: calc(3rem + 46px);
+
+  background: #ddd8ce;
+
+  transform:
+    scaleY(0);
+
+  transform-origin:
+    top center;
+}
+
+.trackerVersteek
+  .vorderSirkel,
+.trackerVersteek
+  small {
+  visibility: hidden;
+  opacity: 0;
+
+  clip-path:
+    circle(
+      0%
+      at
+      50%
+      50%
+    );
+}
+
+.trackerVersteek
+  .vorderVerbinding {
+  transform:
+    scaleY(0);
+}
+
+.trackerOnthul
+  .vorderVerbinding {
+  animation:
+    trackerLynAf
+    430ms
+    cubic-bezier(
+      0.4,
+      0,
+      0.2,
+      1
+    )
+    both !important;
+}
+
+.trackerOnthul
+  .vorderSirkel {
+  visibility: visible;
+
+  animation:
+    trackerSirkelGroei
+    430ms
+    cubic-bezier(
+      0.18,
+      1.25,
+      0.32,
+      1
+    )
+    330ms
+    both !important;
+}
+
+.trackerOnthul
+  small {
+  visibility: visible;
+
+  animation:
+    trackerNaamIn
+    300ms
+    ease-out
+    570ms
+    both !important;
+}
+
+@keyframes trackerLynAf {
+  from {
+    transform:
+      scaleY(0);
+  }
+
+  to {
+    transform:
+      scaleY(1);
+  }
+}
+
+@keyframes trackerSirkelGroei {
+  0% {
+    opacity: 0;
+
+    clip-path:
+      circle(
+        0%
+        at
+        50%
+        50%
+      );
+
+    filter:
+      blur(4px);
+  }
+
+  70% {
+    opacity: 1;
+
+    clip-path:
+      circle(
+        75%
+        at
+        50%
+        50%
+      );
+
+    filter:
+      blur(0);
+  }
+
+  100% {
+    opacity: 1;
+
+    clip-path:
+      circle(
+        75%
+        at
+        50%
+        50%
+      );
+
+    filter:
+      blur(0);
+  }
+}
+
+@keyframes trackerNaamIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   MOBILE LAYOUT
+   ======================================== */
+
+@media (max-width: 680px) {
+  .stapVenster {
+    min-height: 430px;
+  }
+
+  .stapInhoud {
+    min-height: 0 !important;
+  }
+
+  .vorderVerbinding {
+    top: 21px;
+    bottom: auto;
+    left: -50%;
+
+    width: 100%;
+    height: 4px;
+
+    transform:
+      scaleX(0);
+
+    transform-origin:
+      left center;
+  }
+
+  .trackerOnthul
+    .vorderVerbinding {
+    animation-name:
+      trackerLynRegs !important;
+  }
+
+  @keyframes trackerLynRegs {
+    from {
+      transform:
+        scaleX(0);
+    }
+
+    to {
+      transform:
+        scaleX(1);
+    }
+  }
+
+  .reelsLys {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 0.55rem;
+  }
+
+  .reelsLys li {
+    min-height: 118px;
+
+    padding: 0.8rem;
+  }
+
+  .reelsLys strong {
+    font-size: 0.92rem !important;
+  }
+
+  .reelsLys p {
+    font-size: 0.77rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .vasteNavigasie {
+    min-height: 66px;
+    flex: 0 0 66px;
+
+    gap: 0.45rem;
+
+    padding-top: 0.55rem;
+  }
+
+  .vasteNavigasieLinks {
+    min-width: 0;
+
+    gap: 0.3rem;
+  }
+
+  .vasteNavigasie .navPrimar,
+  .vasteNavigasie .navSekonder {
+    min-width: 88px;
+    min-height: 46px;
+
+    padding:
+      0.65rem
+      0.7rem;
+
+    font-size: 0.72rem;
+  }
+
+  .vasteNavigasie .navTeks {
+    min-width: 72px;
+    min-height: 44px;
+
+    padding:
+      0.6rem
+      0.35rem;
+
+    font-size: 0.66rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .vasteNavigasie {
+    gap: 0.25rem;
+  }
+
+  .vasteNavigasieLinks {
+    gap: 0.2rem;
+  }
+
+  .vasteNavigasie .navPrimar,
+  .vasteNavigasie .navSekonder {
+    min-width: 80px;
+
+    padding-inline: 0.5rem;
+
+    font-size: 0.68rem;
+  }
+
+  .vasteNavigasie .navTeks {
+    min-width: 65px;
+
+    font-size: 0.62rem;
+  }
+
+  .reelsLys li {
+    min-height: 112px;
+
+    padding: 0.7rem;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .trackerOnthul
+    .vorderVerbinding,
+  .trackerOnthul
+    .vorderSirkel,
+  .trackerOnthul
+    small,
+  .navNaam {
+    animation-duration:
+      1ms !important;
+
+    animation-delay:
+      0ms !important;
+  }
 }

@@ -17,15 +17,15 @@ import {
 import {
   doc,
   getDoc,
+  runTransaction,
   serverTimestamp,
-  setDoc,
 } from 'firebase/firestore'
 
 import {
+  appleProvider,
   auth,
   db,
   googleProvider,
-  appleProvider,
 } from '../../lib/firebase'
 
 export type LenteProfile = {
@@ -51,23 +51,42 @@ type AuthContextValue = {
 
   signInWithGoogle: () => Promise<User | null>
   signInWithApple: () => Promise<User | null>
+
+  checkUsernameAvailability: (
+    username: string,
+  ) => Promise<boolean>
+
   saveProfile: (
     details: SaveProfileInput,
   ) => Promise<boolean>
+
   logOut: () => Promise<void>
   clearAuthError: () => void
 }
-
-const AuthContext =
-  createContext<AuthContextValue | undefined>(
-    undefined,
-  )
 
 type AuthProviderProps = {
   children: ReactNode
 }
 
-function friendlyError(error: unknown): string {
+const AuthContext =
+  createContext<
+    AuthContextValue | undefined
+  >(undefined)
+
+function normaliseUsername(
+  value: string,
+) {
+  return value
+    .trim()
+    .replace(/^@/, '')
+    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9_]/g, '')
+    .toLowerCase()
+}
+
+function friendlyError(
+  error: unknown,
+): string {
   if (!(error instanceof Error)) {
     return 'Iets het verkeerd geloop.'
   }
@@ -77,7 +96,7 @@ function friendlyError(error: unknown): string {
       'auth/popup-closed-by-user',
     )
   ) {
-    return 'Die Google-venster is toegemaak.'
+    return 'Die aanmeldvenster is toegemaak.'
   }
 
   if (
@@ -85,7 +104,7 @@ function friendlyError(error: unknown): string {
       'auth/popup-blocked',
     )
   ) {
-    return 'Jou blaaier het die Google-venster geblokkeer.'
+    return 'Jou blaaier het die aanmeldvenster geblokkeer.'
   }
 
   if (
@@ -119,8 +138,10 @@ export function AuthProvider({
   const [loading, setLoading] =
     useState(true)
 
-  const [profileLoading, setProfileLoading] =
-    useState(true)
+  const [
+    profileLoading,
+    setProfileLoading,
+  ] = useState(true)
 
   const [authError, setAuthError] =
     useState('')
@@ -160,33 +181,36 @@ export function AuthProvider({
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (firebaseUser) => {
-        setUser(firebaseUser)
-        setLoading(false)
+    const unsubscribe =
+      onAuthStateChanged(
+        auth,
+        async (firebaseUser) => {
+          setUser(firebaseUser)
+          setLoading(false)
 
-        if (firebaseUser) {
-          await loadProfile(firebaseUser)
-        } else {
-          setProfile(null)
+          if (firebaseUser) {
+            await loadProfile(
+              firebaseUser,
+            )
+          } else {
+            setProfile(null)
+            setProfileLoading(false)
+          }
+        },
+        (error) => {
+          console.error(
+            'Authentication error:',
+            error,
+          )
+
+          setAuthError(
+            'Ons kon nie jou aanmeldstatus nagaan nie.',
+          )
+
+          setLoading(false)
           setProfileLoading(false)
-        }
-      },
-      (error) => {
-        console.error(
-          'Authentication error:',
-          error,
-        )
-
-        setAuthError(
-          'Ons kon nie jou aanmeldstatus nagaan nie.',
-        )
-
-        setLoading(false)
-        setProfileLoading(false)
-      },
-    )
+        },
+      )
 
     return unsubscribe
   }, [])
@@ -196,10 +220,11 @@ export function AuthProvider({
       setAuthError('')
 
       try {
-        const result = await signInWithPopup(
-          auth,
-          googleProvider,
-        )
+        const result =
+          await signInWithPopup(
+            auth,
+            googleProvider,
+          )
 
         return result.user
       } catch (error) {
@@ -208,7 +233,9 @@ export function AuthProvider({
           error,
         )
 
-        setAuthError(friendlyError(error))
+        setAuthError(
+          friendlyError(error),
+        )
 
         return null
       }
@@ -219,10 +246,11 @@ export function AuthProvider({
       setAuthError('')
 
       try {
-        const result = await signInWithPopup(
-          auth,
-          appleProvider,
-        )
+        const result =
+          await signInWithPopup(
+            auth,
+            appleProvider,
+          )
 
         return result.user
       } catch (error) {
@@ -231,9 +259,56 @@ export function AuthProvider({
           error,
         )
 
-        setAuthError(friendlyError(error))
+        setAuthError(
+          friendlyError(error),
+        )
 
         return null
+      }
+    }
+
+  const checkUsernameAvailability =
+    async (
+      username: string,
+    ): Promise<boolean> => {
+      if (!user) return false
+
+      const cleanUsername =
+        normaliseUsername(username)
+
+      if (cleanUsername.length < 3) {
+        return false
+      }
+
+      try {
+        const usernameReference = doc(
+          db,
+          'usernames',
+          cleanUsername,
+        )
+
+        const usernameSnapshot =
+          await getDoc(
+            usernameReference,
+          )
+
+        if (
+          !usernameSnapshot.exists()
+        ) {
+          return true
+        }
+
+        return (
+          usernameSnapshot.data().uid ===
+          user.uid
+        )
+      } catch (error) {
+        console.error(
+          'Username check failed:',
+          error,
+        )
+
+        return false
       }
     }
 
@@ -242,17 +317,16 @@ export function AuthProvider({
   ): Promise<boolean> => {
     if (!user) {
       setAuthError(
-        'Jy moet eers met Google aanmeld.',
+        'Jy moet eers met Google of Apple aanmeld.',
       )
 
       return false
     }
 
-    const cleanUsername = details.username
-      .trim()
-      .replace(/\s+/g, '_')
-      .replace(/^@/, '')
-      .toLowerCase()
+    const cleanUsername =
+      normaliseUsername(
+        details.username,
+      )
 
     if (cleanUsername.length < 3) {
       setAuthError(
@@ -262,27 +336,128 @@ export function AuthProvider({
       return false
     }
 
+    const userReference = doc(
+      db,
+      'users',
+      user.uid,
+    )
+
+    const usernameReference = doc(
+      db,
+      'usernames',
+      cleanUsername,
+    )
+
     const newProfile: LenteProfile = {
       uid: user.uid,
       username: `@${cleanUsername}`,
-      character: details.character,
+      character:
+        details.character,
       useGooglePhoto:
         details.useGooglePhoto,
       onboardingComplete: true,
     }
 
     try {
-      await setDoc(
-        doc(db, 'users', user.uid),
-        {
-          ...newProfile,
-          email: user.email,
-          googleName: user.displayName,
-          googlePhoto: user.photoURL,
-          updatedAt: serverTimestamp(),
-        },
-        {
-          merge: true,
+      await runTransaction(
+        db,
+        async (transaction) => {
+          const currentProfileSnapshot =
+            await transaction.get(
+              userReference,
+            )
+
+          const newUsernameSnapshot =
+            await transaction.get(
+              usernameReference,
+            )
+
+          if (
+            newUsernameSnapshot.exists() &&
+            newUsernameSnapshot
+              .data()
+              .uid !== user.uid
+          ) {
+            throw new Error(
+              'USERNAME_TAKEN',
+            )
+          }
+
+          const oldUsername =
+            currentProfileSnapshot.exists()
+              ? String(
+                  currentProfileSnapshot
+                    .data()
+                    .username ?? '',
+                )
+                  .replace(/^@/, '')
+                  .toLowerCase()
+              : ''
+
+          let oldUsernameReference =
+            usernameReference
+
+          let deleteOldUsername = false
+
+          if (
+            oldUsername &&
+            oldUsername !==
+              cleanUsername
+          ) {
+            oldUsernameReference = doc(
+              db,
+              'usernames',
+              oldUsername,
+            )
+
+            const oldUsernameSnapshot =
+              await transaction.get(
+                oldUsernameReference,
+              )
+
+            deleteOldUsername =
+              oldUsernameSnapshot.exists() &&
+              oldUsernameSnapshot
+                .data()
+                .uid === user.uid
+          }
+
+          if (deleteOldUsername) {
+            transaction.delete(
+              oldUsernameReference,
+            )
+          }
+
+          transaction.set(
+            usernameReference,
+            {
+              uid: user.uid,
+              username:
+                `@${cleanUsername}`,
+              updatedAt:
+                serverTimestamp(),
+            },
+            {
+              merge: true,
+            },
+          )
+
+          transaction.set(
+            userReference,
+            {
+              ...newProfile,
+              email: user.email,
+              googleName:
+                user.displayName,
+              googlePhoto:
+                user.photoURL,
+              updatedAt:
+                serverTimestamp(),
+            },
+            {
+              merge: true,
+            },
+          )
         },
       )
 
@@ -296,9 +471,19 @@ export function AuthProvider({
         error,
       )
 
-      setAuthError(
-        'Ons kon nie jou profiel stoor nie.',
-      )
+      if (
+        error instanceof Error &&
+        error.message ===
+          'USERNAME_TAKEN'
+      ) {
+        setAuthError(
+          'Daardie gebruikersnaam is reeds geneem.',
+        )
+      } else {
+        setAuthError(
+          'Ons kon nie jou profiel stoor nie.',
+        )
+      }
 
       return false
     }
@@ -335,6 +520,7 @@ export function AuthProvider({
       authError,
       signInWithGoogle,
       signInWithApple,
+      checkUsernameAvailability,
       saveProfile,
       logOut,
       clearAuthError,
@@ -349,7 +535,9 @@ export function AuthProvider({
   )
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={value}
+    >
       {children}
     </AuthContext.Provider>
   )
@@ -357,7 +545,8 @@ export function AuthProvider({
 
 // oxlint-disable-next-line react/only-export-components
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context =
+    useContext(AuthContext)
 
   if (!context) {
     throw new Error(
