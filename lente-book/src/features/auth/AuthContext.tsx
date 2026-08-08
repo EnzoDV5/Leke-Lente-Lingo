@@ -25,6 +25,7 @@ import {
   auth,
   db,
   googleProvider,
+  appleProvider,
 } from '../../lib/firebase'
 
 export type LenteProfile = {
@@ -49,6 +50,7 @@ type AuthContextValue = {
   authError: string
 
   signInWithGoogle: () => Promise<User | null>
+  signInWithApple: () => Promise<User | null>
   saveProfile: (
     details: SaveProfileInput,
   ) => Promise<boolean>
@@ -92,6 +94,14 @@ function friendlyError(error: unknown): string {
     )
   ) {
     return 'Hierdie domein is nog nie in Firebase toegelaat nie.'
+  }
+
+  if (
+    error.message.includes(
+      'auth/account-exists-with-different-credential',
+    )
+  ) {
+    return 'Hierdie e-pos is reeds met ’n ander metode gekoppel.'
   }
 
   return 'Iets het verkeerd geloop. Probeer weer.'
@@ -204,6 +214,29 @@ export function AuthProvider({
       }
     }
 
+  const signInWithApple =
+    async (): Promise<User | null> => {
+      setAuthError('')
+
+      try {
+        const result = await signInWithPopup(
+          auth,
+          appleProvider,
+        )
+
+        return result.user
+      } catch (error) {
+        console.error(
+          'Apple sign-in error:',
+          error,
+        )
+
+        setAuthError(friendlyError(error))
+
+        return null
+      }
+    }
+
   const saveProfile = async (
     details: SaveProfileInput,
   ): Promise<boolean> => {
@@ -301,6 +334,7 @@ export function AuthProvider({
       profileLoading,
       authError,
       signInWithGoogle,
+      signInWithApple,
       saveProfile,
       logOut,
       clearAuthError,

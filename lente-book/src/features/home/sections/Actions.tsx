@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import Section from '../../../components/ui/Section'
+import Reveal from '../../../components/ui/Reveal'
 import SectionHeading from '../../../components/ui/SectionHeading'
 import styles from './Actions.module.css'
 
@@ -10,16 +12,18 @@ const AKSIES = [
 
 export default function Actions() {
   return (
-    <section className={styles.wrap}>
+    <Section bg="sky" wydte="wyd">
       <SectionHeading>Wat wil jy doen?</SectionHeading>
       <div className={styles.grid}>
-        {AKSIES.map((a) => (
-          <Link key={a.label} to={a.to} className={`${styles.card} ${a.kleur}`}>
-            <span className={styles.icon}>{a.icon}</span>
-            <span className={styles.label}>{a.label}</span>
-          </Link>
+        {AKSIES.map((a, i) => (
+          <Reveal key={a.label} delay={i * 120}>
+            <Link to={a.to} className={`${styles.card} ${a.kleur}`}>
+              <span className={styles.icon}>{a.icon}</span>
+              <span className={styles.label}>{a.label}</span>
+            </Link>
+          </Reveal>
         ))}
       </div>
-    </section>
+    </Section>
   )
 }

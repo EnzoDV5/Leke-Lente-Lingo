@@ -14,3 +14,5 @@
   .grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
   .card { padding: 2rem; }
 }
+
+.cta { text-align: center; margin-top: 2rem; }

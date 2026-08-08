@@ -6,6 +6,7 @@ import {
 import {
   getAuth,
   GoogleAuthProvider,
+  OAuthProvider,
 } from 'firebase/auth'
 
 import {
@@ -63,6 +64,12 @@ export const googleProvider =
 googleProvider.setCustomParameters({
   prompt: 'select_account',
 })
+
+export const appleProvider =
+  new OAuthProvider('apple.com')
+
+appleProvider.addScope('email')
+appleProvider.addScope('name')
 
 export let analytics: Analytics | null = null
 

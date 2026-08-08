@@ -1,0 +1,25 @@
+.knop {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font-family: var(--font-display); font-weight: 700; text-decoration: none;
+  border: none; cursor: pointer; line-height: 1; text-align: center;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.knop:hover { filter: brightness(1.04); }
+.knop:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(22,21,15,.25) !important; }
+
+.pil   { border-radius: var(--radius-pill); }
+.kaart { border-radius: var(--radius-card); }
+.blok  { display: flex; width: 100%; }
+
+.sm { font-size: .8rem;  padding: .5rem .9rem;   box-shadow: 0 4px 0 rgba(22,21,15,.25); }
+.md { font-size: 1rem;   padding: .7rem 1.3rem;  box-shadow: 0 5px 0 rgba(22,21,15,.25); }
+.lg { font-size: 1.2rem; padding: .95rem 1.8rem; box-shadow: 0 6px 0 rgba(22,21,15,.28); }
+
+.pienk  { background: var(--color-pienk);  color: var(--color-paper); }
+.blou   { background: var(--color-blou);   color: var(--color-paper); }
+.groen  { background: var(--color-groen);  color: var(--color-ink);   }
+.goud   { background: var(--color-goud);   color: var(--color-ink);   }
+.oranje { background: var(--color-oranje); color: var(--color-paper); }
+.pers   { background: var(--color-pers);   color: var(--color-paper); }
+.paper  { background: var(--color-paper);  color: var(--color-oranje); }
+.ink    { background: var(--color-ink);    color: var(--color-paper); }

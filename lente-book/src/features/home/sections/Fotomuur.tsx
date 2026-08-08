@@ -178,7 +178,7 @@ export default function Fotomuur() {
 
       <div className={styles.centre}>
         <img
-          src="/elements/lentedag-logo.webp"
+          src="/element/LENTEDAG-logo2.webp"
           alt="Lentedag"
           className={styles.logo}
         />

@@ -1,0 +1,24 @@
+.band { position: relative; width: 100%; }
+.binne { margin: 0 auto; padding: 3rem 1rem; }
+.wyd  { max-width: 72rem; }
+.lees { max-width: 720px; }
+.nou  { max-width: 520px; }
+
+.sky   { background: var(--color-sky); }
+.paper { background: var(--color-paper); }
+.groen { background: var(--color-groen); }
+.goud  { background: var(--color-goud); }
+.ink   { background: var(--color-ink);   color: var(--color-paper); }
+.pienk { background: var(--color-pienk); color: var(--color-paper); }
+.blou  { background: var(--color-blou);  color: var(--color-paper); }
+.pers  { background: var(--color-pers);  color: var(--color-paper); }
+
+/* the seam: this band curves and lifts over the one above it */
+.rondBo    { border-top-left-radius: 36px; border-top-right-radius: 36px; margin-top: -36px; z-index: 1; }
+.rondOnder { border-bottom-left-radius: 36px; border-bottom-right-radius: 36px; }
+
+@media (min-width: 768px) {
+  .binne { padding: 4.5rem 2rem; }
+  .rondBo    { border-top-left-radius: 56px; border-top-right-radius: 56px; margin-top: -56px; }
+  .rondOnder { border-bottom-left-radius: 56px; border-bottom-right-radius: 56px; }
+}
