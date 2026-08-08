@@ -14,6 +14,7 @@ import {
 
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import Onboarding from './features/onboarding/Onboarding'
+import OnboardingBackground from './components/decor/OnboardingBackground'
 
 import AppShell from './components/layout/AppShell'
 import Placeholder from './components/ui/Placeholder'
@@ -32,6 +33,8 @@ createRoot(
   <StrictMode>
     <AuthProvider>
       <BrowserRouter>
+        <OnboardingBackground />
+
         <Routes>
           <Route
             path="/welkom"

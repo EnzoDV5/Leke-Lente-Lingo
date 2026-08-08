@@ -186,6 +186,14 @@
   padding-top: 0.15rem;
 }
 
+.mobieleStapOpskrif {
+  display: none;
+}
+
+.desktopStapBeskrywing {
+  display: block;
+}
+
 .vorderingLyn {
   position: absolute;
   z-index: 0;
@@ -835,15 +843,21 @@
 
 
 @media (min-width: 681px) {
+  .paneelHandvatsel {
+    display: none;
+  }
+
   .blad {
     height: 100vh;
     height: 100svh;
+    height: 100dvh;
     overflow: hidden;
   }
 
   .uitleg {
     height: 100vh;
     height: 100svh;
+    height: 100dvh;
     min-height: 0;
 
     padding-top: 0.5rem;
@@ -898,9 +912,18 @@
   }
 }
 
+
 /* Tablet and mobile */
 
 @media (max-width: 680px) {
+  .desktopStapBeskrywing {
+    display: none !important;
+  }
+
+  .paneelHandvatsel {
+    display: none;
+  }
+
   .uitleg {
     padding-inline: 0.7rem;
   }
@@ -2280,6 +2303,10 @@
     text-align: center;
   }
 
+  .paneelBeskrywing {
+    margin-top: 0.2rem;
+  }
+
   .stapVenster {
     min-height: 390px;
   }
@@ -2459,8 +2486,7 @@
 
 .vordering,
 .vorderingLyn,
-.vorderStap,
-.vorderSirkel {
+.vorderStap {
   transform: none !important;
   animation: none !important;
 }
@@ -2634,6 +2660,57 @@
   text-align: center;
 }
 
+.logoutConfirm {
+  width: 100%;
+  max-width: 590px;
+  min-height: 290px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.logoutConfirmIcon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin: 0 auto 0.8rem;
+  border: 3px solid var(--festival-orange);
+  border-radius: 50%;
+  color: var(--festival-orange);
+  background: var(--festival-yellow);
+}
+
+.logoutConfirmIcon svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.logoutConfirmAksies {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.logoutConfirmAksies .navPrimar,
+.logoutConfirmAksies .navSekonder {
+  min-height: 50px;
+  padding: 0.78rem 1.2rem;
+}
+
 .inlineLoading p {
   margin: 1rem 0 0;
 
@@ -2741,7 +2818,6 @@
 .vordering,
 .vorderingLyn,
 .vorderStap,
-.vorderSirkel,
 .stapVenster {
   transform: none !important;
   animation: none !important;
@@ -2757,12 +2833,12 @@
 
   animation:
     napkinUitLinks
-    480ms
+    320ms
     cubic-bezier(
-      0.55,
+      0.4,
       0,
-      0.75,
-      0
+      0.2,
+      1
     )
     both;
 }
@@ -2774,7 +2850,7 @@
 
   animation:
     napkinInRegs
-    520ms
+    440ms
     cubic-bezier(
       0.16,
       1,
@@ -2793,12 +2869,12 @@
 
   animation:
     napkinUitRegs
-    480ms
+    320ms
     cubic-bezier(
-      0.55,
+      0.4,
       0,
-      0.75,
-      0
+      0.2,
+      1
     )
     both;
 }
@@ -2810,7 +2886,7 @@
 
   animation:
     napkinInLinks
-    520ms
+    440ms
     cubic-bezier(
       0.16,
       1,
@@ -2845,7 +2921,7 @@
 .trekUitTerug
   > div
   > .oog {
-  animation-delay: 45ms;
+  animation-delay: 24ms;
 }
 
 .trekInVoor
@@ -2854,7 +2930,7 @@
 .trekInTerug
   > div
   > .oog {
-  animation-delay: 55ms;
+  animation-delay: 34ms;
 }
 
 /* Description follows the title */
@@ -2865,7 +2941,7 @@
 .trekUitTerug
   > div
   > .paneelBeskrywing {
-  animation-delay: 85ms;
+  animation-delay: 48ms;
 }
 
 .trekInVoor
@@ -2874,7 +2950,7 @@
 .trekInTerug
   > div
   > .paneelBeskrywing {
-  animation-delay: 105ms;
+  animation-delay: 68ms;
 }
 
 /* Main component follows */
@@ -2885,7 +2961,7 @@
 .trekUitTerug
   > div
   > :nth-child(4) {
-  animation-delay: 150ms;
+  animation-delay: 72ms;
 }
 
 .trekInVoor
@@ -2894,7 +2970,7 @@
 .trekInTerug
   > div
   > :nth-child(4) {
-  animation-delay: 175ms;
+  animation-delay: 102ms;
 }
 
 /* Buttons and lower content follow last */
@@ -2905,7 +2981,7 @@
 .trekUitTerug
   > div
   > :nth-child(5) {
-  animation-delay: 205ms;
+  animation-delay: 96ms;
 }
 
 .trekInVoor
@@ -2914,7 +2990,7 @@
 .trekInTerug
   > div
   > :nth-child(5) {
-  animation-delay: 235ms;
+  animation-delay: 132ms;
 }
 
 .trekUitVoor
@@ -2923,7 +2999,7 @@
 .trekUitTerug
   > div
   > :nth-child(6) {
-  animation-delay: 255ms;
+  animation-delay: 120ms;
 }
 
 .trekInVoor
@@ -2932,7 +3008,7 @@
 .trekInTerug
   > div
   > :nth-child(6) {
-  animation-delay: 290ms;
+  animation-delay: 156ms;
 }
 
 /* Success and loader move as one piece */
@@ -2943,7 +3019,7 @@
   > .inlineLoading {
   animation:
     napkinUitLinks
-    540ms
+    360ms
     cubic-bezier(
       0.55,
       0,
@@ -2959,7 +3035,7 @@
   > .inlineLoading {
   animation:
     napkinInRegs
-    580ms
+    460ms
     cubic-bezier(
       0.16,
       1,
@@ -2975,7 +3051,7 @@
   > .inlineLoading {
   animation:
     napkinUitRegs
-    540ms
+    360ms
     ease-in
     both;
 }
@@ -2986,7 +3062,7 @@
   > .inlineLoading {
   animation:
     napkinInLinks
-    580ms
+    460ms
     cubic-bezier(
       0.16,
       1,
@@ -3002,139 +3078,98 @@
 @keyframes napkinUitLinks {
   0% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
       translateX(0)
-      scaleX(1)
-      rotate(0);
-  }
-
-  18% {
-    opacity: 1;
-
-    transform:
-      translateX(-8px)
-      scaleX(1.035)
-      rotate(-0.2deg);
-  }
-
-  48% {
-    opacity: 0.95;
-
-    transform:
-      translateX(-34%)
-      scaleX(1.1)
-      rotate(-0.7deg);
+      scale(1);
   }
 
   100% {
     opacity: 0;
+    filter: blur(3px);
 
     transform:
-      translateX(-115%)
-      scaleX(0.96)
-      rotate(-1deg);
+      translateX(-42px)
+      scale(0.985);
   }
 }
 
 @keyframes napkinInRegs {
   0% {
     opacity: 0;
+    filter: blur(4px);
 
     transform:
-      translateX(115%)
-      scaleX(1.12)
-      rotate(1deg);
+      translateX(52px)
+      scale(0.985);
   }
 
-  54% {
+  70% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
-      translateX(-3%)
-      scaleX(0.98)
-      rotate(-0.2deg);
-  }
-
-  76% {
-    transform:
-      translateX(1.5%)
-      scaleX(1.015);
+      translateX(-3px)
+      scale(1);
   }
 
   100% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
       translateX(0)
-      scaleX(1)
-      rotate(0);
+      scale(1);
   }
 }
 
 @keyframes napkinUitRegs {
   0% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
       translateX(0)
-      scaleX(1);
-  }
-
-  18% {
-    transform:
-      translateX(8px)
-      scaleX(1.035);
-  }
-
-  48% {
-    transform:
-      translateX(34%)
-      scaleX(1.1)
-      rotate(0.7deg);
+      scale(1);
   }
 
   100% {
     opacity: 0;
+    filter: blur(3px);
 
     transform:
-      translateX(115%)
-      scaleX(0.96)
-      rotate(1deg);
+      translateX(42px)
+      scale(0.985);
   }
 }
 
 @keyframes napkinInLinks {
   0% {
     opacity: 0;
+    filter: blur(4px);
 
     transform:
-      translateX(-115%)
-      scaleX(1.12)
-      rotate(-1deg);
+      translateX(-52px)
+      scale(0.985);
   }
 
-  54% {
+  70% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
-      translateX(3%)
-      scaleX(0.98);
-  }
-
-  76% {
-    transform:
-      translateX(-1.5%)
-      scaleX(1.015);
+      translateX(3px)
+      scale(1);
   }
 
   100% {
     opacity: 1;
+    filter: blur(0);
 
     transform:
       translateX(0)
-      scaleX(1)
-      rotate(0);
+      scale(1);
   }
 }
 
@@ -3922,8 +3957,7 @@
 
   box-sizing: border-box;
 
-  border-top: 2px solid
-    rgba(237, 73, 36, 0.16);
+  border-top: 0;
 
   background:
     var(--festival-cream);
@@ -4040,6 +4074,79 @@
   line-height: 1.48 !important;
 }
 
+@media (min-width: 681px) {
+  /* Keep the tracker rail compact and bring its divider alongside it. */
+  .paneelBinne {
+    grid-template-columns:
+      132px
+      minmax(0, 1fr);
+
+    gap: 0;
+  }
+
+  .stapVenster {
+    padding-left: 0.85rem;
+  }
+
+  /* A stacked guide gives every rule a full line of readable space. */
+  .reelsLys {
+    grid-template-columns: 1fr;
+
+    gap: 0.42rem;
+
+    margin-top: 0;
+  }
+
+  .reelsLys li {
+    min-height: 0;
+
+    grid-template-columns:
+      2.5rem
+      minmax(0, 1fr);
+    align-items: center;
+    gap: 0.9rem;
+
+    padding: 0.7rem 1rem;
+  }
+
+  .reelsLys li > div {
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns:
+      7rem
+      minmax(0, 1fr);
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+
+  .reelsLys strong {
+    font-size: 1.08rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .reelsLys p {
+    margin: 0;
+
+    font-size: 1.02rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .paneelTitel + .paneelBeskrywing {
+    margin-top: -0.3rem;
+  }
+
+  .reelsStap .paneelBeskrywing {
+    margin-bottom: 0.55rem;
+  }
+
+  .reelsStap {
+    position: relative;
+    top: 0.75rem;
+  }
+}
+
 /* ========================================
    LARGER CENTRAL LOGO
    ======================================== */
@@ -4048,16 +4155,25 @@
   .lingoLogo {
     max-width:
       min(
-        98%,
-        820px
+        100%,
+        1000px
       );
 
     max-height:
       clamp(
-        270px,
-        37svh,
-        350px
+        320px,
+        44svh,
+        420px
       );
+
+    transform: translateY(1.25rem);
+  }
+
+  .profielVelde .naamVeld > span {
+    flex: 0 0 auto;
+
+    font-size: 1.45rem;
+    line-height: 1;
   }
 }
 
@@ -4065,9 +4181,16 @@
   .lingoLogo {
     width:
       min(
-        94vw,
-        440px
+        100vw,
+        500px
       );
+
+    transform: translateY(0.75rem);
+  }
+
+  .profielVelde .naamVeld > span {
+    font-size: 1.25rem;
+    line-height: 1;
   }
 }
 
@@ -4081,17 +4204,18 @@
 
 .vorderStap {
   position: relative;
+  z-index: auto;
 }
 
 .vorderVerbinding {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
 
-  left: 21px;
-  bottom: 50%;
+  left: calc(50% - 2.5px);
+  bottom: 100%;
 
-  width: 4px;
-  height: calc(3rem + 46px);
+  width: 5px;
+  height: 3.75rem;
 
   background: #ddd8ce;
 
@@ -4100,6 +4224,78 @@
 
   transform-origin:
     top center;
+}
+
+@media (min-width: 681px) {
+  .vordering {
+    width: 132px;
+
+    gap: 3.75rem;
+  }
+
+  .vorderStap {
+    grid-template-columns: 1fr;
+    justify-items: center;
+
+    gap: 0;
+  }
+
+  .vorderSirkel {
+    position: relative;
+    z-index: 2;
+
+    width: 56px;
+    height: 56px;
+
+    border-width: 3px;
+
+    font-size: 1.15rem;
+  }
+
+  .vorderStap small {
+    position: relative;
+    z-index: 1;
+
+    width: 132px;
+    height: 56px;
+
+    margin-top: -35px;
+
+    font-size: 0.78rem;
+    text-align: center;
+  }
+
+  .vorderNaamPlat {
+    display: none;
+  }
+
+  .vorderNaamBoog {
+    position: relative;
+    z-index: 1;
+
+    display: block;
+
+    width: 132px;
+    height: 56px;
+
+    overflow: visible;
+  }
+
+  .vorderNaamBoog text {
+    fill: currentColor;
+
+    font-family: var(--font-pixel);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 680px) {
+  .vorderNaamBoog {
+    display: none;
+  }
 }
 
 .trackerVersteek
@@ -4128,7 +4324,7 @@
   .vorderVerbinding {
   animation:
     trackerLynAf
-    430ms
+    360ms
     cubic-bezier(
       0.4,
       0,
@@ -4144,14 +4340,14 @@
 
   animation:
     trackerSirkelGroei
-    430ms
+    420ms
     cubic-bezier(
       0.18,
       1.25,
       0.32,
       1
     )
-    330ms
+    180ms
     both !important;
 }
 
@@ -4161,9 +4357,9 @@
 
   animation:
     trackerNaamIn
+    360ms
+    cubic-bezier(0.22, 1, 0.36, 1)
     300ms
-    ease-out
-    570ms
     both !important;
 }
 
@@ -4191,11 +4387,11 @@
         50%
       );
 
-    filter:
-      blur(4px);
+    filter: blur(3px);
+    transform: scale(0.72);
   }
 
-  70% {
+  68% {
     opacity: 1;
 
     clip-path:
@@ -4206,8 +4402,8 @@
         50%
       );
 
-    filter:
-      blur(0);
+    filter: blur(0);
+    transform: scale(1.07);
   }
 
   100% {
@@ -4221,18 +4417,20 @@
         50%
       );
 
-    filter:
-      blur(0);
+    filter: blur(0);
+    transform: scale(1);
   }
 }
 
 @keyframes trackerNaamIn {
   from {
     opacity: 0;
+    transform: translateX(-8px);
   }
 
   to {
     opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -4250,7 +4448,9 @@
   }
 
   .vorderVerbinding {
-    top: 21px;
+    z-index: 0;
+
+    top: 24px;
     bottom: auto;
     left: -50%;
 
@@ -4262,6 +4462,19 @@
 
     transform-origin:
       left center;
+  }
+
+  .vorderSirkel {
+    position: relative;
+    z-index: 2;
+
+    width: 48px;
+    height: 48px;
+  }
+
+  .vorderStap small {
+    position: relative;
+    z-index: 2;
   }
 
   .trackerOnthul
@@ -4283,16 +4496,15 @@
   }
 
   .reelsLys {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
 
     gap: 0.55rem;
   }
 
   .reelsLys li {
-    min-height: 118px;
+    min-height: 0;
 
-    padding: 0.8rem;
+    padding: 0.7rem 0.8rem;
   }
 
   .reelsLys strong {
@@ -4300,7 +4512,7 @@
   }
 
   .reelsLys p {
-    font-size: 0.77rem !important;
+    font-size: 0.82rem !important;
     line-height: 1.42 !important;
   }
 
@@ -4368,7 +4580,7 @@
   }
 
   .reelsLys li {
-    min-height: 112px;
+    min-height: 0;
 
     padding: 0.7rem;
   }
@@ -4390,5 +4602,1170 @@
 
     animation-delay:
       0ms !important;
+  }
+
+  .vorderVerbinding::after {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Final mobile-only sizing overrides */
+@media (max-width: 680px) {
+  .paneelBinne {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .paneelBinne.mobieleEersteStap {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .paneelBinne:not(.mobieleEersteStap) {
+    gap: 0.3rem;
+  }
+
+  .mobieleStapOpskrif {
+    display: block;
+    margin: -0.15rem auto 0.05rem;
+    padding-inline: 0.75rem;
+    text-align: center;
+    animation: mobieleStapOpskrifIn 360ms cubic-bezier(.16, 1, .3, 1) both;
+  }
+
+  .mobieleStapOpskrif p {
+    max-width: 34ch;
+    margin: 0 auto;
+    color: var(--festival-orange);
+    font-family: var(--font-pixel);
+    font-size: clamp(0.88rem, 3.65vw, 1.02rem);
+    line-height: 1.4;
+  }
+
+  .reelsStap > .paneelTitel,
+  .reelsStap > .paneelBeskrywing,
+  .profielStap > .paneelTitel,
+  .profielStap > .paneelBeskrywing {
+    display: none;
+  }
+
+  .vorderStap.aktief .vorderNaamPlat {
+    position: relative;
+    z-index: 4;
+    display: inline-block;
+    width: max-content;
+    max-width: 38vw;
+    padding: 0.44rem 0.62rem 0.38rem;
+    border: 2px solid var(--festival-orange);
+    border-radius: 9px;
+    color: var(--festival-orange);
+    background: var(--festival-yellow);
+    box-shadow: 0 4px 0 rgba(237, 73, 36, .22);
+    font-size: clamp(0.9rem, 4vw, 1.08rem);
+    line-height: 1.05;
+    letter-spacing: .015em;
+    -webkit-text-stroke: .12px currentColor;
+    animation: aktieweTrackerTitel 680ms cubic-bezier(.16, 1, .3, 1) both;
+  }
+
+  .vorderVerbinding {
+    top: 20px;
+    height: 5px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #d7d5cf;
+    box-shadow: 0 1px 3px rgba(70, 102, 132, .18);
+  }
+
+  .vorderVerbinding::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 760ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .trackerOnthul .vorderVerbinding {
+    opacity: 1;
+    transform: scaleX(1);
+    animation: none !important;
+  }
+
+  .trackerOnthul .vorderSirkel {
+    animation-duration: 620ms !important;
+    animation-timing-function: cubic-bezier(.16, 1, .3, 1) !important;
+  }
+
+  .vorderVerbindingVoltooi::after {
+    transform: scaleX(1);
+  }
+
+  .paneelBinne.mobieleReelsStap .stapVenster {
+    height: calc(100% + 42px);
+    margin-top: -42px;
+  }
+
+  .paneelBinne.mobieleProfielStap .stapVenster {
+    height: calc(100% + 68px);
+    margin-top: -68px;
+  }
+
+  .paneelTitel {
+    text-align: center;
+  }
+
+  .blad {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+  .uitleg {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+  .merkArea {
+    min-height: 0;
+    flex: 0 0 clamp(220px, 34svh, 245px);
+  }
+
+  .bladPaneel {
+    min-height: 0;
+    flex: 1 1 auto;
+    margin-bottom: 0;
+
+    overflow: hidden;
+  }
+
+  .paneelBinne {
+    height: calc(100% - 20px);
+
+    grid-template-rows:
+      auto
+      minmax(0, 1fr);
+
+    padding-bottom: 0.65rem;
+
+    overflow: hidden;
+  }
+
+  .stapVenster {
+    height: 100%;
+    min-height: 0 !important;
+  }
+
+  .stapInhoud {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(237, 73, 36, .45) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stapInhoud::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .stapInhoud::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(237, 73, 36, .45);
+  }
+
+  .reelsStap,
+  .profielStap {
+    padding-bottom: 1rem;
+  }
+
+  .vasteNavigasie {
+    min-height: 70px;
+    flex-basis: 70px;
+
+    padding-top: 0.5rem;
+
+    transform: none;
+  }
+
+  .vasteNavigasie .navPrimar,
+  .vasteNavigasie .navSekonder {
+    min-width: 98px;
+    min-height: 52px;
+    padding: 0.72rem 0.85rem;
+    border-radius: 14px;
+    font-size: 0.8rem;
+  }
+
+  .vasteNavigasie .navTeks {
+    min-width: 70px;
+    min-height: 48px;
+    padding: 0.7rem 0.35rem;
+    font-size: 0.72rem;
+  }
+
+  .aanmeldKnop {
+    min-height: 58px;
+    font-size: 0.84rem;
+  }
+
+  .reelsLys {
+    gap: 0.65rem;
+  }
+
+  .reelsLys li {
+    padding: 0.85rem 0.95rem;
+  }
+
+  .reelsLys strong {
+    font-size: 1rem !important;
+  }
+
+  .reelsLys p {
+    font-size: 0.9rem !important;
+    line-height: 1.48 !important;
+  }
+
+  .avatarRedigeerder {
+    gap: 0.55rem !important;
+  }
+
+  .avatarVoorskou {
+    width: 132px;
+    flex-basis: 132px;
+  }
+
+  .avatarSirkel {
+    width: 122px;
+    height: 122px;
+  }
+
+  .avatarPyltjie {
+    width: 43px;
+    height: 54px;
+    flex-basis: 43px;
+    font-size: 1.45rem;
+  }
+
+  .profielVelde .etiket {
+    margin-bottom: 0.45rem;
+    font-size: 0.84rem;
+  }
+
+  .profielVelde .naamVeld {
+    min-height: 58px;
+    padding-left: 0.85rem;
+  }
+
+  .profielVelde .naamVeld > span {
+    font-size: 1.45rem;
+  }
+
+  .profielVelde .naamVeld input {
+    padding: 0.9rem 0.45rem;
+    font-size: 1.05rem;
+  }
+
+  .paneelBeskrywing {
+    font-size: 0.98rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .reelsLys strong {
+    font-size: 1.06rem !important;
+  }
+
+  .reelsLys p {
+    font-size: 0.94rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .privaatheid {
+    font-size: 0.84rem !important;
+    line-height: 1.5;
+  }
+
+  .avatarVoorskou {
+    width: 160px;
+    flex-basis: 160px;
+  }
+
+  .avatarSirkel {
+    width: 150px;
+    height: 150px;
+  }
+
+  .avatarSirkel > span {
+    font-size: 4.6rem;
+  }
+
+  .avatarPyltjie {
+    width: 46px;
+    height: 58px;
+    flex-basis: 46px;
+  }
+
+  .profielVelde .naamVeld input {
+    font-size: 1.1rem;
+  }
+
+  .navPrimar,
+  .navSekonder,
+  .navTeks,
+  .aanmeldKnop,
+  .avatarPyltjie {
+    box-shadow: none !important;
+  }
+
+  .navPrimar:hover:not(:disabled),
+  .navSekonder:hover:not(:disabled),
+  .navPrimar:active:not(:disabled),
+  .navSekonder:active:not(:disabled),
+  .aanmeldKnop:hover:not(:disabled),
+  .aanmeldKnop:active:not(:disabled),
+  .avatarPyltjie:hover,
+  .avatarPyltjie:active {
+    box-shadow: none !important;
+  }
+}
+
+@keyframes mobieleStapOpskrifIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes aktieweTrackerTitel {
+  0% {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+
+  72% {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+/* Content-sized mobile onboarding sheet. These final rules intentionally
+   follow the older sizing blocks so the explicit tracker rows are preserved. */
+@media (max-width: 680px) {
+  .mobieleStapEenBlad {
+    --mobiele-paneel-hoogte: clamp(390px, 56svh, 475px);
+  }
+
+  .mobieleStapTweeBlad {
+    --mobiele-paneel-hoogte: clamp(570px, 78svh, 660px);
+  }
+
+  .mobieleStapDrieBlad {
+    --mobiele-paneel-hoogte: clamp(540px, 74svh, 640px);
+  }
+
+  .mobieleBevestigingBlad {
+    --mobiele-paneel-hoogte: clamp(315px, 46svh, 390px);
+  }
+
+  .merkArea {
+    position: absolute;
+    z-index: 0;
+    top: clamp(28px, 5svh, 42px);
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: clamp(210px, 34svh, 285px);
+    min-height: 0;
+    padding: 0.5rem;
+    overflow: hidden;
+    transform: translateY(0);
+    transition:
+      top 820ms cubic-bezier(.16, 1, .3, 1),
+      transform 820ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .lingoLogo {
+    width: min(92vw, 500px);
+    max-height: clamp(125px, 30svh, 270px);
+    margin-bottom: 0;
+    transform: none;
+    transition:
+      transform 620ms cubic-bezier(.16, 1, .3, 1),
+      width 560ms cubic-bezier(.16, 1, .3, 1),
+      max-height 560ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .mobieleStapEenBlad:not(.homeTransition) .lingoLogo {
+    transform: translateY(clamp(42px, 7svh, 66px));
+  }
+
+  .bladPaneel {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    overflow: visible;
+    height: min(var(--mobiele-paneel-hoogte), calc(100svh - 68px));
+    min-height: 0;
+    flex: 0 0 min(var(--mobiele-paneel-hoogte), calc(100svh - 68px));
+    transform-origin: bottom center;
+    will-change: height, flex-basis;
+    transition-property: height, flex-basis;
+    transition-duration: 650ms;
+    transition-timing-function: cubic-bezier(.22, .8, .25, 1);
+    transition-timing-function: linear(
+      0,
+      .018 3%,
+      .075 9%,
+      .19 17%,
+      .37 27%,
+      .59 39%,
+      .79 52%,
+      .925 65%,
+      .993 75%,
+      1.014 84%,
+      1.009 90%,
+      1.003 96%,
+      1
+    );
+  }
+
+  .paneelBinne {
+    height: 100%;
+    min-height: 0;
+    gap: 0.28rem;
+    padding-top: 0.8rem;
+    overflow: visible;
+  }
+
+  .paneelBinne.mobieleEersteStap {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .vorderStap:first-child {
+    transition: transform 720ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .vorderStap:nth-child(1) {
+    z-index: 6;
+  }
+
+  .vorderStap:nth-child(2) {
+    z-index: 5;
+  }
+
+  .vorderStap:nth-child(3) {
+    z-index: 4;
+  }
+
+  .vorderSirkel {
+    position: relative;
+    z-index: 10;
+    isolation: isolate;
+  }
+
+  .vorderVerbinding {
+    z-index: -1;
+  }
+
+  .mobieleStapEenBlad .vorderStap:first-child {
+    transform: translateX(100%) !important;
+  }
+
+  .paneelBinne.mobieleReelsStap,
+  .paneelBinne.mobieleProfielStap {
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .paneelBinne.mobieleReelsStap .stapVenster,
+  .paneelBinne.mobieleProfielStap .stapVenster {
+    height: 100%;
+    margin-top: 0;
+    overflow: visible;
+  }
+
+  .stapInhoud {
+    overflow: visible;
+  }
+
+  .vasteNavigasie {
+    margin-top: auto;
+  }
+
+  .paneelBinne.mobieleProfielStap .stapInhoud {
+    padding-top: clamp(14px, 2.5svh, 22px);
+  }
+
+  .mobieleBevestigingBlad .vordering,
+  .mobieleBevestigingBlad .mobieleStapOpskrif {
+    display: none;
+  }
+
+  .mobieleBevestigingBlad .paneelBinne {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .mobieleBevestigingBlad .logoutConfirm {
+    min-height: 0;
+    justify-content: flex-start;
+    padding-top: clamp(58px, 9svh, 82px);
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .mobieleBevestigingBlad .logoutConfirmAksies {
+    justify-content: center;
+  }
+
+}
+
+@keyframes mobielePaneelSpringEen {
+  0% { transform: scaleY(.982); }
+  68% { transform: scaleY(1.012); }
+  84% { transform: scaleY(.996); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes mobielePaneelSpringTwee {
+  0% { transform: scaleY(.97); }
+  66% { transform: scaleY(1.018); }
+  84% { transform: scaleY(.995); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes mobielePaneelSpringDrie {
+  0% { transform: scaleY(.972); }
+  66% { transform: scaleY(1.016); }
+  84% { transform: scaleY(.996); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes mobielePaneelSpringBevestig {
+  0% { transform: scaleY(1.025); }
+  66% { transform: scaleY(.985); }
+  84% { transform: scaleY(1.006); }
+  100% { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobieleStapEenBlad .bladPaneel,
+  .mobieleStapTweeBlad .bladPaneel,
+  .mobieleStapDrieBlad .bladPaneel,
+  .mobieleBevestigingBlad .bladPaneel {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (max-width: 680px) and (max-height: 680px) {
+  .blad,
+  .uitleg {
+    height: auto;
+    min-height: 100svh;
+    overflow-y: visible;
+  }
+
+  .bladPaneel {
+    height: var(--mobiele-paneel-hoogte);
+    flex-basis: var(--mobiele-paneel-hoogte);
+  }
+}
+
+@media (max-width: 680px) and (max-height: 780px) {
+  .vasteNavigasie {
+    min-height: 82px;
+    flex-basis: 82px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 680px) and (min-height: 900px) {
+  .vasteNavigasie {
+    min-height: 62px;
+    flex-basis: 62px;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 380px), (max-width: 680px) and (max-height: 680px) {
+  .lingoLogo {
+    width: min(78vw, 360px);
+    max-height: clamp(105px, 24svh, 185px);
+  }
+}
+
+/* Stable desktop/laptop onboarding proportions. */
+@media (min-width: 681px) {
+  .merkArea {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-block: clamp(0.5rem, 1.5svh, 1.25rem);
+  }
+
+  .lingoLogo {
+    max-width: min(94vw, 860px);
+    max-height: min(360px, calc(100% - 12px));
+    transform: translateY(0);
+    transition:
+      transform 640ms cubic-bezier(.16, 1, .3, 1),
+      max-width 640ms cubic-bezier(.16, 1, .3, 1),
+      max-height 640ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .bladPaneel {
+    --desktop-paneel-hoogte: clamp(460px, calc(690px - 12vw), 550px);
+
+    height: min(var(--desktop-paneel-hoogte), calc(100svh - 110px));
+    min-height: 0;
+    flex: 0 0 min(var(--desktop-paneel-hoogte), calc(100svh - 110px));
+    margin-top: auto;
+    transition:
+      height 640ms cubic-bezier(.16, 1, .3, 1),
+      flex-basis 640ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  /* Step one is the compact introduction. It is the only desktop step that
+     grows the sheet; steps two and three retain the same full sheet height. */
+  .mobieleStapEenBlad .bladPaneel {
+    height: min(300px, calc(100svh - 110px));
+    flex-basis: min(300px, calc(100svh - 110px));
+  }
+
+  .mobieleStapEenBlad .lingoLogo {
+    transform: translateY(clamp(94px, 12svh, 145px));
+  }
+
+  .paneelBinne {
+    width: min(100%, 1080px);
+    height: 100%;
+    align-items: start;
+    padding-inline: clamp(1.15rem, 2.2vw, 2rem);
+  }
+
+  .stapVenster {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .vordering {
+    margin-left: -10px;
+    margin-top: 12px;
+  }
+
+  .paneelTitel {
+    font-size: clamp(2rem, 2.35vw, 2.8rem);
+  }
+
+  .paneelBeskrywing {
+    font-size: clamp(0.9rem, 1vw, 1.05rem);
+  }
+
+  .reelsLys strong {
+    font-size: clamp(1rem, 1.05vw, 1.12rem) !important;
+  }
+
+  .reelsLys p {
+    font-size: clamp(0.92rem, 1vw, 1.04rem) !important;
+  }
+
+  .profielTag {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .profielVelde {
+    width: min(100%, 310px);
+  }
+
+  .profielVelde .etiket {
+    text-align: center;
+  }
+
+  .vorderVerbinding {
+    overflow: hidden;
+    background: #d7d5cf;
+    box-shadow: 0 1px 3px rgba(70, 102, 132, .16);
+    transition: transform 650ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .trackerOnthul .vorderVerbinding {
+    transform: scaleY(1);
+    animation: none !important;
+  }
+
+  .vorderVerbinding::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform 650ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .vorderVerbindingVoltooi::after {
+    transform: scaleY(1);
+  }
+}
+
+@media (min-width: 681px) and (max-width: 1100px) {
+  .merkArea {
+    flex-basis: auto;
+  }
+
+  .lingoLogo {
+    max-width: min(82vw, 680px);
+    max-height: min(285px, calc(100% - 10px));
+  }
+
+  .paneelBinne {
+    width: min(100%, 920px);
+    grid-template-columns: 145px minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+
+  .paneelTitel {
+    font-size: clamp(1.8rem, 3vw, 2.35rem);
+  }
+}
+
+@media (min-width: 681px) and (max-height: 700px) {
+  .lingoLogo {
+    max-height: calc(100% - 8px);
+    transform: translateY(-12px);
+  }
+
+  .mobieleStapEenBlad .lingoLogo {
+    transform: translateY(clamp(48px, 7svh, 70px));
+  }
+}
+
+/* Successful onboarding handoff to the home page */
+.homeTransition {
+  height: 100vh;
+  height: 100svh;
+
+  overflow: hidden;
+}
+
+.homeTransition .bladPaneel {
+  will-change: transform;
+
+  backface-visibility: hidden;
+  transform-origin: center center;
+
+  animation:
+    onboardingPanelCollapse
+    1100ms
+    cubic-bezier(0.45, 0, 0.2, 1)
+    both;
+}
+
+.homeTransition .merkArea {
+  position: relative;
+  z-index: 40;
+
+  pointer-events: none;
+}
+
+.homeTransition .lingoLogo {
+  width: var(--logo-frozen-width);
+  height: var(--logo-frozen-height);
+  max-width: none;
+  max-height: none;
+
+  animation:
+    onboardingLogoFinale
+    820ms
+    620ms
+    cubic-bezier(0.2, 0.75, 0.25, 1)
+    both !important;
+}
+
+@keyframes onboardingPanelCollapse {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  13% {
+    transform: translate3d(0, -12px, 0) scaleY(1.012);
+  }
+
+  27% {
+    transform: translate3d(0, 8px, 0) scaleY(.995);
+  }
+
+  100% {
+    transform: translate3d(0, 115svh, 0);
+  }
+}
+
+@keyframes onboardingLogoFinale {
+  from {
+    opacity: 1;
+    transform:
+      translate3d(
+        0,
+        var(--logo-start-y),
+        0
+      );
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translate3d(
+        var(--logo-shift-x),
+        calc(
+          var(--logo-start-y)
+          +
+          var(--logo-shift-y)
+        ),
+        0
+      )
+      scale(var(--logo-final-scale, 1));
+  }
+}
+
+@media (max-width: 680px) {
+  .homeTransition .lingoLogo {
+    will-change: transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeTransition header,
+  .homeTransition .bladPaneel,
+  .homeTransition .lingoLogo {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Reverse handoff when a signed-in visitor logs out */
+.returnTransition {
+  height: 100vh;
+  height: 100svh;
+
+  overflow: hidden;
+}
+
+.returnTransition .bladPaneel {
+  transform-origin: center center;
+  will-change: transform;
+
+  backface-visibility: hidden;
+
+  animation:
+    onboardingPanelReturn
+    1120ms
+    300ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.returnTransition .lingoLogo {
+  animation: none !important;
+  will-change: translate, scale, opacity;
+}
+
+@keyframes onboardingPanelReturn {
+  0% {
+    transform: translate3d(0, 115svh, 0);
+  }
+
+  72% {
+    transform: translate3d(0, -14px, 0) scaleY(1.012);
+  }
+
+  87% {
+    transform: translate3d(0, 6px, 0) scaleY(.997);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes onboardingLogoReturn {
+  from {
+    opacity: 1;
+    transform:
+      translateY(
+        clamp(
+          150px,
+          24svh,
+          250px
+        )
+      );
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(1.25rem);
+  }
+}
+
+@media (max-width: 680px) {
+  .returnTransition .lingoLogo {
+    animation-name: none !important;
+  }
+
+  @keyframes onboardingLogoReturnMobile {
+    from {
+      opacity: 1;
+      transform:
+        translateY(30.5svh);
+    }
+
+    to {
+      opacity: 1;
+      transform:
+        translateY(0.75rem);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .returnTransition .bladPaneel,
+  .returnTransition .lingoLogo {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Slightly lower the step-one and step-two headings without shifting their
+   controls, rules, or bottom navigation. */
+.loginStap > .paneelTitel,
+.loginStap > .paneelBeskrywing,
+.reelsStap > .paneelTitel,
+.reelsStap > .paneelBeskrywing,
+.profielStap > .paneelTitel,
+.profielStap > .paneelBeskrywing {
+  position: relative;
+  top: 8px;
+}
+
+@media (max-width: 680px) {
+  .mobieleStapTweeBlad .vorderStap.aktief .vorderNaamPlat,
+  .mobieleStapTweeBlad .mobieleStapOpskrif,
+  .mobieleStapDrieBlad .vorderStap.aktief .vorderNaamPlat,
+  .mobieleStapDrieBlad .mobieleStapOpskrif {
+    position: relative;
+    top: 6px;
+  }
+}
+
+/* Mobile steps two and three always keep their content above the fixed
+   navigation. On short phones the document becomes taller with the sheet,
+   rather than squeezing content underneath the buttons. */
+@media (max-width: 680px) {
+  .mobieleStapTweeBlad {
+    --mobiele-paneel-hoogte: 650px;
+    height: auto;
+    min-height: max(100svh, 718px);
+    overflow-y: visible;
+  }
+
+  .mobieleStapDrieBlad {
+    --mobiele-paneel-hoogte: 630px;
+    height: auto;
+    min-height: max(100svh, 698px);
+    overflow-y: visible;
+  }
+
+  .mobieleStapTweeBlad .uitleg,
+  .mobieleStapDrieBlad .uitleg {
+    height: auto;
+    min-height: inherit;
+    overflow-y: visible;
+  }
+
+  .mobieleStapTweeBlad .bladPaneel,
+  .mobieleStapDrieBlad .bladPaneel {
+    height: var(--mobiele-paneel-hoogte);
+    flex: 0 0 var(--mobiele-paneel-hoogte);
+    overflow: hidden;
+    transition:
+      height 560ms linear(
+        0,
+        .03 4%,
+        .13 12%,
+        .3 22%,
+        .52 35%,
+        .74 50%,
+        .91 65%,
+        1.018 80%,
+        .998 91%,
+        1
+      ),
+      flex-basis 560ms linear(
+        0,
+        .03 4%,
+        .13 12%,
+        .3 22%,
+        .52 35%,
+        .74 50%,
+        .91 65%,
+        1.018 80%,
+        .998 91%,
+        1
+      );
+  }
+
+  .paneelBinne.mobieleReelsStap .stapVenster,
+  .paneelBinne.mobieleProfielStap .stapVenster {
+    height: 100%;
+    margin-top: 0;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .paneelBinne.mobieleReelsStap .stapInhoud,
+  .paneelBinne.mobieleProfielStap .stapInhoud {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 4px;
+    overflow: visible;
+  }
+
+  .paneelBinne.mobieleReelsStap .reelsStap,
+  .paneelBinne.mobieleProfielStap .profielStap {
+    margin-top: auto;
+  }
+
+  .paneelBinne.mobieleReelsStap .vasteNavigasie,
+  .paneelBinne.mobieleProfielStap .vasteNavigasie {
+    min-height: 70px;
+    flex: 0 0 70px;
+    margin-top: auto;
+    margin-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  /* Confirmation must shrink independently of whichever step opened it. */
+  .mobieleBevestigingBlad {
+    --mobiele-paneel-hoogte: 330px;
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .mobieleBevestigingBlad .uitleg {
+    height: 100svh;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .mobieleBevestigingBlad .bladPaneel {
+    height: var(--mobiele-paneel-hoogte);
+    flex: 0 0 var(--mobiele-paneel-hoogte);
+    transition:
+      height 560ms linear(
+        0,
+        .03 4%,
+        .13 12%,
+        .3 22%,
+        .52 35%,
+        .74 50%,
+        .91 65%,
+        1.018 80%,
+        .998 91%,
+        1
+      ),
+      flex-basis 560ms linear(
+        0,
+        .03 4%,
+        .13 12%,
+        .3 22%,
+        .52 35%,
+        .74 50%,
+        .91 65%,
+        1.018 80%,
+        .998 91%,
+        1
+      );
+  }
+
+  .mobieleBevestigingBlad .logoutConfirm {
+    padding-top: clamp(24px, 4svh, 36px);
+  }
+
+  .mobieleBevestigingBlad .logoutConfirmAksies {
+    transform: translateY(-12px);
+  }
+
+  .mobieleStapEenBlad .bladPaneel,
+  .mobieleStapTweeBlad .bladPaneel,
+  .mobieleStapDrieBlad .bladPaneel,
+  .mobieleBevestigingBlad .bladPaneel {
+    transition-property: height, flex-basis;
+    transition-duration: 700ms;
+    transition-timing-function: linear(
+      0,
+      .01 2%,
+      .04 5%,
+      .095 9%,
+      .18 15%,
+      .3 22%,
+      .445 30%,
+      .6 39%,
+      .745 49%,
+      .865 59%,
+      .947 69%,
+      .994 77%,
+      1.014 84%,
+      1.012 89%,
+      1.004 95%,
+      .999 98%,
+      1
+    );
+  }
+}
+
+/* The compact desktop sign-in sheet springs smoothly into the shared
+   full-height sheet used by steps two and three, and reverses the same way. */
+@media (min-width: 681px) {
+  .mobieleStapEenBlad .bladPaneel,
+  .mobieleStapTweeBlad .bladPaneel {
+    transition-property: height, flex-basis;
+    transition-duration: 700ms;
+    transition-timing-function: linear(
+      0,
+      .01 2%,
+      .04 5%,
+      .095 9%,
+      .18 15%,
+      .3 22%,
+      .445 30%,
+      .6 39%,
+      .745 49%,
+      .865 59%,
+      .947 69%,
+      .994 77%,
+      1.014 84%,
+      1.012 89%,
+      1.004 95%,
+      .999 98%,
+      1
+    );
   }
 }

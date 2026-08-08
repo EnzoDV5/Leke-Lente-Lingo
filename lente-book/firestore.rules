@@ -63,6 +63,34 @@ service cloud.firestore {
     }
 
     /*
+     * Atomic, case-normalised username reservations.
+     * The document ID is the normalised username, so a transaction can only
+     * create one owner for each name.
+     */
+
+    match /usernames/{username} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.uid
+          == request.auth.uid
+        && request.resource.data.username
+          == '@' + username;
+
+      allow update: if signedIn()
+        && resource.data.uid
+          == request.auth.uid
+        && request.resource.data.uid
+          == request.auth.uid
+        && request.resource.data.username
+          == '@' + username;
+
+      allow delete: if signedIn()
+        && resource.data.uid
+          == request.auth.uid;
+    }
+
+    /*
      * The 12 official board phrases
      */
 

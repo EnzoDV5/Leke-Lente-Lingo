@@ -1,8 +1,15 @@
-import type { CSSProperties } from 'react'
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react'
+import { useLocation } from 'react-router-dom'
 import styles from './OnboardingBackground.module.css'
 import skyImg from '../../assets/elements/cloud-background.webp'
 
 type OrbitVars = CSSProperties & { '--dur': string; '--delay': string; '--r': string }
+type EscapeVars = CSSProperties & { '--cloud-away-x': string; '--cloud-away-y': string }
 
 // Floating foreground clouds (delete this block if you want ONLY the photo).
 const CLOUDS: { img: string; r: string; w: number; dur: string; delay: string; rev?: boolean }[] = [
@@ -26,18 +33,58 @@ const hide = (e: React.SyntheticEvent<HTMLImageElement>) => {
 }
 
 export default function OnboardingBackground() {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const cloudRefs = useRef<(HTMLImageElement | null)[]>([])
+  const [cloudsAway, setCloudsAway] = useState(false)
+  const [escapeVars, setEscapeVars] = useState<EscapeVars[]>(
+    CLOUDS.map(() => ({ '--cloud-away-x': '0px', '--cloud-away-y': '0px' })),
+  )
+
+  useLayoutEffect(() => {
+    if (!isHome) {
+      setCloudsAway(false)
+      return
+    }
+
+    const nextEscapeVars = cloudRefs.current.map((cloud) => {
+      if (!cloud) return { '--cloud-away-x': '0px', '--cloud-away-y': '-110vh' } as EscapeVars
+
+      const rect = cloud.getBoundingClientRect()
+      const edges = [
+        { distance: rect.left, x: -(rect.right + 80), y: 0 },
+        { distance: window.innerWidth - rect.right, x: window.innerWidth - rect.left + 80, y: 0 },
+        { distance: rect.top, x: 0, y: -(rect.bottom + 80) },
+        { distance: window.innerHeight - rect.bottom, x: 0, y: window.innerHeight - rect.top + 80 },
+      ]
+      const nearest = edges.reduce((best, edge) => edge.distance < best.distance ? edge : best)
+
+      return {
+        '--cloud-away-x': `${nearest.x}px`,
+        '--cloud-away-y': `${nearest.y}px`,
+      } as EscapeVars
+    })
+
+    setEscapeVars(nextEscapeVars)
+    const frame = window.requestAnimationFrame(() => setCloudsAway(true))
+    return () => window.cancelAnimationFrame(frame)
+  }, [isHome])
+
   return (
-    <div className={styles.wrap} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
+    <div className={`${styles.wrap} ${isHome ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
+      <div className={styles.cloudLayer}>
       {CLOUDS.map((c, i) => {
         const vars = { '--dur': c.dur, '--delay': c.delay, '--r': c.r } as OrbitVars
         return (
+          <div className={styles.cloudEscape} style={escapeVars[i]} key={i}>
           <div key={i} className={`${styles.spin} ${c.rev ? styles.rev : ''}`} style={vars}>
             <div className={styles.offset}>
               <div className={styles.counter}>
-                <img src={`/elements/${c.img}.webp`} alt="" onError={hide}
+                <img ref={(element) => { cloudRefs.current[i] = element }} src={`/elements/${c.img}.webp`} alt="" onError={hide}
                   className={styles.cloudImg} style={{ width: c.w }} />
               </div>
             </div>
+          </div>
           </div>
         )
       })}
@@ -46,6 +93,7 @@ export default function OnboardingBackground() {
         <img key={i} src={`/elements/${s.img}.webp`} alt="" onError={hide}
           className={styles.star} style={{ ...s.style, animationDelay: s.delay }} />
       ))}
+      </div>
     </div>
   )
 }

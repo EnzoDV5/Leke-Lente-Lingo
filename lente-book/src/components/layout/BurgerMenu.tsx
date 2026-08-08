@@ -1,111 +1,176 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../features/auth/AuthContext'
+import OptionWheel from '../ui/OptionWheel'
+import styles from './BurgerMenu.module.css'
 
 type Props = {
   open: boolean
   onClose: () => void
+  onLogOut: () => Promise<void>
 }
 
 const LINKS = [
+  { to: '/woordeboek', label: 'Woordeboek' },
+  { to: '/foto', label: 'Voeg Foto By' },
+  { to: '/woordjag', label: 'Lente Bingo' },
+]
+
+const SOCIALS = [
   {
-    to: '/',
-    label: 'Woordemuur',
-    color: 'bg-goud text-ink',
+    label: 'Instagram',
+    paths: [
+      'M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Z',
+      'M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.5-3.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z',
+    ],
   },
   {
-    to: '/woordeboek',
-    label: 'Woordeboek',
-    color: 'bg-blou text-paper',
+    label: 'Spotify',
+    paths: [
+      'M12 1.5A10.5 10.5 0 1 0 12 22.5 10.5 10.5 0 0 0 12 1.5Zm4.82 15.12a.78.78 0 0 1-1.07.26c-2.94-1.8-6.64-2.2-11-1.2a.78.78 0 1 1-.35-1.52c4.77-1.09 8.86-.63 12.16 1.39.37.22.48.7.26 1.07Zm1.43-3.18a.98.98 0 0 1-1.35.32c-3.37-2.07-8.5-2.67-12.48-1.46a.98.98 0 1 1-.57-1.87c4.55-1.38 10.2-.71 14.08 1.67.46.28.6.88.32 1.34Zm.12-3.31C14.33 7.73 7.66 7.5 3.8 8.67a1.17 1.17 0 1 1-.68-2.24c4.43-1.34 11.8-1.07 16.44 1.68a1.17 1.17 0 0 1-1.19 2.02Z',
+    ],
   },
   {
-    to: '/foto',
-    label: 'Voeg Foto By',
-    color: 'bg-pienk text-paper',
+    label: 'TikTok',
+    paths: ['M16.6 2c.35 2.1 1.58 3.36 3.4 3.5v3.58a8.3 8.3 0 0 1-3.35-.77v6.52a7.17 7.17 0 1 1-6.18-7.1v3.65a3.58 3.58 0 1 0 2.56 3.43V2h3.57Z'],
   },
   {
-    to: '/woordjag',
-    label: 'Die Woordjag',
-    color: 'bg-groen text-ink',
+    label: 'YouTube',
+    paths: ['M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4L15.83 12 9.6 15.6Z'],
+  },
+  {
+    label: 'Facebook',
+    paths: ['M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.03 1.79-4.7 4.53-4.7 1.31 0 2.69.24 2.69.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z'],
   },
 ]
 
 export default function BurgerMenu({
   open,
   onClose,
+  onLogOut,
 }: Props) {
-  const { user, profile } = useAuth()
+  const { user } = useAuth()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
 
-  if (!open) return null
+  useEffect(() => {
+    if (!open) return
 
-  const profileImage =
-    profile?.useGooglePhoto && user?.photoURL
-      ? user.photoURL
-      : null
+    const scrollY = window.scrollY
+    const previousBody = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+    }
+    const previousHtmlOverflow = document.documentElement.style.overflow
+
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow
+      document.body.style.position = previousBody.position
+      document.body.style.top = previousBody.top
+      document.body.style.width = previousBody.width
+      document.body.style.overflow = previousBody.overflow
+      window.scrollTo(0, scrollY)
+    }
+  }, [open])
+
+  const currentIndex = Math.max(
+    0,
+    LINKS.findIndex((link) =>
+      pathname.startsWith(link.to),
+    ),
+  )
+
+  const handleLogOut = async () => {
+    onClose()
+    await onLogOut()
+  }
+
+  const selectWheelItem = (index: number) => {
+    if (index === LINKS.length) {
+      void handleLogOut()
+      return
+    }
+
+    const link = LINKS[index]
+    if (!link) return
+    onClose()
+    navigate(link.to)
+  }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-ink/90 px-4 py-4 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-[440px] flex-col rounded-[28px] border-4 border-oranje bg-paper p-5 shadow-2xl">
-        <div className="flex items-center justify-between gap-3">
-          <img
-            src="/elements/lentedag-logo.webp"
-            alt="Lentedag"
-            className="h-14 w-auto"
-          />
-
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Maak kieslys toe"
-            className="grid h-12 w-12 place-items-center rounded-[13px] border-[3px] border-oranje bg-geel font-pixel text-2xl font-bold text-oranje shadow-lift"
-          >
-            ×
-          </button>
-        </div>
-
-        {user && profile && (
-          <Link
-            to="/welkom"
-            onClick={onClose}
-            className="mt-6 flex items-center gap-3 rounded-[16px] border-[3px] border-oranje bg-white p-2 text-ink shadow-lift"
-          >
-            <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-[11px] border-2 border-oranje bg-geel text-2xl">
-              {profileImage ? (
-                <img
-                  src={profileImage}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                profile.character
-              )}
+    <div
+      className={`${styles.overlay} ${open ? styles.open : ''} fixed inset-0 z-40 overflow-hidden pt-[78px]`}
+      aria-hidden={!open}
+    >
+      <div className={styles.menuClouds} aria-hidden="true">
+        {['cloud1', 'cloud3', 'cloud6', 'cloud2'].map(
+          (cloud) => (
+            <span className={styles.menuCloud} key={cloud}>
+              <img src={`/elements/${cloud}.webp`} alt="" />
             </span>
-
-            <span className="min-w-0">
-              <small className="block font-pixel text-[10px] uppercase tracking-wider text-oranje">
-                My profiel
-              </small>
-
-              <strong className="block truncate font-display text-base">
-                {profile.username}
-              </strong>
-            </span>
-          </Link>
+          ),
         )}
-
-        <nav className="mt-6 flex flex-col gap-3">
-          {LINKS.map((link) => (
-            <Link
-              key={link.label}
-              to={link.to}
-              onClick={onClose}
-              className={`${link.color} rounded-[16px] border-[3px] border-oranje px-5 py-4 font-pixel text-lg uppercase shadow-lift transition active:translate-y-1`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
       </div>
+
+      <nav className={`${styles.wheelStage} absolute inset-x-0 bottom-0 top-[78px] z-10`} aria-label="Mobiele hoofkieslys">
+        <OptionWheel
+          key={`${pathname}-${open ? 'open' : 'closed'}`}
+          items={[
+            ...LINKS.map((link) => link.label),
+            ...(user ? ['__logout__'] : []),
+          ]}
+          defaultSelected={currentIndex}
+          textColor="#f8e42b"
+          activeColor="#ffffff"
+          side="right"
+          fontSize={1.9}
+          spacing={1.76}
+          curve={1}
+          tilt={12}
+          blur={.8}
+          fade={.22}
+          minOpacity={.14}
+          smoothing={190}
+          inset={18}
+          draggable
+          onSelect={selectWheelItem}
+        />
+      </nav>
+
+      <div className={styles.socials} aria-label="Sosiale media">
+        {SOCIALS.map(({ label, paths }) => (
+          <button
+            className={styles.socialButton}
+            type="button"
+            aria-label={label}
+            title={label}
+            key={label}
+          >
+            {label === 'Spotify' ? (
+              <svg className={styles.spotifyIcon} aria-hidden="true" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="11" />
+                <path d="M5.2 9.1c4.4-1.3 9.5-.8 13.4 1.35" />
+                <path d="M6.15 12.35c3.75-1.05 8.15-.58 11.35 1.18" />
+                <path d="M7.05 15.35c3.05-.72 6.45-.35 9.05 1.05" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                {paths.map((path) => <path d={path} key={path} />)}
+              </svg>
+            )}
+          </button>
+        ))}
+      </div>
+
     </div>
   )
 }

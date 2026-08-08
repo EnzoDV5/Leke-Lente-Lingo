@@ -1,22 +1,45 @@
-import { Outlet } from 'react-router-dom'
-import SkyBackground from '../decor/SkyBackground'
+import {
+  Outlet,
+  useLocation,
+} from 'react-router-dom'
 import TopBar from './TopBar'
 import Footer from './Footer'
+import styles from './AppShell.module.css'
+
+type RouteState = {
+  onboardingReveal?: boolean
+}
 
 export default function AppShell() {
-  return (
-    <>
-      <SkyBackground />
+  const location = useLocation()
+  const routeState =
+    location.state as RouteState | null
 
-      <div className="relative flex min-h-screen flex-col">
+  const revealHome =
+    Boolean(routeState?.onboardingReveal)
+
+  return (
+    <div
+      className={[
+        styles.shell,
+        revealHome
+          ? styles.homeReveal
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <div className={styles.shellContent}>
         <TopBar />
 
-        <main className="w-full flex-1">
+        <main className={styles.page}>
           <Outlet />
         </main>
 
-        <Footer />
+        <div className={styles.footer}>
+          <Footer />
+        </div>
       </div>
-    </>
+    </div>
   )
 }

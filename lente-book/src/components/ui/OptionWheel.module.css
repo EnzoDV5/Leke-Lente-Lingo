@@ -1,0 +1,117 @@
+.wheel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+  cursor: grab;
+}
+
+.dragging { cursor: grabbing; }
+
+.option {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 255px;
+  padding: .62rem .95rem;
+  border: 3px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  color: color-mix(in srgb, var(--ow-active-color) calc(var(--ow-strength, 0) * 100%), var(--ow-text-color));
+  font-family: var(--font-pixel), monospace;
+  font-size: var(--ow-font-size);
+  font-weight: 800;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  will-change: transform, opacity, filter;
+}
+
+.number {
+  display: grid;
+  width: 47px;
+  height: 47px;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 2px solid var(--color-oranje);
+  border-radius: 50%;
+  background: var(--color-geel);
+  color: var(--color-oranje);
+  font-size: 1rem;
+}
+
+.label {
+  width: 178px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.logoutIcon {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.selected {
+  border-color: var(--color-oranje);
+  background: var(--color-pienk);
+  box-shadow: 6px 7px 0 rgba(22, 21, 15, .18);
+}
+
+.left { left: var(--ow-inset); transform-origin: left center; }
+.right {
+  right: var(--ow-inset);
+  justify-content: flex-end;
+  text-align: right;
+  transform-origin: right center;
+}
+
+@media (max-width: 360px) {
+  .wheel {
+    --ow-font-size: 1.65rem !important;
+    --ow-inset: 8px !important;
+  }
+
+  .option {
+    min-width: 230px;
+    gap: .55rem;
+    padding: .52rem .72rem;
+  }
+
+  .number {
+    width: 43px;
+    height: 43px;
+    font-size: .9rem;
+  }
+
+  .label {
+    width: 158px;
+  }
+
+  .logoutIcon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-height: 520px) {
+  .wheel {
+    --ow-font-size: 1.25rem !important;
+  }
+
+  .option {
+    padding-block: .35rem;
+  }
+}

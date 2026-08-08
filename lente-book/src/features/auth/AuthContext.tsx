@@ -2,7 +2,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from 'react'
@@ -33,6 +32,7 @@ export type LenteProfile = {
   username: string
   character: string
   useGooglePhoto: boolean
+  googlePhoto?: string | null
   onboardingComplete: boolean
 }
 
@@ -42,6 +42,11 @@ type SaveProfileInput = {
   useGooglePhoto: boolean
 }
 
+type SignInResult = {
+  user: User
+  profile: LenteProfile | null
+}
+
 type AuthContextValue = {
   user: User | null
   profile: LenteProfile | null
@@ -49,8 +54,8 @@ type AuthContextValue = {
   profileLoading: boolean
   authError: string
 
-  signInWithGoogle: () => Promise<User | null>
-  signInWithApple: () => Promise<User | null>
+  signInWithGoogle: () => Promise<SignInResult | null>
+  signInWithApple: () => Promise<SignInResult | null>
 
   checkUsernameAvailability: (
     username: string,
@@ -60,7 +65,7 @@ type AuthContextValue = {
     details: SaveProfileInput,
   ) => Promise<boolean>
 
-  logOut: () => Promise<void>
+  logOut: () => Promise<boolean>
   clearAuthError: () => void
 }
 
@@ -148,7 +153,7 @@ export function AuthProvider({
 
   const loadProfile = async (
     firebaseUser: User,
-  ) => {
+  ): Promise<LenteProfile | null> => {
     setProfileLoading(true)
 
     try {
@@ -162,11 +167,14 @@ export function AuthProvider({
         await getDoc(profileReference)
 
       if (snapshot.exists()) {
-        setProfile(
-          snapshot.data() as LenteProfile,
-        )
+        const loadedProfile =
+          snapshot.data() as LenteProfile
+
+        setProfile(loadedProfile)
+        return loadedProfile
       } else {
         setProfile(null)
+        return null
       }
     } catch (error) {
       console.error(
@@ -175,6 +183,7 @@ export function AuthProvider({
       )
 
       setProfile(null)
+      return null
     } finally {
       setProfileLoading(false)
     }
@@ -216,7 +225,7 @@ export function AuthProvider({
   }, [])
 
   const signInWithGoogle =
-    async (): Promise<User | null> => {
+    async (): Promise<SignInResult | null> => {
       setAuthError('')
 
       try {
@@ -226,7 +235,13 @@ export function AuthProvider({
             googleProvider,
           )
 
-        return result.user
+        const existingProfile =
+          await loadProfile(result.user)
+
+        return {
+          user: result.user,
+          profile: existingProfile,
+        }
       } catch (error) {
         console.error(
           'Google sign-in error:',
@@ -242,7 +257,7 @@ export function AuthProvider({
     }
 
   const signInWithApple =
-    async (): Promise<User | null> => {
+    async (): Promise<SignInResult | null> => {
       setAuthError('')
 
       try {
@@ -252,7 +267,13 @@ export function AuthProvider({
             appleProvider,
           )
 
-        return result.user
+        const existingProfile =
+          await loadProfile(result.user)
+
+        return {
+          user: result.user,
+          profile: existingProfile,
+        }
       } catch (error) {
         console.error(
           'Apple sign-in error:',
@@ -355,6 +376,7 @@ export function AuthProvider({
         details.character,
       useGooglePhoto:
         details.useGooglePhoto,
+      googlePhoto: user.photoURL,
       onboardingComplete: true,
     }
 
@@ -495,6 +517,8 @@ export function AuthProvider({
 
       setUser(null)
       setProfile(null)
+
+      return true
     } catch (error) {
       console.error(
         'Sign-out error:',
@@ -504,6 +528,8 @@ export function AuthProvider({
       setAuthError(
         'Ons kon jou nie uitteken nie.',
       )
+
+      return false
     }
   }
 
@@ -511,28 +537,19 @@ export function AuthProvider({
     setAuthError('')
   }
 
-  const value = useMemo(
-    () => ({
-      user,
-      profile,
-      loading,
-      profileLoading,
-      authError,
-      signInWithGoogle,
-      signInWithApple,
-      checkUsernameAvailability,
-      saveProfile,
-      logOut,
-      clearAuthError,
-    }),
-    [
-      user,
-      profile,
-      loading,
-      profileLoading,
-      authError,
-    ],
-  )
+  const value: AuthContextValue = {
+    user,
+    profile,
+    loading,
+    profileLoading,
+    authError,
+    signInWithGoogle,
+    signInWithApple,
+    checkUsernameAvailability,
+    saveProfile,
+    logOut,
+    clearAuthError,
+  }
 
   return (
     <AuthContext.Provider

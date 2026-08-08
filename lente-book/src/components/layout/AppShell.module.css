@@ -1,0 +1,46 @@
+.shell {
+  position: relative;
+  min-height: 100vh;
+}
+
+.shellContent {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  width: 100%;
+  flex: 1;
+}
+
+.homeReveal .footer {
+  animation:
+    homePageReveal
+    620ms
+    520ms
+    ease-out
+    both;
+}
+
+@keyframes homePageReveal {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeReveal .footer {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+}

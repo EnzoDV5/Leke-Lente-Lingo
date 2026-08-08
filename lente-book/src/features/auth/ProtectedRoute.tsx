@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom'
 
 import { useAuth } from './AuthContext'
+import PageLoader from '../../components/ui/PageLoader'
 
 export default function ProtectedRoute() {
   const {
@@ -17,21 +18,7 @@ export default function ProtectedRoute() {
   const location = useLocation()
 
   if (loading || profileLoading) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'grid',
-          placeItems: 'center',
-          background: '#0a8af0',
-          color: '#ffffff',
-          fontSize: '1.2rem',
-          fontWeight: 800,
-        }}
-      >
-        Lente Book groei...
-      </div>
-    )
+    return <PageLoader />
   }
 
   if (

@@ -1,0 +1,98 @@
+.loader {
+  position: relative;
+  z-index: 100;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.content {
+  width: min(82vw, 620px);
+  display: grid;
+  justify-items: center;
+  gap: clamp(18px, 3vh, 30px);
+  transform: translateY(-2vh);
+}
+
+.logo {
+  display: block;
+  width: min(82vw, 560px);
+  max-height: 38svh;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 0 rgba(0, 87, 181, .14));
+  animation: logoFloat 1.8s ease-in-out infinite;
+}
+
+.track {
+  position: relative;
+  width: min(78vw, 460px);
+  height: 25px;
+  overflow: hidden;
+  padding: 4px;
+  background: #fbf7ef;
+  border: 3px solid #ed4924;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 rgba(0, 87, 181, .2);
+}
+
+.progress {
+  display: block;
+  width: 45%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f8e42b 0 34%, #ef96c7 34% 68%, #f81878 68%);
+  animation: loadingBar 1.35s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+
+.spark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 12px 5px rgba(255, 255, 255, .82);
+  animation: loadingSpark 1.35s cubic-bezier(.65, 0, .35, 1) infinite;
+}
+
+.content p {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-pixel), "Pixelify Sans", monospace;
+  font-size: clamp(.72rem, 1.5vw, 1rem);
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-shadow: 2px 2px 0 #087ff0;
+}
+
+@keyframes loadingBar {
+  0% { transform: translateX(-115%); }
+  52% { transform: translateX(65%); }
+  100% { transform: translateX(225%); }
+}
+
+@keyframes loadingSpark {
+  0% { left: 0; opacity: 0; transform: translate(-12px, -50%); }
+  15%, 85% { opacity: 1; }
+  100% { left: 100%; opacity: 0; transform: translate(-2px, -50%); }
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-9px) scale(1.015); }
+}
+
+@media (max-width: 680px) {
+  .content { width: min(90vw, 430px); gap: 20px; }
+  .logo { width: min(90vw, 430px); max-height: 34svh; }
+  .track { width: min(78vw, 330px); height: 21px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo { animation: none; }
+  .progress, .spark { animation-duration: 2.4s; }
+}

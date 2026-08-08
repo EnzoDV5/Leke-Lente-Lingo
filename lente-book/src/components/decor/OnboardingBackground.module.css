@@ -1,5 +1,5 @@
 .wrap {
-  position: fixed; inset: 0; overflow: hidden; z-index: 0;
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100svh; overflow: hidden; z-index: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -38,3 +38,28 @@
 @media (prefers-reduced-motion: reduce) {
   .spin, .counter, .star { animation: none; }
 }
+
+.cloudLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.cloudEscape {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+  transition:
+    opacity 1050ms ease,
+    transform 1450ms cubic-bezier(.3,.7,.2,1),
+    filter 1050ms ease;
+}
+
+.cloudsAway .cloudEscape {
+  opacity: 0;
+  transform: translate3d(var(--cloud-away-x), var(--cloud-away-y), 0) scale(1.08);
+  filter: blur(8px);
+}
+
+.home .star { opacity: 0; transition: opacity 700ms ease; }

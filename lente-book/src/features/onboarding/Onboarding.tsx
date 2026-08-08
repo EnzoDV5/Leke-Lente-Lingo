@@ -1,9 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
-import OnboardingBackground from '../../components/decor/OnboardingBackground'
 import TopBar from '../../components/layout/TopBar'
+import PageLoader from '../../components/ui/PageLoader'
 import { useAuth } from '../auth/AuthContext'
 import styles from './Onboarding.module.css'
 
@@ -57,19 +64,13 @@ const REELS = [
     n: 2,
     titel: 'Skep',
     beskrywing:
-      'Maak ’n nuwe Afrikaanse woord.',
+      'Maak ’n nuwe Afrikaanse woord vir die scenario.',
   },
   {
     n: 3,
-    titel: 'Stem',
+    titel: 'Stem & versamel',
     beskrywing:
-      'Kies jou gunsteling en verbeter woorde.',
-  },
-  {
-    n: 4,
-    titel: 'Versamel',
-    beskrywing:
-      'Bou jou eie Lente Book-versameling.',
+      'Stem vir jou gunstelinge en bou jou versameling.',
   },
 ]
 
@@ -77,14 +78,17 @@ const STAPPE = [
   {
     n: 1,
     titel: 'Teken aan',
+    beskrywing: 'Meld vinnig aan om jou Lente Book-avontuur te begin.',
   },
   {
     n: 2,
     titel: 'Die reëls',
+    beskrywing: 'Vind, skep, stem en versamel jou feeswoorde.',
   },
   {
     n: 3,
     titel: 'Jou profiel',
+    beskrywing: 'Kies jou avatar en maak jou unieke gebruikersnaam.',
   },
 ]
 
@@ -117,6 +121,20 @@ type SuccessState = {
 
 type LocationState = {
   from?: string
+  reverseOnboarding?: boolean
+  returnLogoLeft?: number
+  returnLogoTop?: number
+  returnLogoWidth?: number
+  returnLogoHeight?: number
+}
+
+type LogoTransitionVars = CSSProperties & {
+  '--logo-start-y': string
+  '--logo-shift-x': string
+  '--logo-shift-y': string
+  '--logo-frozen-width': string
+  '--logo-frozen-height': string
+  '--logo-final-scale': string
 }
 
 function wag(milliseconds: number) {
@@ -209,6 +227,45 @@ export default function Onboarding() {
     showInlineLoader,
     setShowInlineLoader,
   ] = useState(false)
+
+  const [
+    showLogoutConfirm,
+    setShowLogoutConfirm,
+  ] = useState(false)
+
+  const [
+    homeTransition,
+    setHomeTransition,
+  ] = useState(false)
+
+  const logoRef =
+    useRef<HTMLImageElement>(null)
+  const contentScrollRef =
+    useRef<HTMLDivElement>(null)
+
+  const [
+    logoTransitionVars,
+    setLogoTransitionVars,
+  ] = useState<LogoTransitionVars>({
+    '--logo-start-y': '0px',
+    '--logo-shift-x': '0px',
+    '--logo-shift-y': '0px',
+    '--logo-frozen-width': 'auto',
+    '--logo-frozen-height': 'auto',
+    '--logo-final-scale': '1',
+  })
+
+  const [
+    returnTransition,
+    setReturnTransition,
+  ] = useState(
+    Boolean(
+      state?.reverseOnboarding ||
+      window.sessionStorage.getItem(
+        'lente-return-onboarding',
+      ),
+    ),
+  )
 
   const skoonUsername = username
     .trim()
@@ -308,7 +365,154 @@ export default function Onboarding() {
     Boolean(user) &&
     stap >= 2 &&
     !successState &&
-    !showInlineLoader
+    !showInlineLoader &&
+    !showLogoutConfirm
+
+  useLayoutEffect(() => {
+    if (
+      !returnTransition ||
+      loading ||
+      profileLoading
+    ) return
+
+    const logo = logoRef.current
+    const sharedLogo = document.querySelector<HTMLImageElement>(
+      '[data-shared-logo-transition="reverse"]',
+    )
+
+    if (logo && sharedLogo) {
+      if (sharedLogo.dataset.sharedLogoAnimating === 'true') {
+        logo.style.visibility = 'hidden'
+        return
+      }
+
+      sharedLogo.dataset.sharedLogoAnimating = 'true'
+      const source = sharedLogo.getBoundingClientRect()
+      const target = logo.getBoundingClientRect()
+      const sourceScale = Math.min(
+        source.width / Math.max(target.width, 1),
+        source.height / Math.max(target.height, 1),
+      )
+
+      logo.style.visibility = 'hidden'
+
+      const animation = sharedLogo.animate(
+        [
+          { translate: '0 0', scale: '1' },
+          {
+            translate: `${target.left + target.width / 2 - (source.left + source.width / 2)}px ${target.top + target.height / 2 - (source.top + source.height / 2)}px`,
+            scale: `${1 / Math.max(sourceScale, .001)}`,
+          },
+        ],
+        {
+          duration: 1080,
+          easing: 'cubic-bezier(.16, 1, .3, 1)',
+          fill: 'both',
+        },
+      )
+
+      animation.onfinish = () => {
+        logo.style.visibility = 'visible'
+        sharedLogo.remove()
+      }
+
+      /* Do not tear down the shared element here. React Strict Mode replays
+         layout effects in development; removing it during that replay turns
+         the reverse handoff into an instant jump. The finished animation owns
+         the visual handoff and removes the element itself. */
+      return
+    }
+
+    const sourceLeft = state?.returnLogoLeft
+    const sourceTop = state?.returnLogoTop
+    const sourceWidth = state?.returnLogoWidth
+    const sourceHeight = state?.returnLogoHeight
+
+    if (
+      !logo ||
+      sourceLeft === undefined ||
+      sourceTop === undefined ||
+      sourceWidth === undefined ||
+      sourceHeight === undefined
+    ) {
+      return
+    }
+
+    const target = logo.getBoundingClientRect()
+    const sourceCenterX = sourceLeft + sourceWidth / 2
+    const sourceCenterY = sourceTop + sourceHeight / 2
+    const targetCenterX = target.left + target.width / 2
+    const targetCenterY = target.top + target.height / 2
+    const sourceScale = Math.min(
+      sourceWidth / Math.max(target.width, 1),
+      sourceHeight / Math.max(target.height, 1),
+    )
+
+    const animation = logo.animate(
+      [
+        {
+          opacity: 1,
+          translate: `${sourceCenterX - targetCenterX}px ${sourceCenterY - targetCenterY}px`,
+          scale: `${sourceScale}`,
+        },
+        {
+          opacity: 1,
+          translate: '0 0',
+          scale: '1',
+        },
+      ],
+      {
+        duration: 1080,
+        easing: 'cubic-bezier(.16, 1, .3, 1)',
+        fill: 'both',
+      },
+    )
+
+    animation.onfinish = () => animation.cancel()
+
+    return () => {
+      animation.onfinish = null
+      animation.cancel()
+    }
+  }, [
+    loading,
+    profileLoading,
+    returnTransition,
+    state?.returnLogoHeight,
+    state?.returnLogoLeft,
+    state?.returnLogoTop,
+    state?.returnLogoWidth,
+  ])
+
+  useEffect(() => {
+    if (
+      !returnTransition ||
+      loading ||
+      profileLoading
+    ) return
+
+    window.sessionStorage.removeItem(
+      'lente-return-onboarding',
+    )
+
+    const timer = window.setTimeout(
+      () => {
+        setReturnTransition(false)
+      },
+      1550,
+    )
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [loading, profileLoading, returnTransition])
+
+  useEffect(() => {
+    contentScrollRef.current?.scrollTo({
+      top: 0,
+      behavior: 'auto',
+    })
+  }, [stap, showLogoutConfirm])
 
   useEffect(() => {
     if (!profile) return
@@ -339,9 +543,16 @@ export default function Onboarding() {
     }
 
     if (profile?.onboardingComplete) {
-      if (!isTransitioning) {
-        setHoogsteStap(3)
-        setStap(3)
+      if (
+        !isTransitioning &&
+        busy === null
+      ) {
+        navigate(
+          state?.from ?? '/',
+          {
+            replace: true,
+          },
+        )
       }
 
       return
@@ -363,6 +574,8 @@ export default function Onboarding() {
     stap,
     busy,
     isTransitioning,
+    navigate,
+    state?.from,
   ])
 
   useEffect(() => {
@@ -468,7 +681,9 @@ export default function Onboarding() {
         : 'exit-back',
     )
 
-    await wag(760)
+    // Keep the state swap aligned with the CSS exit motion so there is no
+    // empty beat before the next step starts entering.
+    await wag(440)
 
     setStap(volgendeStap)
 
@@ -484,7 +699,7 @@ export default function Onboarding() {
         : 'enter-back',
     )
 
-    await wag(820)
+    await wag(620)
 
     setTransitionPhase('idle')
     setIsTransitioning(false)
@@ -514,14 +729,167 @@ export default function Onboarding() {
     )
   }
 
+  const animeerNaTuis = async () => {
+    if (
+      window.innerWidth <= 680 &&
+      window.scrollY > 0
+    ) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+      await wag(360)
+    }
+
+    const logoBounds =
+      logoRef.current
+        ?.getBoundingClientRect()
+
+    let sharedLogo: HTMLImageElement | null = null
+    let sharedAnimation: Animation | null = null
+
+    if (logoBounds && logoRef.current) {
+      const startY =
+        window.innerWidth <= 680
+          ? 12
+          : 20
+      const logoAspect =
+        logoRef.current?.naturalWidth &&
+        logoRef.current?.naturalHeight
+          ? logoRef.current.naturalWidth /
+            logoRef.current.naturalHeight
+          : logoBounds.width /
+            Math.max(logoBounds.height, 1)
+      const mobile = window.innerWidth <= 900
+      const targetMaxWidth = mobile
+        ? Math.min(window.innerWidth * .92, 500)
+        : Math.min(window.innerWidth, 1000)
+      const targetMaxHeight = mobile
+        ? Math.min(window.innerHeight * .46, 420)
+        : Math.min(
+            420,
+            Math.max(320, window.innerHeight * .44),
+          )
+      const targetWidth = Math.min(
+        targetMaxWidth,
+        targetMaxHeight * logoAspect,
+      )
+      const finalScale =
+        targetWidth /
+        Math.max(logoBounds.width, 1)
+
+      sharedLogo = logoRef.current.cloneNode(true) as HTMLImageElement
+      sharedLogo.dataset.sharedLogoTransition = 'forward'
+      sharedLogo.setAttribute('aria-hidden', 'true')
+      sharedLogo.style.cssText = [
+        'position:fixed',
+        'z-index:9999',
+        `left:${logoBounds.left}px`,
+        `top:${logoBounds.top}px`,
+        `width:${logoBounds.width}px`,
+        `height:${logoBounds.height}px`,
+        'max-width:none',
+        'max-height:none',
+        'object-fit:contain',
+        'transform-origin:center center',
+        'pointer-events:none',
+      ].join(';')
+      document.body.appendChild(sharedLogo)
+      logoRef.current.style.visibility = 'hidden'
+
+      sharedAnimation = sharedLogo.animate(
+        [
+          { translate: '0 0', scale: '1' },
+          {
+            translate: `${window.innerWidth / 2 - (logoBounds.left + logoBounds.width / 2)}px ${window.innerHeight / 2 - (logoBounds.top + logoBounds.height / 2)}px`,
+            scale: `${finalScale}`,
+          },
+        ],
+        {
+          duration: 820,
+          delay: 620,
+          easing: 'cubic-bezier(.2, .75, .25, 1)',
+          fill: 'both',
+        },
+      )
+
+      setLogoTransitionVars({
+        '--logo-start-y':
+          `${startY}px`,
+        '--logo-shift-x':
+          `${
+            window.innerWidth / 2 -
+            (
+              logoBounds.left +
+              logoBounds.width / 2
+            )
+          }px`,
+        '--logo-shift-y':
+          `${
+            window.innerHeight / 2 -
+            (
+              logoBounds.top +
+              logoBounds.height / 2
+            )
+          }px`,
+        '--logo-frozen-width':
+          `${logoBounds.width}px`,
+        '--logo-frozen-height':
+          `${logoBounds.height}px`,
+        '--logo-final-scale':
+          `${finalScale}`,
+      })
+    }
+
+    setIsTransitioning(true)
+    setHomeTransition(true)
+
+    await wag(1550)
+
+    await sharedAnimation?.finished.catch(() => undefined)
+
+    const finalLogoBounds =
+      sharedLogo
+        ?.getBoundingClientRect()
+
+    navigate(
+      state?.from ?? '/',
+      {
+        replace: true,
+        state: {
+          onboardingReveal: true,
+          onboardingLogoLeft:
+            finalLogoBounds?.left,
+          onboardingLogoTop:
+            finalLogoBounds?.top,
+          onboardingLogoWidth:
+            finalLogoBounds?.width ??
+            logoBounds?.width,
+          onboardingLogoHeight:
+            finalLogoBounds?.height ??
+            logoBounds?.height,
+        },
+      },
+    )
+  }
+
   const meldGoogle = async () => {
     clearAuthError()
     setBusy('google')
 
-    const signedInUser =
+    const signInResult =
       await signInWithGoogle()
 
-    if (signedInUser) {
+    if (
+      signInResult?.profile
+        ?.onboardingComplete
+    ) {
+      setBusy(null)
+      await animeerNaTuis()
+      return
+    }
+
+    if (signInResult) {
       await wisselStap(2, {
         title: 'Success',
         text: 'Your Google profile is connected.',
@@ -535,10 +903,19 @@ export default function Onboarding() {
     clearAuthError()
     setBusy('apple')
 
-    const signedInUser =
+    const signInResult =
       await signInWithApple()
 
-    if (signedInUser) {
+    if (
+      signInResult?.profile
+        ?.onboardingComplete
+    ) {
+      setBusy(null)
+      await animeerNaTuis()
+      return
+    }
+
+    if (signInResult) {
       await wisselStap(2, {
         title: 'Success',
         text: 'Your Apple profile is connected.',
@@ -553,15 +930,54 @@ export default function Onboarding() {
       return
     }
 
+    setIsTransitioning(true)
+    setTransitionPhase('exit-back')
+
+    await wag(440)
     await logOut()
 
     clearAuthError()
     setSuccessState(null)
-    setTransitionPhase('idle')
+    setShowLogoutConfirm(false)
     setUsername('')
     setUsernameStatus('idle')
     setHoogsteStap(1)
     setStap(1)
+
+    setTransitionPhase('enter-back')
+    await wag(620)
+
+    setTransitionPhase('idle')
+    setIsTransitioning(false)
+  }
+
+  const wisselLogoutBevestiging = async (
+    wys: boolean,
+  ) => {
+    if (isTransitioning || saving) {
+      return
+    }
+
+    setIsTransitioning(true)
+
+    setTransitionPhase(
+      wys
+        ? 'exit-back'
+        : 'exit-forward',
+    )
+
+    await wag(440)
+    setShowLogoutConfirm(wys)
+
+    setTransitionPhase(
+      wys
+        ? 'enter-back'
+        : 'enter-forward',
+    )
+
+    await wag(620)
+    setTransitionPhase('idle')
+    setIsTransitioning(false)
   }
 
   const klaar = async () => {
@@ -585,29 +1001,12 @@ export default function Onboarding() {
 
     if (!ok) return
 
-    setIsTransitioning(true)
-
-    setSuccessState({
-      title: 'Success',
-      text:
-        `Welcome to Lente Book, @${skoonUsername}.`,
-    })
-
-    setTransitionPhase('success')
-
-    await wag(2100)
-
-    navigate(
-      state?.from ?? '/',
-      {
-        replace: true,
-      },
-    )
+    await animeerNaTuis()
   }
 
   const hanteerLinkerKnop = () => {
     if (stap === 2) {
-      void tekenUit()
+      void wisselLogoutBevestiging(true)
       return
     }
 
@@ -627,29 +1026,41 @@ export default function Onboarding() {
     loading ||
     (profileLoading && !user)
   ) {
-    return (
-      <main className={styles.laai}>
-        <OnboardingBackground />
-
-        <span>
-          Lente Book groei…
-        </span>
-      </main>
-    )
+    return <PageLoader />
   }
 
   return (
-    <main className={styles.blad}>
-      <OnboardingBackground />
-
+    <main
+      className={[
+        styles.blad,
+        homeTransition
+          ? styles.homeTransition
+          : '',
+        returnTransition
+          ? styles.returnTransition
+          : '',
+        stap === 1
+          ? styles.mobieleStapEenBlad
+          : stap === 2
+            ? styles.mobieleStapTweeBlad
+            : styles.mobieleStapDrieBlad,
+        showLogoutConfirm
+          ? styles.mobieleBevestigingBlad
+          : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <TopBar />
 
       <div className={styles.uitleg}>
         <header className={styles.merkArea}>
           <img
+            ref={logoRef}
             className={styles.lingoLogo}
             src={lekeLenteLingoLogo}
             alt="Leke Lente Lingo"
+            style={logoTransitionVars}
           />
         </header>
 
@@ -662,7 +1073,9 @@ export default function Onboarding() {
             aria-hidden="true"
           />
 
-          <div className={styles.paneelBinne}>
+          <div
+            className={`${styles.paneelBinne} ${stap === 1 ? styles.mobieleEersteStap : stap === 2 ? styles.mobieleReelsStap : styles.mobieleProfielStap}`}
+          >
             <div
               className={styles.vordering}
               aria-label={`Step ${stap} of 3`}
@@ -705,9 +1118,7 @@ export default function Onboarding() {
                   >
                     {item.n > 1 && (
                       <span
-                        className={
-                          styles.vorderVerbinding
-                        }
+                        className={`${styles.vorderVerbinding} ${stap >= item.n ? styles.vorderVerbindingVoltooi : ''}`}
                         aria-hidden="true"
                       />
                     )}
@@ -720,16 +1131,53 @@ export default function Onboarding() {
                         : item.n}
                     </span>
 
-                    <small>
-                      {item.titel}
+                    <small
+                      className={styles.vorderNaam}
+                      aria-label={item.titel}
+                    >
+                      <span
+                        className={styles.vorderNaamPlat}
+                        aria-hidden="true"
+                      >
+                        {item.titel}
+                      </span>
+
+                      <svg
+                        className={styles.vorderNaamBoog}
+                        viewBox="0 0 132 56"
+                        aria-hidden="true"
+                      >
+                        <defs>
+                          <path
+                            id={`stap-boog-${item.n}`}
+                            d="M 24 7 C 24 34 42 49 66 49 C 90 49 108 34 108 7"
+                          />
+                        </defs>
+                        <text>
+                          <textPath
+                            href={`#stap-boog-${item.n}`}
+                            startOffset="50%"
+                            textAnchor="middle"
+                          >
+                            {item.titel}
+                          </textPath>
+                        </text>
+                      </svg>
                     </small>
                   </div>
                 )
               })}
             </div>
 
+            {stap !== 1 && (
+              <div className={styles.mobieleStapOpskrif} key={`mobile-step-${stap}`}>
+                <p>{STAPPE[stap - 1].beskrywing}</p>
+              </div>
+            )}
+
             <div className={styles.stapVenster}>
               <div
+                ref={contentScrollRef}
                 className={[
                   styles.stapInhoud,
                   transitionClass,
@@ -737,7 +1185,57 @@ export default function Onboarding() {
                   .filter(Boolean)
                   .join(' ')}
               >
-                {successState ? (
+                {showLogoutConfirm ? (
+                  <div
+                    className={styles.logoutConfirm}
+                    role="alertdialog"
+                    aria-modal="true"
+                    aria-labelledby="logout-confirm-title"
+                    aria-describedby="logout-confirm-description"
+                  >
+                    <div className={styles.logoutConfirmIcon} aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M10 5H6.8A1.8 1.8 0 0 0 5 6.8v10.4A1.8 1.8 0 0 0 6.8 19H10M14.5 8.5 18 12l-3.5 3.5M9 12h9" />
+                      </svg>
+                    </div>
+
+                    <h2
+                      id="logout-confirm-title"
+                      className={styles.paneelTitel}
+                    >
+                      Are you sure?
+                    </h2>
+
+                    <p
+                      id="logout-confirm-description"
+                      className={styles.paneelBeskrywing}
+                    >
+                      You will return to the Google and Apple sign-in screen.
+                    </p>
+
+                    <div className={styles.logoutConfirmAksies}>
+                      <button
+                        type="button"
+                        className={styles.navSekonder}
+                        disabled={isTransitioning}
+                        onClick={() =>
+                          void wisselLogoutBevestiging(false)
+                        }
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.navPrimar}
+                        disabled={isTransitioning}
+                        onClick={() => void tekenUit()}
+                      >
+                        Yes, sign out
+                      </button>
+                    </div>
+                  </div>
+                ) : successState ? (
                   <div
                     className={styles.successState}
                     aria-live="polite"
@@ -781,10 +1279,6 @@ export default function Onboarding() {
                       <div
                         className={styles.loginStap}
                       >
-                        <p className={styles.oog}>
-                          Stap een
-                        </p>
-
                         <h1
                           className={styles.paneelTitel}
                         >
@@ -868,24 +1362,14 @@ export default function Onboarding() {
                       <div
                         className={styles.reelsStap}
                       >
-                        <p className={styles.oog}>
-                          Stap twee
-                        </p>
-
                         <h1
                           className={styles.paneelTitel}
                         >
                           Só werk die boek.
                         </h1>
 
-                        <p
-                          className={
-                            styles.paneelBeskrywing
-                          }
-                        >
-                          Vier eenvoudige stappe.
-                          Vind, skep, stem en
-                          versamel.
+                        <p className={`${styles.paneelBeskrywing} ${styles.desktopStapBeskrywing}`}>
+                          Vind, skep, stem en versamel jou feeswoorde.
                         </p>
 
                         <ol
@@ -920,24 +1404,14 @@ export default function Onboarding() {
                       <div
                         className={styles.profielStap}
                       >
-                        <p className={styles.oog}>
-                          Stap drie
-                        </p>
-
                         <h1
                           className={styles.paneelTitel}
                         >
                           Bou jou profiel.
                         </h1>
 
-                        <p
-                          className={
-                            styles.paneelBeskrywing
-                          }
-                        >
-                          Kies jou profielprent en
-                          maak ’n unieke
-                          gebruikersnaam.
+                        <p className={`${styles.paneelBeskrywing} ${styles.desktopStapBeskrywing}`}>
+                          Kies jou avatar en maak jou unieke gebruikersnaam.
                         </p>
 
                         <div
@@ -1049,18 +1523,29 @@ export default function Onboarding() {
 
                               <input
                                 id="username"
+                                name="lente-display-name"
+                                type="text"
                                 value={username}
+                                minLength={3}
                                 maxLength={22}
-                                autoComplete="username"
+                                pattern="[A-Za-z0-9_]{3,22}"
+                                inputMode="text"
+                                autoComplete="off"
+                                autoCapitalize="none"
+                                spellCheck={false}
+                                title="Use letters, numbers, and underscores only."
                                 placeholder="toilet_towenaar"
                                 onChange={(event) => {
-                                  const nextValue =
+                                  const typedValue =
                                     event.target.value
                                       .replace(/^@/, '')
-                                      .replace(
-                                        /[^a-zA-Z0-9_]/g,
-                                        '',
-                                      )
+                                      .split('@')[0]
+
+                                  const nextValue =
+                                    typedValue.replace(
+                                      /[^a-zA-Z0-9_]/g,
+                                      '',
+                                    )
 
                                   setUsername(nextValue)
                                 }}
@@ -1165,7 +1650,7 @@ export default function Onboarding() {
                         stap === 2
                       }
                       onClick={() =>
-                        void tekenUit()
+                        void wisselLogoutBevestiging(true)
                       }
                     >
                       <span className={styles.navNaam}>
