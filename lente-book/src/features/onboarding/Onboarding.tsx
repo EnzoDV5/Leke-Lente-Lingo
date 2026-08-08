@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../auth/AuthContext'
-import SkyBackground from '../../components/decor/SkyBackground'
 import styles from './Onboarding.module.css'
+import OnboardingBackground from '../../components/decor/OnboardingBackground'
 
 const KARAKTERS = [
   { id: 'flower', emoji: '🌼', naam: 'Blomkop',    kleur: '#f5c518' },
@@ -71,7 +71,7 @@ export default function Onboarding() {
   if (loading || profileLoading) {
     return (
       <main className={styles.laai}>
-        <SkyBackground />
+        <OnboardingBackground />
         <span>Lente Book groei…</span>
       </main>
     )
@@ -79,7 +79,7 @@ export default function Onboarding() {
 
   return (
     <main className={styles.blad}>
-      <SkyBackground />
+      <OnboardingBackground />
 
       <div className={styles.raam}>
         <section className={styles.introKant}>

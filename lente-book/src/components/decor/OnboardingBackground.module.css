@@ -1,0 +1,40 @@
+.wrap {
+  position: fixed; inset: 0; overflow: hidden; z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ---- circular orbit: ring spins, cloud counter-spins to stay upright ---- */
+.spin, .counter {
+  animation-duration: var(--dur, 50s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--delay, 0s);
+}
+.spin {
+  position: absolute; top: 45%; left: 50%; width: 0; height: 0;
+  animation-name: spin;
+}
+.counter { animation-name: counter; }
+.offset {
+  position: absolute; top: 0; left: 0;
+  transform: translate(-50%, -50%) translateX(var(--r, 30vmax));
+}
+.rev.spin { animation-direction: reverse; }
+.rev .counter { animation-direction: reverse; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes counter { to { transform: rotate(-360deg); } }
+
+.cloudImg {
+  display: block; max-width: 72vw; height: auto;
+  filter: drop-shadow(0 16px 24px rgba(30,60,120,.20));
+}
+
+.star { position: absolute; animation: twinkle 3.5s ease-in-out infinite; }
+@keyframes twinkle { 0%,100% { opacity:.5; transform: scale(.9); } 50% { opacity:1; transform: scale(1.12); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin, .counter, .star { animation: none; }
+}
