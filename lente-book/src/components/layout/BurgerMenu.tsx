@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../../features/auth/AuthContext'
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const LINKS = [
+  { to: '/', label: 'Tuis' },
   { to: '/woordeboek', label: 'Woordeboek' },
   { to: '/foto', label: 'Voeg Foto By' },
   { to: '/woordjag', label: 'Lente Bingo' },
@@ -57,35 +59,29 @@ export default function BurgerMenu({
   useEffect(() => {
     if (!open) return
 
-    const scrollY = window.scrollY
-    const previousBody = {
-      position: document.body.style.position,
-      top: document.body.style.top,
-      width: document.body.style.width,
-      overflow: document.body.style.overflow,
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
     }
-    const previousHtmlOverflow = document.documentElement.style.overflow
 
-    document.documentElement.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
-    document.body.style.overflow = 'hidden'
+    const closeWhenHidden = () => {
+      if (document.visibilityState === 'hidden') onClose()
+    }
+
+    window.addEventListener('keydown', closeOnEscape)
+    document.addEventListener('visibilitychange', closeWhenHidden)
 
     return () => {
-      document.documentElement.style.overflow = previousHtmlOverflow
-      document.body.style.position = previousBody.position
-      document.body.style.top = previousBody.top
-      document.body.style.width = previousBody.width
-      document.body.style.overflow = previousBody.overflow
-      window.scrollTo(0, scrollY)
+      window.removeEventListener('keydown', closeOnEscape)
+      document.removeEventListener('visibilitychange', closeWhenHidden)
     }
-  }, [open])
+  }, [onClose, open])
 
   const currentIndex = Math.max(
     0,
     LINKS.findIndex((link) =>
-      pathname.startsWith(link.to),
+      link.to === '/'
+        ? pathname === '/'
+        : pathname.startsWith(link.to),
     ),
   )
 
@@ -103,10 +99,20 @@ export default function BurgerMenu({
     const link = LINKS[index]
     if (!link) return
     onClose()
-    navigate(link.to)
+
+    if (pathname === link.to) return
+
+    if (pathname === '/' && link.to !== '/') {
+      document.documentElement.classList.add('lente-home-leaving')
+      const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 620
+      window.setTimeout(() => navigate(link.to), delay)
+      return
+    }
+
+    navigate(link.to, { viewTransition: true })
   }
 
-  return (
+  return createPortal(
     <div
       className={`${styles.overlay} ${open ? styles.open : ''} fixed inset-0 z-40 overflow-hidden pt-[78px]`}
       aria-hidden={!open}
@@ -171,6 +177,7 @@ export default function BurgerMenu({
         ))}
       </div>
 
-    </div>
+    </div>,
+    document.body,
   )
 }

@@ -1,87 +1,32 @@
 .page {
   min-height: 100vh;
   padding-bottom: 6rem;
-  background: #fff7df;
+  overflow-x: hidden;
+  overflow-x: clip;
+  background: transparent;
   color: #191714;
 }
 
-.hero {
-  position: relative;
-  overflow: hidden;
-  padding: 4rem 1rem 3rem;
-  border-bottom: 5px solid #191714;
-  background: #1b1917;
-  text-align: center;
-  color: #fff7df;
+.collectionHero {
+  min-height: 538px;
+  padding-block: 1.25rem 5.25rem;
 }
 
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.12;
-  background-image: radial-gradient(
-    #ffca18 1px,
-    transparent 1px
-  );
-  background-size: 18px 18px;
-}
-
-.hero > * {
-  position: relative;
-  z-index: 1;
-}
-
-.kicker {
-  margin: 0 0 0.5rem;
-  color: #ffca18;
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-}
-
-.hero h1 {
-  margin: 0;
-  color: #fff7df;
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 11vw, 6.7rem);
-  line-height: 0.88;
-  transform: rotate(-2deg);
-  text-shadow: 5px 5px 0 #ef321d;
-}
-
-.hero > p:not(.kicker) {
-  max-width: 630px;
-  margin: 1.25rem auto 0;
-  color: rgba(255, 247, 223, 0.8);
-}
-
-.sparkOne,
-.sparkTwo {
-  position: absolute;
-  color: #ffca18;
-  font-size: 2rem;
-}
-
-.sparkOne {
-  left: 8%;
-  top: 26%;
-}
-
-.sparkTwo {
-  right: 9%;
-  top: 18%;
+@media (min-width: 901px) {
+  .collectionHero { padding-bottom: 6.5rem; }
 }
 
 .progressCard {
   display: grid;
-  max-width: 560px;
-  margin: 2rem auto 0;
-  padding: 1rem 1.15rem;
-  border: 4px solid #fff7df;
+  width: min(360px, calc(100% - 2rem));
+  box-sizing: border-box;
+  margin: .9rem auto 0;
+  padding: .65rem .85rem;
+  border: 3px solid #191714;
+  border-radius: var(--radius-festival);
   background: #ffca18;
   color: #191714;
-  box-shadow: 7px 7px 0 #ef321d;
+  box-shadow: 5px 5px 0 #ef321d;
   text-align: left;
 }
 
@@ -93,7 +38,7 @@
 
 .progressNumber strong {
   font-family: var(--font-display);
-  font-size: 2.4rem;
+  font-size: 2rem;
 }
 
 .progressNumber span {
@@ -102,9 +47,11 @@
 }
 
 .progressTrack {
-  height: 16px;
-  border: 3px solid #191714;
+  height: 10px;
+  border: 2px solid #191714;
   background: #fff7df;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .progressTrack span {
@@ -114,10 +61,68 @@
   transition: width 400ms ease;
 }
 
-.progressMessage {
-  margin-top: 0.55rem;
-  font-size: 0.76rem;
-  font-weight: 800;
+.communityProgress {
+  display: grid;
+  align-items: center;
+  width: fit-content;
+  min-width: 124px;
+  margin: 0 auto .7rem;
+  padding: .48rem .8rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  background: var(--color-pienk);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--color-oranje);
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.communityProgress strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+.communityProgress span {
+  margin-top: .18rem;
+  font-size: .58rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 390px) {
+  .progressCard { width: calc(100% - 1.5rem); }
+  .progressNumber { gap: .3rem; }
+  .progressNumber strong { font-size: 1.75rem; }
+  .progressNumber span { font-size: .72rem; }
+  .communityProgress { min-width: 108px; padding: .4rem .6rem; }
+  .communityProgress strong { font-size: 1.15rem; }
+}
+
+@media (max-width: 900px) {
+  .collectionHero { min-height: 508px; }
+}
+
+@media (max-width: 600px) {
+  .collectionHero {
+    min-height: 528px;
+    padding: 1rem .7rem 5.25rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .collectionHero { padding-inline: .45rem; }
+  .progressCard { padding-inline: .65rem; }
+  .progressNumber { align-items: center; }
+  .communityProgress { min-width: 84px; }
+  .communityProgress span { font-size: .52rem; }
+}
+
+@media (max-width: 900px) and (max-height: 520px) and (orientation: landscape) {
+  .collectionHero {
+    min-height: 508px;
+    padding-block: .75rem 4.25rem;
+  }
 }
 
 .successBanner,
@@ -139,6 +144,7 @@
   border: 4px solid #191714;
   background: #20c84b;
   box-shadow: 6px 6px 0 #191714;
+  border-radius: var(--radius-festival);
 }
 
 .successBanner > span {
@@ -172,9 +178,10 @@
   gap: 1rem;
   margin-top: 2rem;
   padding: 1rem 1.2rem;
-  border: 4px solid #191714;
+  border: 3px solid var(--color-oranje);
   background: #fff;
-  box-shadow: 6px 6px 0 #191714;
+  box-shadow: 7px 7px 0 var(--color-sagpienk);
+  border-radius: var(--radius-festival);
 }
 
 .instructionIcon {
@@ -185,6 +192,7 @@
   border: 3px solid #191714;
   background: #2858df;
   font-size: 1.7rem;
+  border-radius: var(--radius-control);
 }
 
 .instructions h2 {
@@ -200,17 +208,29 @@
 }
 
 .grid {
+  position: relative;
   display: grid;
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
-  gap: 4.2rem 2rem;
+  gap: 4.8rem 2.4rem;
   width: min(
     1100px,
     calc(100% - 2rem)
   );
   margin: 3.5rem auto 0;
-  padding: 0 0.5rem;
+  padding: 2.2rem 1.5rem 2.8rem;
+  border-radius: 32px;
+  background-color: var(--color-groen);
+  background-image: url('../../assets/elements/grassbackround.webp');
+  background-position: center var(--grass-scroll-y, 0px);
+  background-size: cover;
+  background-repeat: repeat-y;
+  box-shadow: none;
+  will-change: background-position;
 }
+
+.desktopWildcard { display: contents; }
+.mobileWildcard { display: none; }
 
 .loading,
 .error {
@@ -224,15 +244,16 @@
 }
 
 .reward {
-  display: grid;
+  display: none;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 1.25rem;
   margin-top: 5rem;
   padding: 1.4rem;
-  border: 5px solid #191714;
-  background: #d7d0c2;
-  box-shadow: 9px 9px 0 #191714;
+  border: 4px solid var(--color-oranje);
+  background: #f8d4e5;
+  box-shadow: 9px 9px 0 var(--color-geel);
+  border-radius: var(--radius-festival);
 }
 
 .rewardOpen {
@@ -267,13 +288,20 @@
 
 .reward button {
   padding: 1rem;
-  border: 4px solid #191714;
-  background: #191714;
-  color: #fff7df;
+  border: 3px solid var(--color-oranje);
+  background: var(--color-pienk);
+  color: #fff;
   font-family: var(--font-display);
   font-weight: 900;
   cursor: pointer;
   box-shadow: 5px 5px 0 #ef321d;
+  border-radius: var(--radius-control);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.reward button:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 8px 0 #ef321d;
 }
 
 .reward button:disabled {
@@ -301,6 +329,7 @@
   color: #191714;
   box-shadow: 12px 12px 0 #ffca18;
   text-align: center;
+  border-radius: var(--radius-festival);
 }
 
 .close {
@@ -352,6 +381,7 @@
   border: 3px solid #191714;
   background: white;
   font: inherit;
+  border-radius: var(--radius-control);
 }
 
 .openButton {
@@ -366,6 +396,13 @@
   text-transform: uppercase;
   box-shadow: 5px 5px 0 #191714;
   cursor: pointer;
+  border-radius: var(--radius-control);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.openButton:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: 5px 8px 0 #191714;
 }
 
 .openButton:disabled {
@@ -396,15 +433,18 @@
 }
 
 @media (max-width: 560px) {
-  .hero {
-    padding-top: 3rem;
-  }
-
   .grid {
     grid-template-columns: 1fr;
     gap: 3rem;
     max-width: 390px;
+    width: calc(100% - 1.5rem);
+    padding: 1.5rem 1rem 2.2rem;
+    border-radius: 22px;
+    background-color: transparent;
+    background-image: none;
+    will-change: auto;
   }
+
 
   .instructions {
     align-items: flex-start;
@@ -418,4 +458,131 @@
   .reward > span {
     margin: auto;
   }
+}
+
+/* The Wildcard is the final create-your-own-scenario reward, not poster six. */
+.reward {
+  width: 100vw;
+  max-width: none;
+  min-height: clamp(420px, 62svh, 620px);
+  box-sizing: border-box;
+  margin: 20rem 0 -6rem calc(50% - 50vw);
+  padding: clamp(4rem, 8vw, 7rem) max(1rem, calc((100vw - 1100px) / 2)) clamp(9rem, 13vw, 12rem);
+  border: 0;
+  border-radius: 42px 42px 0 0;
+  background-color: var(--color-groen);
+  background-image: url('../../assets/elements/grassbackround.webp');
+  background-position: center var(--grass-scroll-y, 0px);
+  background-size: cover;
+  background-repeat: repeat-y;
+  background-attachment: fixed;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.rewardCard {
+  display: grid;
+  grid-template-columns: minmax(250px, 330px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  width: min(100%, 960px);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform-origin: center bottom;
+}
+
+.rewardLegacyIcon { display: none; }
+.rewardCopy > p:last-child { margin-bottom: 0; }
+.rewardCard > button { min-width: 160px; }
+
+.wildcardPoster { position: relative; overflow: hidden; width: 100%; aspect-ratio: 3 / 4; padding: .45rem; border: 4px solid var(--color-oranje); border-radius: 24px; background: #fbf7ef; box-shadow: 7px 8px 0 #8334be; transform-origin: center bottom; animation: wildcardLift 1ms linear both; animation-timeline: view(); animation-range: entry 0% entry 82%; }
+.wildcardPoster img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+.wildcardNumber { position: absolute; z-index: 3; top: .85rem; left: .85rem; display: grid; width: 38px; height: 38px; place-items: center; border: 2px solid var(--color-oranje); border-radius: 50%; background: var(--color-geel); font-family: var(--font-pixel); font-size: .72rem; box-shadow: 3px 3px 0 var(--color-oranje); }
+.wildcardLock { position: absolute; z-index: 3; inset: .45rem; display: grid; align-content: center; justify-items: center; gap: .7rem; border-radius: 16px; background: rgba(251,247,239,.72); font-size: clamp(3rem, 7vw, 5rem); }
+.wildcardLock strong { min-width: 142px; box-sizing: border-box; padding: .75rem 1rem; border: 3px solid var(--color-oranje); border-radius: 12px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-pixel); font-size: .84rem; text-align: center; text-transform: uppercase; box-shadow: 4px 4px 0 var(--color-geel); }
+.wildcardPoster > strong { position: absolute; z-index: 4; right: .8rem; bottom: .8rem; left: .8rem; padding: .55rem; border: 2px solid var(--color-oranje); border-radius: 10px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-pixel); font-size: .67rem; text-align: center; }
+
+@keyframes wildcardLift {
+  0% { opacity: 0; transform: perspective(900px) translateY(55%) rotateX(28deg) scale(.82); filter: blur(5px); }
+  68% { opacity: 1; transform: perspective(900px) translateY(calc(-50% - 5rem)) rotateX(-3deg) scale(1.015); filter: blur(0); }
+  84% { transform: perspective(900px) translateY(calc(-50% - 3.5rem)) rotateX(1deg) scale(.995); }
+  100% { opacity: 1; transform: perspective(900px) translateY(calc(-50% - 4rem)) rotateX(0) scale(1); filter: blur(0); }
+}
+
+.rewardCopy { color: #fff; }
+.rewardLegacyDescription { display: none; }
+.rewardDescription { max-width: 620px; }
+.rewardKicker { color: var(--color-geel); font-family: var(--font-pixel); }
+.rewardCopy h2 { color: #fff; font-family: var(--font-pixel); font-weight: 900; line-height: .88; text-shadow: 3px 3px 0 var(--color-oranje); }
+.rewardCopy > p:last-child { color: #fff; font-weight: 800; line-height: 1.5; }
+
+@media (max-width: 700px) {
+  .desktopWildcard { display: none; }
+  .mobileWildcard { display: contents; }
+  .reward { display: block; isolation: isolate; min-height: 0; margin-top: 6rem; padding: 2.75rem 1rem 0; border-radius: 0; background: transparent; }
+  .reward::before { content: ""; position: absolute; z-index: 0; top: 24rem; right: 0; bottom: 0; left: 0; border-radius: 32px 32px 0 0; background-color: var(--color-groen); background-image: url('../../assets/elements/grassbackround.webp'); background-position: center var(--grass-scroll-y, 0px); background-size: 145% auto; background-repeat: repeat-y; will-change: background-position; }
+  .reward::after { content: none; }
+  .rewardCard { position: relative; z-index: 1; grid-template-columns: 1fr; gap: 1.2rem; text-align: center; }
+  .rewardCopy { order: 1; }
+  .rewardCopy { color: var(--color-ink); }
+  .rewardKicker { color: var(--color-oranje); }
+  .rewardCopy h2 { color: var(--color-oranje); text-shadow: 2px 2px 0 var(--color-geel); }
+  .rewardCopy h2 { font-size: clamp(2.3rem, 11vw, 3.4rem); }
+  .rewardCopy > p:last-child { color: var(--color-ink); }
+  .rewardDescription { margin: .75rem auto 0; color: var(--color-ink); font-size: 1rem; font-weight: 800; line-height: 1.5; }
+  .wildcardPoster { order: 2; width: min(350px, calc(100vw - 2rem)); box-sizing: border-box; margin: .5rem auto -2.25rem; opacity: .18; transform: perspective(850px) translateY(56%) rotateX(18deg); filter: blur(3px); animation: none; animation-timeline: auto; animation-range: normal; transition: transform 1.65s cubic-bezier(.18, .55, .25, 1), opacity 1.25s ease-out, filter 1.25s ease-out; will-change: transform, opacity, filter; }
+  .rewardEntrance .wildcardPoster { opacity: 1; transform: perspective(850px) translateY(0) rotateX(0); filter: blur(0); animation: none; animation-timeline: auto; animation-range: normal; transition-duration: 1.45s, 1.05s, 1.05s; transition-timing-function: cubic-bezier(.16, 1, .3, 1), ease-out, ease-out; }
+  .wildcardPoster > strong { display: none; }
+  .rewardCard > button { order: 3; width: min(350px, 100%); margin: 1.5rem auto 3rem; }
+  .rewardCard > button:disabled { display: none; }
+}
+
+@media (max-width: 700px) {
+  .rewardUnlocking .rewardCopy {
+    pointer-events: none;
+    animation: wildcardCopyAway 650ms ease both;
+  }
+
+  .rewardUnlocking .rewardCard > button {
+    animation: wildcardCopyAway 500ms ease both;
+  }
+
+  .rewardUnlocking .wildcardPoster {
+    z-index: 20;
+    animation: wildcardJoinCollection 2.65s .45s cubic-bezier(.22, .72, .12, 1) both;
+  }
+
+  .rewardUnlocking::before {
+    transform-origin: bottom center;
+    animation: wildcardGrassCollapse 2.1s .8s cubic-bezier(.65, 0, .35, 1) both;
+  }
+
+  .rewardJoined { display: none; }
+}
+
+@keyframes wildcardCopyAway {
+  to { opacity: 0; transform: translateY(-18px); filter: blur(4px); }
+}
+
+@keyframes wildcardJoinCollection {
+  0% { opacity: 1; transform: perspective(850px) translateY(0) rotateX(0) scale(1); }
+  22% { transform: perspective(850px) translateY(18px) rotateX(-5deg) scale(1.025); }
+  100% { opacity: .15; transform: perspective(850px) translateY(calc(-115vh - 220px)) rotateX(0) scale(.76); }
+}
+
+@keyframes wildcardGrassCollapse {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wildcardPoster { opacity: 1; animation: none; transform: none; }
+  .rewardUnlocking .rewardCopy,
+  .rewardUnlocking .rewardCard > button,
+  .rewardUnlocking .wildcardPoster,
+  .rewardUnlocking::before { animation-duration: 1ms; animation-delay: 0ms; }
 }

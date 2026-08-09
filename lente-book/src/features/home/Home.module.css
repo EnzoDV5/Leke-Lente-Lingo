@@ -3,7 +3,7 @@
   z-index: 1;
 
   width: 100%;
-  min-height: 100svh;
+  min-height: 112svh;
   margin-top: -108px;
 
   display: grid;
@@ -23,11 +23,11 @@
 .festivalPhoto {
   --angle: calc((var(--photo-index) - 8) * 2deg);
   position: absolute;
-  width: clamp(105px, 10vw, 165px);
+  width: clamp(125px, 12.5vw, 195px);
   margin: 0;
-  padding: 7px 7px 10px;
+  padding: 10px 10px 12px;
   background: var(--color-paper);
-  border: 3px solid var(--color-oranje);
+  border: none;
   border-radius: 8px;
   box-shadow: 7px 8px 0 rgba(22, 21, 15, .3);
   opacity: 1;
@@ -126,6 +126,7 @@
   z-index: 30;
   display: grid;
   place-items: center;
+  transform: translateY(clamp(-88px, -8svh, -48px));
 }
 
 .heroLogo {
@@ -154,37 +155,131 @@
 
 .photoTotal {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 4px);
   left: 50%;
   display: flex;
   align-items: center;
-  gap: .45rem;
-  min-height: 42px;
-  padding: .45rem .85rem;
-  color: var(--color-oranje);
-  background: var(--color-geel);
-  border: 3px solid var(--color-oranje);
-  border-radius: 999px;
-  box-shadow: 0 5px 0 rgba(22, 21, 15, .16);
-  font-family: var(--font-pixel), monospace;
+  gap: .9rem;
+  min-height: 76px;
+  padding: .7rem 1.45rem .7rem .8rem;
+  color: var(--color-paper);
+  background: var(--color-oranje);
+  border: 3px solid var(--color-ink);
+  border-radius: 20px 8px 20px 8px;
+  box-shadow: 8px 9px 0 var(--color-geel), 12px 13px 0 var(--color-ink);
   white-space: nowrap;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(-1.5deg);
+  animation: photoTotalArrive 680ms 650ms cubic-bezier(.18,1.45,.4,1) backwards;
 }
 
-.photoTotal span { font-size: 1.05rem; }
-.photoTotal strong { font-size: 1.35rem; line-height: 1; }
-.photoTotal small { font-size: .82rem; font-weight: 800; }
+.cameraIcon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 44px;
+  flex: 0 0 auto;
+  background: var(--color-geel);
+  border: 3px solid var(--color-ink);
+  border-radius: 7px;
+  transform: rotate(-5deg);
+}
 
-.heroLogo.handedOffLogo {
-  max-width: none;
-  max-height: none;
-  opacity: 1;
-  transform-origin: center center;
+.cameraIcon::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 9px;
+  width: 19px;
+  height: 8px;
+  background: var(--color-geel);
+  border: 3px solid var(--color-ink);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.cameraIcon i {
+  width: 20px;
+  height: 20px;
+  background: var(--color-blou);
+  border: 3px solid var(--color-ink);
+  border-radius: 50%;
+  animation: cameraBlink 3.2s 2.4s ease-in-out infinite;
+}
+
+.photoCountCopy { display: grid; gap: 1px; text-align: left; }
+
+.photoCountCopy strong {
+  min-width: 4.2ch;
+  font-family: var(--font-display);
+  font-size: 2.35rem;
+  line-height: .9;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.photoCountCopy small {
+  color: var(--color-geel);
+  font-family: var(--font-pixel), monospace;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.liveSpark {
+  position: absolute;
+  top: -22px;
+  right: -24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 54px;
+  height: 54px;
+  color: var(--color-ink);
+  background: var(--color-geel);
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  font-family: var(--font-pixel), monospace;
+  font-size: .55rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  transform: rotate(7deg);
+  animation: liveFloat 2.4s ease-in-out infinite;
+}
+
+.liveSpark i {
+  width: 7px;
+  height: 7px;
+  background: var(--color-oranje);
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(237, 73, 36, .55);
+  animation: livePulse 1.5s ease-out infinite;
+}
+
+@keyframes photoTotalArrive {
+  from { opacity: 0; transform: translate(-50%, 22px) rotate(5deg) scale(.72); }
+}
+
+@keyframes cameraBlink {
+  0%, 86%, 100% { transform: scale(1); background: var(--color-blou); }
+  91% { transform: scale(.65); background: var(--color-paper); }
+}
+
+@keyframes liveFloat {
+  50% { transform: translateY(-4px) rotate(3deg) scale(1.04); }
+}
+
+@keyframes livePulse {
+  70% { box-shadow: 0 0 0 6px rgba(237, 73, 36, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(237, 73, 36, 0); }
 }
 
 .homeContent {
   position: relative;
   z-index: 2;
+  background: transparent;
 
   animation:
     homeContentIn
@@ -238,7 +333,7 @@
 
 @media (max-width: 900px) {
   .cloudHero {
-    min-height: 100svh;
+    min-height: 108svh;
     margin-top: -78px;
   }
 
@@ -250,22 +345,33 @@
     transform: translateY(0);
   }
 
-  .photoTotal {
-    top: calc(100% + 4px);
-    min-height: 36px;
-    padding: .38rem .7rem;
-    gap: .35rem;
-    border-width: 2px;
+  .heroBrand {
+    transform: translateY(clamp(-64px, -6svh, -36px));
   }
 
-  .photoTotal span { font-size: 1rem; }
-  .photoTotal strong { font-size: 1.12rem; }
-  .photoTotal small { font-size: .7rem; }
+  .photoTotal {
+    top: calc(100% + 2px);
+    min-height: 66px;
+    padding: .6rem 1.1rem .6rem .65rem;
+    gap: .7rem;
+    border-width: 3px;
+  }
+
+  .cameraIcon { width: 42px; height: 37px; }
+  .photoCountCopy strong { font-size: 1.9rem; }
+  .photoCountCopy small { font-size: .64rem; }
+  .liveSpark {
+    top: -18px;
+    right: -20px;
+    width: 46px;
+    height: 46px;
+    font-size: .48rem;
+  }
 
   .festivalPhoto {
     display: block;
-    width: clamp(64px, 20vw, 100px);
-    padding: 5px 5px 7px;
+    width: clamp(82px, 21vw, 116px);
+    padding: 8px 8px 10px;
     right: auto;
     left: var(--mobile-photo-x);
     top: var(--mobile-photo-y);
@@ -275,9 +381,9 @@
   .festivalPhoto figcaption {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1px;
-    padding-top: 4px;
-    font-size: .5rem;
+    gap: 2px;
+    padding-top: 7px;
+    font-size: .62rem;
     line-height: 1.05;
   }
 
@@ -287,22 +393,22 @@
   }
 
   .photoUser img {
-    width: 12px;
-    height: 12px;
-    flex-basis: 12px;
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
   }
 
   .festivalPhoto strong {
     width: 100%;
     overflow-wrap: anywhere;
-    font-size: .56rem;
+    font-size: .68rem;
     line-height: 1.05;
   }
 
   .festivalPhoto figcaption span {
     width: 100%;
     overflow: hidden;
-    font-size: .45rem;
+    font-size: .55rem;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -328,4 +434,8 @@
   }
 
   .festivalPhoto { animation-duration: 1ms; animation-delay: 0ms; }
+  .photoTotal,
+  .cameraIcon i,
+  .liveSpark,
+  .liveSpark i { animation: none; }
 }

@@ -1,8 +1,35 @@
-.card { padding: 1.1rem 1.2rem; border-radius: var(--radius-card); box-shadow: var(--shadow-lift); }
-.frase { font-family: var(--font-body); font-weight: 600; font-size: 1rem; line-height: 1.35; margin: 0 0 1rem; }
-.balk { display: flex; align-items: center; justify-content: space-between; gap: .75rem; background: var(--color-card); color: var(--color-ink); border-radius: 12px; padding: .6rem .75rem; }
-.top { display: flex; align-items: baseline; gap: .4rem; flex-wrap: wrap; min-width: 0; }
-.kroon { font-size: .9rem; }
-.woord { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
-.meta { font-size: .72rem; color: #666; }
-.knoppie { flex-shrink: 0; font-family: var(--font-display); font-weight: 600; font-size: .8rem; text-decoration: none; color: var(--color-paper); background: var(--color-ink); padding: .45rem .8rem; border-radius: var(--radius-pill); }
+.card { padding: 1rem; border: 3px solid var(--color-oranje); border-radius: 24px; box-shadow: 6px 6px 0 var(--color-sagpienk); }
+.author { display: inline-flex; align-items: center; gap: .55rem; margin-bottom: .85rem; padding: .35rem .65rem .35rem .35rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-paper); color: var(--color-ink); box-shadow: 3px 3px 0 rgba(22,21,15,.16); }
+.author img, .wordAvatar { display: block; overflow: hidden; border-radius: 50%; object-fit: cover; }
+.author img { width: 34px; height: 34px; border: 2px solid var(--color-oranje); }
+.author img.officialLogo { width: 76px; height: 42px; padding: 0; border: 0; border-radius: 0; box-sizing: border-box; object-fit: contain; }
+.author > span, .wordCopy { display: grid; min-width: 0; }
+.author small { font-family: var(--font-pixel); font-size: .55rem; line-height: 1.1; text-transform: uppercase; }
+.wordCopy > small { margin-bottom: .16rem; font-family: var(--font-pixel); font-size: .67rem; font-weight: 800; line-height: 1.1; text-transform: uppercase; }
+.author strong { font-family: var(--font-display); font-size: .74rem; }
+.frase { max-width: 620px; margin: 0 0 1rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 2.2vw, 1.3rem); line-height: 1.25; }
+.balk { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .65rem; border: 2px solid var(--color-oranje); border-radius: 16px; background: var(--color-card); color: var(--color-ink); }
+.top { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+.wordAvatar { width: 44px; height: 44px; flex: 0 0 auto; border: 2px solid var(--color-oranje); background: white; }
+.wordAvatar.brandWordAvatar { padding: 5px; object-fit: contain; }
+.woord { overflow: hidden; font-family: var(--font-display); font-weight: 900; font-size: 1rem; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
+.meta { color: #666; font-size: .7rem; }
+.actions { display: flex; align-items: center; gap: .45rem; flex: 0 0 auto; }
+.cardVotes { display: inline-flex; align-items: center; gap: .2rem; padding: .5rem .6rem; border: 2px solid var(--color-ink); border-radius: 10px; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-display); font-size: .82rem; }
+.cardVotes b { font-size: .9rem; }
+.knoppie { display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0; padding: .55rem .85rem; border: 2px solid var(--color-ink); border-radius: 10px; background: var(--color-geel); color: var(--color-ink); box-shadow: 3px 3px 0 var(--color-oranje); font-family: var(--font-display); font-weight: 800; font-size: .8rem; text-decoration: none; transition: transform 150ms ease, box-shadow 150ms ease; }
+.knoppie:hover { transform: translateY(-2px); box-shadow: 3px 5px 0 var(--color-oranje); }
+
+@media (max-width: 520px) {
+  .card { padding: .85rem; }
+  .balk { gap: .45rem; padding: .55rem; }
+  .top { gap: .45rem; flex: 1; overflow: hidden; }
+  .wordAvatar { width: 40px; height: 40px; }
+  .wordCopy > small { font-size: .52rem; }
+  .woord { font-size: .9rem; }
+  .meta { gap: .25rem; font-size: .62rem; }
+  .actions { gap: .3rem; }
+  .cardVotes { padding: .48rem .45rem; font-size: .72rem; }
+  .cardVotes b { font-size: .78rem; }
+  .knoppie { justify-content: center; padding: .52rem .65rem; }
+}

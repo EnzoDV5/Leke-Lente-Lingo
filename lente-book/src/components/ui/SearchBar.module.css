@@ -3,7 +3,9 @@
 .input {
   width: 100%; box-sizing: border-box; padding: .85rem 1rem .85rem 2.6rem;
   font-family: var(--font-body); font-size: 1rem; color: var(--color-ink);
-  background: var(--color-card); border: 2px solid var(--color-ink);
-  border-radius: var(--radius-pill); outline: none;
+  background: var(--color-card); border: 3px solid var(--color-oranje);
+  border-radius: var(--radius-control); outline: none;
+  box-shadow: 4px 4px 0 var(--color-sagpienk);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
-.input:focus { border-color: var(--color-oranje); }
+.input:focus { border-color: var(--color-pienk); transform: translateY(-2px); box-shadow: 4px 6px 0 var(--color-sagpienk); }

@@ -17,6 +17,7 @@ import type {
 type StoredWord = {
   id: string
   text: string
+  phraseId: string
 
   createdByUid: string
   createdByUsername: string
@@ -163,18 +164,11 @@ export function useLeaderboard() {
   const topWords = useMemo(() => {
     return [...rankedWords]
       .sort((first, second) => {
-        if (
-          second.score !== first.score
-        ) {
-          return (
-            second.score - first.score
-          )
+        if (second.upVotes !== first.upVotes) {
+          return second.upVotes - first.upVotes
         }
 
-        return (
-          second.upVotes -
-          first.upVotes
-        )
+        return second.totalVotes - first.totalVotes
       })
       .slice(0, 3)
   }, [rankedWords])
@@ -186,18 +180,11 @@ export function useLeaderboard() {
           word.totalVotes > 0,
       )
       .sort((first, second) => {
-        if (
-          first.score !== second.score
-        ) {
-          return (
-            first.score - second.score
-          )
+        if (second.downVotes !== first.downVotes) {
+          return second.downVotes - first.downVotes
         }
 
-        return (
-          second.downVotes -
-          first.downVotes
-        )
+        return second.totalVotes - first.totalVotes
       })
       .slice(0, 3)
   }, [rankedWords])
@@ -208,6 +195,9 @@ export function useLeaderboard() {
 
     totalVotes:
       storedVotes.length,
+
+    totalWords:
+      storedWords.length,
 
     loading:
       wordsLoading || votesLoading,

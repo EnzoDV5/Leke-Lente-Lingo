@@ -1,110 +1,261 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
+
 import Section from '../../../components/ui/Section'
-import Reveal from '../../../components/ui/Reveal'
-import { useLeaderboard, type LeaderboardWord } from '../../../hooks/useLeaderboard'
+import {
+  fallbackProfileAvatar,
+  profileAvatar,
+  resolveProfileAvatar,
+} from '../../../lib/profileAvatars'
+import {
+  useLeaderboard,
+  type LeaderboardWord,
+} from '../../../hooks/useLeaderboard'
 import styles from './Leaderboard.module.css'
 
 type Mode = 'top' | 'worst'
 
-const MIN_H = 80
-const MAX_H = 220
-
-// Wys 'n lewendige podium selfs voor Firestore woorde het — verdwyn sodra regte data inkom.
 const FALLBACK_TOP: LeaderboardWord[] = [
-  { id: 'f1', text: 'Pronkdans', createdByUid: '', createdByUsername: '@miela_lig',      createdByAvatar: '🕺', upVotes: 623, downVotes: 12, score: 611, totalVotes: 635 },
-  { id: 'f2', text: 'Nananing',  createdByUid: '', createdByUsername: '@tika_mooi',      createdByAvatar: '🎤', upVotes: 567, downVotes: 20, score: 547, totalVotes: 587 },
-  { id: 'f3', text: 'Kyksog',    createdByUid: '', createdByUsername: '@dansvloer_daan', createdByAvatar: '👀', upVotes: 445, downVotes: 30, score: 415, totalVotes: 475 },
-]
-const FALLBACK_WORST: LeaderboardWord[] = [
-  { id: 'w1', text: 'Blaaskans',  createdByUid: '', createdByUsername: '@fees_flits', createdByAvatar: '😬', upVotes: 4,  downVotes: 120, score: -116, totalVotes: 124 },
-  { id: 'w2', text: 'Toustront',  createdByUid: '', createdByUsername: '@rine_nag',   createdByAvatar: '🫠', upVotes: 8,  downVotes: 90,  score: -82,  totalVotes: 98 },
-  { id: 'w3', text: 'Vreemdwarm', createdByUid: '', createdByUsername: '@jaco_groot', createdByAvatar: '🥴', upVotes: 12, downVotes: 70,  score: -58,  totalVotes: 82 },
+  { id: 'skouer-1', phraseId: 'beats-blok-skouers', text: 'Uitsigvreter', createdByUid: '', createdByUsername: '@fees_flits', createdByAvatar: profileAvatar(2), upVotes: 745, downVotes: 12, score: 733, totalVotes: 757 },
+  { id: 'kaart-1', phraseId: 'dopstop-bankkaart', text: 'Tikgeloof', createdByUid: '', createdByUsername: '@miela_lig', createdByAvatar: profileAvatar(3), upVotes: 703, downVotes: 20, score: 683, totalVotes: 723 },
+  { id: 'dans-1', phraseId: 'beats-blok-drinks', text: 'Dopklapper', createdByUid: '', createdByUsername: '@dansvloer_daan', createdByAvatar: profileAvatar(4), upVotes: 682, downVotes: 30, score: 652, totalVotes: 712 },
 ]
 
-const isImage = (v: string) => v.startsWith('http://') || v.startsWith('https://')
+const FALLBACK_WORST: LeaderboardWord[] = [
+  { id: 'kaart-remix-3', phraseId: 'dopstop-bankkaart', text: 'Kaartgebed-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(4), upVotes: 4, downVotes: 120, score: -116, totalVotes: 124 },
+  { id: 'twee-remix-3', phraseId: 'poep-pods-twee', text: 'Poep-pasmaat-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(5), upVotes: 8, downVotes: 90, score: -82, totalVotes: 98 },
+  { id: 'rook-remix-3', phraseId: 'choef-hoek-crowded', text: 'Pofpodium-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(6), upVotes: 12, downVotes: 70, score: -58, totalVotes: 82 },
+]
+
+function isImage(value: string) {
+  return (
+    value.startsWith('http://') ||
+    value.startsWith('https://') ||
+    value.startsWith('/') ||
+    value.startsWith('data:')
+  )
+}
 
 function Avatar({ word }: { word: LeaderboardWord }) {
-  if (isImage(word.createdByAvatar))
-    return <img src={word.createdByAvatar} alt={word.createdByUsername} className={styles.avatarImg} />
-  return <span className={styles.avatarEmoji}>{word.createdByAvatar || '🌼'}</span>
+  const profileImage =
+    resolveProfileAvatar(word.createdByAvatar) ??
+    fallbackProfileAvatar(word.createdByUid || word.createdByUsername)
+
+  if (profileImage || isImage(word.createdByAvatar)) {
+    return (
+      <img
+        src={profileImage ?? word.createdByAvatar}
+        alt=""
+        className={styles.avatarImg}
+      />
+    )
+  }
+
+  return (
+    <span className={styles.avatarEmoji} aria-hidden="true">
+      {word.createdByAvatar || '🌼'}
+    </span>
+  )
+}
+
+function AnimatedNumber({ value, active = true }: { value: number; active?: boolean }) {
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    if (!active) {
+      setDisplayValue(0)
+      return
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setDisplayValue(value)
+      return
+    }
+
+    const startedAt = performance.now()
+    const duration = 1100
+    let frame = 0
+    const tick = (now: number) => {
+      const progress = Math.min((now - startedAt) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 4)
+      setDisplayValue(Math.round(value * eased))
+      if (progress < 1) frame = requestAnimationFrame(tick)
+    }
+
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [active, value])
+
+  return <>{displayValue.toLocaleString('af-ZA')}</>
 }
 
 export default function Leaderboard() {
   const [mode, setMode] = useState<Mode>('top')
+  const [selectedMode, setSelectedMode] = useState<Mode>('top')
   const [animate, setAnimate] = useState(false)
-  const { topWords, worstWords, totalVotes, loading, error } = useLeaderboard()
+  const [entered, setEntered] = useState(false)
+  const [entranceAnimating, setEntranceAnimating] = useState(false)
+  const [switching, setSwitching] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const switchTimer = useRef(0)
+  const {
+    topWords,
+    worstWords,
+    totalWords,
+    loading,
+    error,
+  } = useLeaderboard()
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setAnimate(true))
-    return () => cancelAnimationFrame(id)
+    setAnimate(false)
+    if (!entered) return
+    const frame = requestAnimationFrame(() => setAnimate(true))
+    return () => cancelAnimationFrame(frame)
+  }, [entered, mode])
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        setEntered(true)
+        setEntranceAnimating(true)
+        window.setTimeout(() => setEntranceAnimating(false), 1300)
+        observer.disconnect()
+      },
+      { threshold: 0.12, rootMargin: '-18% 0px -22% 0px' },
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
   }, [])
 
-  const live = mode === 'top' ? topWords : worstWords
-  const data = live.length ? live : (mode === 'top' ? FALLBACK_TOP : FALLBACK_WORST)
-  const usingFallback = live.length === 0
+  useEffect(() => () => window.clearTimeout(switchTimer.current), [])
 
-  const maxMag = Math.max(1, ...data.map((w) => Math.abs(w.score)))
-  const hoogte = (w: LeaderboardWord) => MIN_H + (Math.abs(w.score) / maxMag) * (MAX_H - MIN_H)
+  const switchMode = (nextMode: Mode) => {
+    if (nextMode === selectedMode) return
+    window.clearTimeout(switchTimer.current)
+    setSelectedMode(nextMode)
+    setSwitching(true)
+    setAnimate(false)
+    switchTimer.current = window.setTimeout(() => {
+      setMode(nextMode)
+      setSwitching(false)
+    }, 680)
+  }
 
+  const liveWords = mode === 'top' ? topWords : worstWords
+  const words = liveWords.length
+    ? liveWords
+    : mode === 'top'
+      ? FALLBACK_TOP
+      : FALLBACK_WORST
+  const usingFallback = liveWords.length === 0
+  const voteValue = (word: LeaderboardWord) =>
+    mode === 'top' ? word.upVotes : word.downVotes
+  const displayedTotalWords = totalWords || 1284
+  const voteValues = words.map(voteValue)
+  const lowestVotes = Math.min(...voteValues)
+  const highestVotes = Math.max(...voteValues)
+  const voteRange = Math.max(1, highestVotes - lowestVotes)
+  const podiumHeight = (word: LeaderboardWord) => {
+    const strength = (voteValue(word) - lowestVotes) / voteRange
+    return {
+      desktop: Math.round(270 + strength * 230),
+      mobile: Math.round(150 + strength * 135),
+    }
+  }
   const podium = [
-    { rank: 2, word: data[1] },
-    { rank: 1, word: data[0] },
-    { rank: 3, word: data[2] },
+    { rank: 2, word: words[1] },
+    { rank: 1, word: words[0] },
+    { rank: 3, word: words[2] },
   ]
 
   return (
-    <Section bg="ink" rondBo rondOnder wydte="wyd">
-      <header className={styles.kop}>
+    <Section
+      bg="paper"
+      wydte="wyd"
+      sectionRef={sectionRef}
+      className={`${styles.section} ${entered ? styles.entered : styles.awaitingEntrance} ${entranceAnimating ? styles.entrance : ''}`}
+    >
+      <header className={styles.header}>
         <div>
           <p className={styles.kicker}>★ Regstreeks ★</p>
-          <h2 className={styles.titel}>Die Woord-Podium</h2>
+          <h2 className={styles.title}>Die Woord-Podium</h2>
         </div>
-        <div className={styles.live}>
-          <span className={styles.dot} />
-          <strong>{(usingFallback ? 1697 : totalVotes).toLocaleString('af-ZA')}</strong>
-          <span>stemme</span>
+
+        <div className={styles.wordTotal} aria-label={`${displayedTotalWords} woorde bygevoeg`}>
+          <span className={styles.liveDot} />
+          <strong><AnimatedNumber value={displayedTotalWords} active={entered} /></strong>
+          <span>Woorde gebore</span>
         </div>
       </header>
 
-      <div className={styles.toggle}>
-        <button className={mode === 'top' ? styles.aktief : ''} onClick={() => setMode('top')}>🏆 Top woorde</button>
-        <button className={mode === 'worst' ? styles.aktief : ''} onClick={() => setMode('worst')}>🫠 Swakste</button>
+      <div className={styles.toggle} aria-label="Kies ranglys">
+        <button
+          className={selectedMode === 'top' ? styles.active : ''}
+          onClick={() => switchMode('top')}
+        >
+          🏆 Top woorde
+        </button>
+        <button
+          className={selectedMode === 'worst' ? styles.active : ''}
+          onClick={() => switchMode('worst')}
+        >
+          👎 Swakste
+        </button>
       </div>
 
       {loading && !usingFallback ? (
-        <p className={styles.boodskap}>Die podium word gebou…</p>
+        <p className={styles.message}>Die podium word gebou…</p>
       ) : (
-        <Reveal>
-          <div className={styles.podium}>
-            {podium.map(({ rank, word }) => (
-              <div key={rank} className={styles.kolom}>
-                {word ? (
-                  <div className={styles.kaart}>
-                    <div className={styles.medalje}>{rank === 1 ? '👑' : `#${rank}`}</div>
-                    <div className={styles.avatar}><Avatar word={word} /></div>
-                    <h3 className={styles.woord}>{word.text}</h3>
-                    <p className={styles.naam}>{word.createdByUsername}</p>
-                    <div className={styles.telling}><span>👍 {word.upVotes}</span><span>👎 {word.downVotes}</span></div>
-                    <strong className={styles.telkaart}>{word.score > 0 ? '+' : ''}{word.score}</strong>
+          <div className={`${styles.podium} ${mode === 'worst' ? styles.worst : ''} ${switching ? styles.switching : ''}`}>
+            {podium.map(({ rank, word }) => {
+              if (!word) return null
+              const votes = voteValue(word)
+              const heights = podiumHeight(word)
+
+              return (
+                <Link
+                  className={styles.column}
+                  key={`${mode}-${rank}-${word.id}`}
+                  to={`/woordeboek/${word.phraseId}?word=${word.id}`}
+                  viewTransition
+                  style={{ '--entrance-delay': `${220 + rank * 105}ms` } as CSSProperties}
+                  aria-label={`Nommer ${rank}: ${word.text} deur ${word.createdByUsername}, ${votes} ${mode === 'top' ? 'opstemme' : 'afstemme'}`}
+                >
+                  <div className={styles.person}>
+                    {rank === 1 && <span className={styles.crown} aria-hidden="true">👑</span>}
+                    <span className={styles.rank}>{rank === 1 ? '1ste' : rank === 2 ? '2de' : '3de'}</span>
+                    <span className={styles.avatar}><Avatar word={word} /></span>
+                    <strong>{word.createdByUsername || 'Anoniem'}</strong>
                   </div>
-                ) : (
-                  <div className={`${styles.kaart} ${styles.leeg}`}>Wag vir ’n woord…</div>
-                )}
-                <div className={`${styles.staaf} ${styles[`rang${rank}`]}`}
-                     style={{ height: animate ? (word ? hoogte(word) : MIN_H) : 0 }}>
-                  <span className={styles.basisNommer}>{rank}</span>
-                </div>
-              </div>
-            ))}
+
+                  <div
+                    className={`${styles.podiumBlock} ${styles[`rank${rank}`]} ${animate ? styles.raised : ''}`}
+                    style={{
+                      '--podium-height': `${heights.desktop}px`,
+                      '--podium-mobile-height': `${heights.mobile}px`,
+                    } as CSSProperties}
+                  >
+                    <span className={styles.place}>{rank}</span>
+                    <span className={styles.word}>{word.text}</span>
+                    <span className={styles.votes}>
+                      <span className={styles.voteIcon} aria-hidden="true">
+                        {mode === 'top' ? '👍' : '👎'}
+                      </span>
+                      <strong><AnimatedNumber value={votes} active={entered} /></strong>
+                    </span>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
-        </Reveal>
       )}
 
-      {error && !usingFallback && <p className={styles.fout}>{error}</p>}
-
-      <p className={styles.verduidelik}>
-        Die stawe rys en sak lewendig soos stemme inkom — die langste staaf lei, maar niks raak te lank nie.
-      </p>
+      {error && !usingFallback && <p className={styles.error}>{error}</p>}
     </Section>
   )
 }

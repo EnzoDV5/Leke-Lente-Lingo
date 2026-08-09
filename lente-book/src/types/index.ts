@@ -34,6 +34,10 @@ export type Frase = {
   id: string
   beskrywing: string
   kleur: string
+  bord: string
+  area: FestivalArea
+  createdByUsername?: string
+  createdByAvatar?: string
   woorde: Woord[]
 }
 

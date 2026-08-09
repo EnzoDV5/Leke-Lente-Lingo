@@ -1,15 +1,24 @@
 .shell {
+  scroll-margin-block: 110px;
   --poster-colour: #ffca18;
   --poster-tilt: 0deg;
   --poster-counter-tilt: 0deg;
 
   width: 100%;
-  transform: rotate(var(--poster-tilt));
+  transform: none;
   transition: transform 200ms ease;
 }
 
 .shell:hover {
-  transform: rotate(0deg) translateY(-5px);
+  transform: translateY(-6px);
+}
+
+.wildcardShell {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .card {
@@ -19,7 +28,10 @@
   transform-style: preserve-3d;
   transition: transform 550ms
     cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
 }
+
+.card:focus-visible { outline: 4px solid var(--color-geel); outline-offset: 5px; }
 
 .flipped {
   transform: rotateY(180deg);
@@ -30,9 +42,10 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border: 4px solid #191714;
-  background: #fff7df;
-  box-shadow: 9px 10px 0 #191714;
+  border: 4px solid var(--color-oranje);
+  border-radius: 24px;
+  background: #fbf7ef;
+  box-shadow: 9px 10px 0 var(--poster-colour);
   backface-visibility: hidden;
 }
 
@@ -88,7 +101,7 @@
   position: relative;
   z-index: 1;
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: clamp(1.5rem, 5vw, 2.2rem);
   text-transform: uppercase;
 }
@@ -108,23 +121,31 @@
 }
 
 .tape {
-  position: absolute;
-  z-index: 5;
-  left: 50%;
-  top: -8px;
-  width: 32%;
-  height: 28px;
-  transform: translateX(-50%)
-    rotate(-3deg);
-  background: rgba(255, 244, 181, 0.8);
-  box-shadow: 0 1px 3px
-    rgba(0, 0, 0, 0.16);
+  display: none;
+}
+
+.backScanButton {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+  padding: .75rem 1rem;
+  border: 3px solid var(--color-oranje);
+  border-radius: 12px;
+  background: var(--color-pienk);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-weight: 900;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 var(--color-geel);
+  cursor: pointer;
 }
 
 .artwork {
   position: absolute;
-  inset: 0;
+  inset: .45rem;
   background: var(--poster-colour);
+  border-radius: 19px;
+  overflow: hidden;
 }
 
 .artwork img {
@@ -170,10 +191,20 @@
 
 .posterNumber {
   position: absolute;
+  z-index: 8;
   left: 1rem;
   top: 1rem;
-  font-family: var(--font-display);
-  font-size: 1.1rem;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid var(--color-oranje);
+  border-radius: 50%;
+  background: var(--color-geel);
+  font-family: var(--font-pixel);
+  font-size: .72rem;
+  font-weight: 900;
+  box-shadow: 3px 3px 0 var(--color-oranje);
 }
 
 .posterIcon {
@@ -204,24 +235,37 @@
     rotate(-5deg);
   font-family: var(--font-display);
   font-size: clamp(5rem, 18vw, 9rem);
-  color: #fff7df;
+  color: var(--color-oranje);
   text-shadow:
-    5px 5px 0 #191714,
-    -3px -3px 0 #191714;
+    4px 4px 0 var(--color-geel);
 }
 
 .lock {
   position: absolute;
   z-index: 7;
-  right: 1rem;
-  top: 1rem;
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border: 3px solid #191714;
-  background: #fff7df;
-  box-shadow: 4px 4px 0 #191714;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  min-width: 148px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  padding: .8rem 1rem;
+  transform: translate(-50%, -50%);
+  border: 3px solid var(--color-oranje);
+  border-radius: 12px;
+  background: var(--color-paper);
+  box-shadow: 4px 4px 0 var(--color-geel);
+  font-size: 2rem;
+}
+
+.lock::after {
+  content: attr(data-progress);
+  font-family: var(--font-pixel);
+  font-size: .72rem;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .stamp {
@@ -230,7 +274,8 @@
   right: 0.8rem;
   bottom: 1rem;
   transform: rotate(-8deg);
-  border: 3px solid #191714;
+  border: 3px solid var(--color-oranje);
+  border-radius: 10px;
   padding: 0.35rem 0.5rem;
   background: #fff7df;
   color: #ef321d;
@@ -244,10 +289,11 @@
   justify-content: space-between;
   gap: 0.75rem;
   margin-top: 14px;
-  border: 3px solid #191714;
-  background: #fff7df;
+  border: 3px solid var(--color-oranje);
+  border-radius: 16px;
+  background: #c8f2c4;
   padding: 0.75rem;
-  box-shadow: 5px 5px 0 #191714;
+  box-shadow: 5px 5px 0 var(--poster-colour);
   transform: rotate(
     var(--poster-counter-tilt)
   );
@@ -261,7 +307,9 @@
 
 .meta strong {
   overflow: hidden;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
+  font-size: .82rem;
+  letter-spacing: .015em;
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
@@ -278,9 +326,10 @@
   flex: 0 0 34px;
   height: 34px;
   place-items: center;
-  border: 2px solid #191714;
+  border: 2px solid var(--color-oranje);
+  border-radius: 9px;
   color: #191714 !important;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-weight: 900;
 }
 
@@ -292,41 +341,6 @@
   background: var(--poster-colour);
 }
 
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem;
-  margin-top: 0.75rem;
-  transform: rotate(
-    var(--poster-counter-tilt)
-  );
-}
-
-.actions button {
-  min-height: 45px;
-  border: 3px solid #191714;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 4px 4px 0 #191714;
-}
-
-.actions button:active {
-  transform: translate(3px, 3px);
-  box-shadow: 1px 1px 0 #191714;
-}
-
-.clueButton {
-  background: #fff7df;
-  color: #191714;
-}
-
-.scanButton {
-  background: var(--poster-colour);
-  color: #191714;
-}
 
 @media (max-width: 520px) {
   .shell {
@@ -337,8 +351,15 @@
     transform: translateY(-3px);
   }
 
-  .meta,
-  .actions {
+  .meta {
     transform: none;
   }
+
+  .back { padding: 1rem; }
+  .backIcon { font-size: 2rem; }
+  .eyebrow { margin-top: .45rem; }
+  .back h2 { font-size: clamp(1.35rem, 8vw, 2rem); }
+  .back p { margin-top: .55rem; font-size: .88rem; line-height: 1.35; }
+  .backScanButton { width: 100%; margin-top: .7rem; padding: .65rem .7rem; font-size: .75rem; }
+  .wildcardShell { padding: 0; border-radius: 0; }
 }

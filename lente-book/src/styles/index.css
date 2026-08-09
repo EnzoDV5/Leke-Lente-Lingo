@@ -2,12 +2,18 @@
 
 html {
   scrollbar-gutter: stable;
+  background: var(--color-paper, #F9F6EC);
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @theme {
   /* atmosphere + surfaces */
   --color-sky:     #0A8AF0;
-  --color-paper:   #F9F6EC;
+  --color-paper:   #FBF7EF;
   --color-card:    #FFFFFF;
   --color-ink:     #16150F;
 
@@ -29,16 +35,77 @@ html {
   /* soft + rounded */
   --radius-card:   20px;
   --radius-pill:   999px;
+  --radius-festival: 16px;
+  --radius-control: 12px;
   --shadow-soft:   0 10px 28px rgba(16,21,40,0.14);
   --shadow-lift:   0 6px 0 rgba(22,21,15,0.10);
 }
 
 body {
   margin: 0;
+  min-height: 100svh;
+  min-height: -webkit-fill-available;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
   background: var(--color-sky);
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100svh;
+  min-height: -webkit-fill-available;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+::view-transition-group(hero-divider) {
+  z-index: 80;
+  animation-duration: 780ms;
+  animation-timing-function: cubic-bezier(.76, 0, .24, 1);
+}
+
+::view-transition-old(hero-divider),
+::view-transition-new(hero-divider) {
+  animation-duration: 780ms;
+  animation-timing-function: cubic-bezier(.76, 0, .24, 1);
+}
+
+::view-transition-group(hero-copy) {
+  z-index: 70;
+  animation-duration: 620ms;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+::view-transition-old(hero-copy) {
+  animation: hero-copy-out 360ms cubic-bezier(.55, 0, 1, .45) both;
+}
+
+::view-transition-new(hero-copy) {
+  animation: hero-copy-in 540ms 150ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes hero-copy-out {
+  to { opacity: 0; transform: translateY(-18px) scale(.96); filter: blur(5px); }
+}
+
+@keyframes hero-copy-in {
+  from { opacity: 0; transform: translateY(22px) scale(.96); filter: blur(5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(hero-divider),
+  ::view-transition-old(hero-divider),
+  ::view-transition-new(hero-divider),
+  ::view-transition-group(hero-copy),
+  ::view-transition-old(hero-copy),
+  ::view-transition-new(hero-copy) {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
 }
 
 button,

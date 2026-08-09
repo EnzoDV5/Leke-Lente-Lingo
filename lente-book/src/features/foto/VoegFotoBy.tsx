@@ -1,6 +1,8 @@
 import {
   useEffect,
+  useRef,
   useState,
+  type CSSProperties,
 } from 'react'
 
 import {
@@ -15,6 +17,7 @@ import {
   ref,
   uploadBytes,
 } from 'firebase/storage'
+import { useNavigate } from 'react-router-dom'
 
 import {
   db,
@@ -22,9 +25,22 @@ import {
 } from '../../lib/firebase'
 
 import { useAuth } from '../auth/AuthContext'
+import CompactHero from '../../components/ui/CompactHero'
+import {
+  fallbackProfileAvatar,
+  resolveProfileAvatar,
+  stableProfileAvatarId,
+} from '../../lib/profileAvatars'
 import styles from './VoegFotoBy.module.css'
 
 const MAX_SIZE = 10 * 1024 * 1024
+const FRAME_COLOURS = [
+  ['pienk', '#f81878'],
+  ['goud', '#f5c518'],
+  ['groen', '#18d860'],
+  ['blou', '#3151df'],
+  ['pers', '#7828b8'],
+] as const
 
 function cleanFileName(fileName: string) {
   return fileName
@@ -33,6 +49,8 @@ function cleanFileName(fileName: string) {
 }
 
 export default function VoegFotoBy() {
+  const previewStageRef = useRef<HTMLDivElement | null>(null)
+  const navigate = useNavigate()
   const {
     user,
     profile,
@@ -53,8 +71,21 @@ export default function VoegFotoBy() {
   const [uploading, setUploading] =
     useState(false)
 
+  const [sharing, setSharing] =
+    useState(false)
+
   const [message, setMessage] =
     useState('')
+
+  const [fieldErrors, setFieldErrors] = useState({
+    photo: '',
+    word: '',
+  })
+
+  const frameAccent = FRAME_COLOURS.find(([name]) => name === frameColour)?.[1] ?? '#f81878'
+  const creatorAvatar = profile?.useGooglePhoto
+    ? user?.photoURL ?? profile.googlePhoto ?? fallbackProfileAvatar(profile.uid)
+    : resolveProfileAvatar(profile?.character) ?? fallbackProfileAvatar(profile?.uid)
 
   useEffect(() => {
     if (!file) {
@@ -73,6 +104,31 @@ export default function VoegFotoBy() {
       )
     }
   }, [file])
+
+  useEffect(() => {
+    const previewStage = previewStageRef.current
+    if (!previewStage) return
+
+    let frame = 0
+    const syncGrass = () => {
+      frame = 0
+      const bounds = previewStage.getBoundingClientRect()
+      if (bounds.bottom < 0 || bounds.top > window.innerHeight) return
+      previewStage.style.setProperty('--grass-scroll-y', `${-bounds.top}px`)
+    }
+    const requestSync = () => {
+      if (!frame) frame = window.requestAnimationFrame(syncGrass)
+    }
+
+    syncGrass()
+    window.addEventListener('scroll', requestSync, { passive: true })
+    window.addEventListener('resize', requestSync)
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', requestSync)
+      window.removeEventListener('resize', requestSync)
+    }
+  }, [])
 
   const selectPhoto = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -105,15 +161,23 @@ export default function VoegFotoBy() {
     }
 
     setFile(selectedFile)
+    setFieldErrors((current) => ({ ...current, photo: '' }))
   }
 
   const uploadPhoto = async () => {
-    if (
-      !file ||
-      !word.trim() ||
-      !user ||
-      !profile
-    ) {
+    const nextErrors = {
+      photo: file ? '' : 'Neem eers ’n foto vir jou raam.',
+      word: word.trim() ? '' : 'Gee jou foto eers ’n nuwe woord.',
+    }
+    setFieldErrors(nextErrors)
+
+    if (nextErrors.photo || nextErrors.word) {
+      setMessage('Voltooi die twee gemerkte stappe en probeer weer.')
+      return
+    }
+
+    if (!file || !user || !profile) {
+      setMessage('Ons kon nie jou profiel kry nie. Probeer asseblief weer.')
       return
     }
 
@@ -148,10 +212,9 @@ export default function VoegFotoBy() {
         )
 
       const avatar =
-        profile.useGooglePhoto &&
-        user.photoURL
-          ? user.photoURL
-          : profile.character
+        profile.useGooglePhoto
+          ? user.photoURL ?? profile.googlePhoto ?? ''
+          : stableProfileAvatarId(profile.character)
 
       await addDoc(
         collection(db, 'photos'),
@@ -177,10 +240,8 @@ export default function VoegFotoBy() {
       setFile(null)
       setWord('')
       setFrameColour('pienk')
-
-      setMessage(
-        'Jou foto is op die fotomuur!',
-      )
+      setFieldErrors({ photo: '', word: '' })
+      navigate('/', { replace: true, state: { photoUploaded: true } })
     } catch (error) {
       console.error(
         'Photo upload failed:',
@@ -203,112 +264,133 @@ export default function VoegFotoBy() {
     }
   }
 
+  const sharePhoto = async () => {
+    if (!file) {
+      setFieldErrors((current) => ({
+        ...current,
+        photo: 'Neem eers ’n foto voordat jy dit deel.',
+      }))
+      setMessage('Jou foto is nog nie gereed om te deel nie.')
+      return
+    }
+
+    const shareData: ShareData = {
+      title: word.trim() || 'My Lente Book-foto',
+      text: word.trim()
+        ? `Kyk na my Lente Book-foto: ${word.trim()}`
+        : 'Kyk na my Lente Book-foto!',
+      files: [file],
+    }
+
+    if (!navigator.share || (navigator.canShare && !navigator.canShare(shareData))) {
+      setMessage('Hierdie toestel kan nie die foto direk deel nie. Probeer dit op jou foon.')
+      return
+    }
+
+    setSharing(true)
+    setMessage('')
+    try {
+      await navigator.share(shareData)
+      setMessage('Foto gedeel — jy kan dit nou op die muur plaas!')
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      console.error('Photo share failed:', error)
+      setMessage('Die foto kon nie gedeel word nie. Probeer asseblief weer.')
+    } finally {
+      setSharing(false)
+    }
+  }
+
   return (
-    <section className={styles.wrap}>
-      <header className={styles.kop}>
-        <p className={styles.kicker}>
-          ★ Foto-doop ★
-        </p>
+    <section className={styles.page}>
+      <CompactHero
+        kicker="★ Foto-doop ★"
+        title="Voeg ’n Foto By"
+        subtitle="Vang die oomblik, gee dit ’n woord en plaas dit op die muur."
+      />
 
-        <h1 className={styles.titel}>
-          Voeg ’n Foto By
-        </h1>
+      <div className={styles.wrap}>
+        <div className={styles.kaart} data-scroll-reveal="scale" style={{ '--frame-accent': frameAccent } as CSSProperties}>
+          <div
+            ref={previewStageRef}
+            className={styles.previewStage}
+            style={{ '--grass-scroll-y': '0px' } as CSSProperties}
+          >
+            <figure className={styles.editorFrame}>
+              <label className={styles.dropzone}>
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Foto-voorskou" className={styles.voorskou} />
+                ) : (
+                  <span className={styles.dropTeks}>
+                    <span aria-hidden="true">📸</span>
+                    <strong>Kies jou feesfoto</strong>
+                    <small>Tik om jou eie foto by te voeg</small>
+                  </span>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={selectPhoto}
+                  className={styles.versteek}
+                />
+                <span className={styles.changePhoto}>{previewUrl ? 'Neem weer' : 'Maak kamera oop'}</span>
+              </label>
+              <figcaption>
+                <strong>{word.trim() || 'JOU WOORD'}</strong>
+                <span className={styles.photoUser}>
+                  <img src={creatorAvatar ?? ''} alt="" />
+                  <span>{profile?.username ?? '@jy'}</span>
+                </span>
+              </figcaption>
+            </figure>
+            <p className={styles.previewHint}>So sal jou raam op die fotomuur lyk.</p>
+            {fieldErrors.photo && (
+              <p className={styles.fieldError} role="alert">
+                <span aria-hidden="true">!</span>
+                {fieldErrors.photo}
+              </p>
+            )}
+          </div>
 
-        <p className={styles.onder}>
-          Vang die oomblik, gee dit ’n
-          woord en plaas dit op die muur.
-        </p>
-      </header>
+          <div className={styles.controls}>
+            <div className={styles.controlHeading}>
+              <span>01</span>
+              <div><small>Maak dit joune</small><h2>Doop die oomblik</h2></div>
+            </div>
 
-      <div className={styles.kaart}>
-        <label
-          className={styles.dropzone}
-        >
-          {previewUrl ? (
-            <img
-              src={previewUrl}
-              alt="Foto-voorskou"
-              className={styles.voorskou}
-            />
-          ) : (
-            <span
-              className={styles.dropTeks}
-            >
-              📸
-              <br />
-              Tik om ’n foto te kies
-            </span>
-          )}
+            <label className={styles.fieldLabel}>
+              Jou nuwe woord
+              {fieldErrors.word && (
+                <span id="photo-word-error" className={styles.inputError} role="alert">
+                  {fieldErrors.word}
+                </span>
+              )}
+              <input className={styles.veld} value={word} placeholder="Gee dit ’n woord…" maxLength={40} onChange={(event) => setWord(event.target.value)} />
+            </label>
 
-          <input
-            type="file"
-            accept="image/*"
-            onChange={selectPhoto}
-            className={styles.versteek}
-          />
-        </label>
+            <fieldset className={styles.colourPicker}>
+              <legend>Kies jou skadukleur</legend>
+              <div>
+                {FRAME_COLOURS.map(([name, colour]) => (
+                  <button key={name} type="button" className={frameColour === name ? styles.selectedColour : ''} style={{ '--swatch': colour } as CSSProperties} onClick={() => setFrameColour(name)} aria-label={`${name} raam`} aria-pressed={frameColour === name} />
+                ))}
+              </div>
+            </fieldset>
 
-        <input
-          className={styles.veld}
-          value={word}
-          placeholder="Gee dit ’n woord…"
-          maxLength={40}
-          onChange={(event) =>
-            setWord(event.target.value)
-          }
-        />
+            <span className={styles.as}>Geplaas as {profile?.username}</span>
 
-        <span className={styles.as}>
-          as {profile?.username}
-        </span>
+            <button className={styles.deel} disabled={sharing || uploading} onClick={() => void sharePhoto()}>
+              {sharing ? 'Maak deelvenster oop...' : 'Deel eers ↗'}
+            </button>
 
-        <select
-          className={styles.veld}
-          value={frameColour}
-          onChange={(event) =>
-            setFrameColour(
-              event.target.value,
-            )
-          }
-        >
-          <option value="pienk">
-            Pienk raam
-          </option>
+            <button className={styles.plaas} disabled={uploading} onClick={() => void uploadPhoto()}>
+              {uploading ? 'Laai foto op...' : 'Plaas op die muur →'}
+            </button>
 
-          <option value="goud">
-            Geel raam
-          </option>
-
-          <option value="groen">
-            Groen raam
-          </option>
-
-          <option value="blou">
-            Blou raam
-          </option>
-
-          <option value="pers">
-            Pers raam
-          </option>
-        </select>
-
-        <button
-          className={styles.plaas}
-          disabled={
-            uploading ||
-            !file ||
-            !word.trim()
-          }
-          onClick={() =>
-            void uploadPhoto()
-          }
-        >
-          {uploading
-            ? 'Laai foto op...'
-            : 'Plaas op die muur →'}
-        </button>
-
-        {message && <p>{message}</p>}
+            {message && <p className={styles.message}>{message}</p>}
+          </div>
+        </div>
       </div>
     </section>
   )

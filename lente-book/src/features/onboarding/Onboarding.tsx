@@ -11,47 +11,27 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
 import TopBar from '../../components/layout/TopBar'
 import PageLoader from '../../components/ui/PageLoader'
+import { PROFILE_AVATARS } from '../../lib/profileAvatars'
 import { useAuth } from '../auth/AuthContext'
 import styles from './Onboarding.module.css'
 
-const KARAKTERS = [
-  {
-    id: 'flower',
-    emoji: '🌼',
-    naam: 'Blomkop',
-    kleur: '#f5c518',
-  },
-  {
-    id: 'frog',
-    emoji: '🐸',
-    naam: 'Paddapret',
-    kleur: '#18d860',
-  },
-  {
-    id: 'cherry',
-    emoji: '🍒',
-    naam: 'Kersiekind',
-    kleur: '#f81878',
-  },
-  {
-    id: 'sun',
-    emoji: '🌞',
-    naam: 'Sonskyn',
-    kleur: '#f2e23e',
-  },
-  {
-    id: 'ghost',
-    emoji: '👻',
-    naam: 'Feesspook',
-    kleur: '#f898c0',
-  },
-  {
-    id: 'alien',
-    emoji: '👽',
-    naam: 'Lentelien',
-    kleur: '#7828b8',
-  },
+const PROFIEL_KLEURE = [
+  '#f5c518',
+  '#18d860',
+  '#f81878',
+  '#f898c0',
+  '#7828b8',
+  '#3151df',
 ]
+
+const PROFIEL_FOTOS = PROFILE_AVATARS.map((avatar, index) => ({
+  id: avatar.id,
+  emoji: avatar.id,
+  naam: avatar.name,
+  kleur: PROFIEL_KLEURE[index % PROFIEL_KLEURE.length],
+  image: avatar.src,
+  provider: false,
+}))
 
 const REELS = [
   {
@@ -169,6 +149,7 @@ export default function Onboarding() {
     checkUsernameAvailability,
     saveProfile,
     logOut,
+    deleteAccount,
     clearAuthError,
   } = useAuth()
 
@@ -190,7 +171,12 @@ export default function Onboarding() {
     useState('')
 
   const [karakter, setKarakter] =
-    useState('🌼')
+    useState(PROFIEL_FOTOS[0]?.id ?? '')
+
+  const [avatarDirection, setAvatarDirection] =
+    useState<-1 | 1>(1)
+  const [avatarAnimation, setAvatarAnimation] =
+    useState(0)
 
   const [
     useGooglePhoto,
@@ -232,6 +218,8 @@ export default function Onboarding() {
     showLogoutConfirm,
     setShowLogoutConfirm,
   ] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deletingAccount, setDeletingAccount] = useState(false)
 
   const [
     homeTransition,
@@ -243,17 +231,14 @@ export default function Onboarding() {
   const contentScrollRef =
     useRef<HTMLDivElement>(null)
 
-  const [
-    logoTransitionVars,
-    setLogoTransitionVars,
-  ] = useState<LogoTransitionVars>({
+  const logoTransitionVars: LogoTransitionVars = {
     '--logo-start-y': '0px',
     '--logo-shift-x': '0px',
     '--logo-shift-y': '0px',
     '--logo-frozen-width': 'auto',
     '--logo-frozen-height': 'auto',
     '--logo-final-scale': '1',
-  })
+  }
 
   const [
     returnTransition,
@@ -322,11 +307,7 @@ export default function Onboarding() {
           ]
         : []),
 
-      ...KARAKTERS.map((item) => ({
-        ...item,
-        image: null,
-        provider: false,
-      })),
+      ...PROFIEL_FOTOS,
     ],
     [
       user,
@@ -342,7 +323,8 @@ export default function Onboarding() {
       item.provider
         ? useGooglePhoto
         : !useGooglePhoto &&
-          item.emoji === karakter,
+          (item.emoji === karakter ||
+            item.image === karakter),
     ),
   )
 
@@ -720,6 +702,9 @@ export default function Onboarding() {
     const volgende =
       avatarKeuses[volgendeIndex]
 
+    setAvatarDirection(rigting)
+    setAvatarAnimation((current) => current + 1)
+
     setUseGooglePhoto(
       volgende.provider,
     )
@@ -741,44 +726,10 @@ export default function Onboarding() {
       await wag(360)
     }
 
-    const logoBounds =
-      logoRef.current
-        ?.getBoundingClientRect()
-
-    let sharedLogo: HTMLImageElement | null = null
-    let sharedAnimation: Animation | null = null
+    const logoBounds = logoRef.current?.getBoundingClientRect()
 
     if (logoBounds && logoRef.current) {
-      const startY =
-        window.innerWidth <= 680
-          ? 12
-          : 20
-      const logoAspect =
-        logoRef.current?.naturalWidth &&
-        logoRef.current?.naturalHeight
-          ? logoRef.current.naturalWidth /
-            logoRef.current.naturalHeight
-          : logoBounds.width /
-            Math.max(logoBounds.height, 1)
-      const mobile = window.innerWidth <= 900
-      const targetMaxWidth = mobile
-        ? Math.min(window.innerWidth * .92, 500)
-        : Math.min(window.innerWidth, 1000)
-      const targetMaxHeight = mobile
-        ? Math.min(window.innerHeight * .46, 420)
-        : Math.min(
-            420,
-            Math.max(320, window.innerHeight * .44),
-          )
-      const targetWidth = Math.min(
-        targetMaxWidth,
-        targetMaxHeight * logoAspect,
-      )
-      const finalScale =
-        targetWidth /
-        Math.max(logoBounds.width, 1)
-
-      sharedLogo = logoRef.current.cloneNode(true) as HTMLImageElement
+      const sharedLogo = logoRef.current.cloneNode(true) as HTMLImageElement
       sharedLogo.dataset.sharedLogoTransition = 'forward'
       sharedLogo.setAttribute('aria-hidden', 'true')
       sharedLogo.style.cssText = [
@@ -792,82 +743,26 @@ export default function Onboarding() {
         'max-height:none',
         'object-fit:contain',
         'transform-origin:center center',
+        'transform:translate3d(0,0,0) scale(1)',
+        'visibility:visible',
+        'will-change:transform',
         'pointer-events:none',
       ].join(';')
       document.body.appendChild(sharedLogo)
       logoRef.current.style.visibility = 'hidden'
-
-      sharedAnimation = sharedLogo.animate(
-        [
-          { translate: '0 0', scale: '1' },
-          {
-            translate: `${window.innerWidth / 2 - (logoBounds.left + logoBounds.width / 2)}px ${window.innerHeight / 2 - (logoBounds.top + logoBounds.height / 2)}px`,
-            scale: `${finalScale}`,
-          },
-        ],
-        {
-          duration: 820,
-          delay: 620,
-          easing: 'cubic-bezier(.2, .75, .25, 1)',
-          fill: 'both',
-        },
-      )
-
-      setLogoTransitionVars({
-        '--logo-start-y':
-          `${startY}px`,
-        '--logo-shift-x':
-          `${
-            window.innerWidth / 2 -
-            (
-              logoBounds.left +
-              logoBounds.width / 2
-            )
-          }px`,
-        '--logo-shift-y':
-          `${
-            window.innerHeight / 2 -
-            (
-              logoBounds.top +
-              logoBounds.height / 2
-            )
-          }px`,
-        '--logo-frozen-width':
-          `${logoBounds.width}px`,
-        '--logo-frozen-height':
-          `${logoBounds.height}px`,
-        '--logo-final-scale':
-          `${finalScale}`,
-      })
     }
 
     setIsTransitioning(true)
     setHomeTransition(true)
 
-    await wag(1550)
-
-    await sharedAnimation?.finished.catch(() => undefined)
-
-    const finalLogoBounds =
-      sharedLogo
-        ?.getBoundingClientRect()
+    await wag(360)
 
     navigate(
-      state?.from ?? '/',
+      '/',
       {
         replace: true,
         state: {
           onboardingReveal: true,
-          onboardingLogoLeft:
-            finalLogoBounds?.left,
-          onboardingLogoTop:
-            finalLogoBounds?.top,
-          onboardingLogoWidth:
-            finalLogoBounds?.width ??
-            logoBounds?.width,
-          onboardingLogoHeight:
-            finalLogoBounds?.height ??
-            logoBounds?.height,
         },
       },
     )
@@ -949,6 +844,19 @@ export default function Onboarding() {
 
     setTransitionPhase('idle')
     setIsTransitioning(false)
+  }
+
+  const veeRekeningUit = async () => {
+    if (deletingAccount || isTransitioning) return
+    setDeletingAccount(true)
+    const deleted = await deleteAccount()
+    if (deleted) {
+      setShowDeleteConfirm(false)
+      setShowLogoutConfirm(false)
+      navigate('/welkom', { replace: true })
+      return
+    }
+    setDeletingAccount(false)
   }
 
   const wisselLogoutBevestiging = async (
@@ -1203,36 +1111,54 @@ export default function Onboarding() {
                       id="logout-confirm-title"
                       className={styles.paneelTitel}
                     >
-                      Are you sure?
+                      {showDeleteConfirm ? 'Vee alles uit?' : 'Wil jy uitteken?'}
                     </h2>
 
                     <p
                       id="logout-confirm-description"
                       className={styles.paneelBeskrywing}
                     >
-                      You will return to the Google and Apple sign-in screen.
+                      {showDeleteConfirm
+                        ? 'Jou profiel, woorde, stemme, foto’s en Lente Bingo-vordering word permanent uitgevee.'
+                        : 'Jy sal na die Google- en Apple-aanmeldskerm terugkeer.'}
                     </p>
 
                     <div className={styles.logoutConfirmAksies}>
                       <button
                         type="button"
                         className={styles.navSekonder}
-                        disabled={isTransitioning}
-                        onClick={() =>
-                          void wisselLogoutBevestiging(false)
-                        }
+                        disabled={isTransitioning || deletingAccount}
+                        onClick={() => {
+                          if (showDeleteConfirm) {
+                            setShowDeleteConfirm(false)
+                          } else {
+                            void wisselLogoutBevestiging(false)
+                          }
+                        }}
                       >
-                        Cancel
+                        {showDeleteConfirm ? 'Terug' : 'Kanselleer'}
                       </button>
 
                       <button
                         type="button"
                         className={styles.navPrimar}
-                        disabled={isTransitioning}
-                        onClick={() => void tekenUit()}
+                        disabled={isTransitioning || deletingAccount}
+                        onClick={() => showDeleteConfirm ? void veeRekeningUit() : void tekenUit()}
                       >
-                        Yes, sign out
+                        {showDeleteConfirm
+                          ? deletingAccount ? 'Vee tans uit…' : 'Vee permanent uit'
+                          : 'Ja, teken uit'}
                       </button>
+
+                      {!showDeleteConfirm && (
+                        <button
+                          type="button"
+                          className={styles.deleteAccountButton}
+                          onClick={() => setShowDeleteConfirm(true)}
+                        >
+                          Vee my rekening uit
+                        </button>
+                      )}
                     </div>
                   </div>
                 ) : successState ? (
@@ -1450,39 +1376,26 @@ export default function Onboarding() {
                                     '#f8e42b',
                                 }}
                               >
-                                {huidigeAvatar?.image ? (
-                                  <img
-                                    src={
-                                      huidigeAvatar.image
-                                    }
-                                    alt="Your profile"
-                                    referrerPolicy="no-referrer"
-                                  />
-                                ) : huidigeAvatar?.provider ? (
-                                  <span
-                                    className={
-                                      styles.providerFallback
-                                    }
-                                  >
-                                    {providerIsApple ? (
-                                      <AppleGlyph />
-                                    ) : (
-                                      <span
-                                        className={
-                                          styles.googleAvatarIcon
-                                        }
-                                      >
-                                        G
-                                      </span>
-                                    )}
-                                  </span>
-                                ) : (
-                                  <span>
-                                    {
-                                      huidigeAvatar?.emoji
-                                    }
-                                  </span>
-                                )}
+                                <div
+                                  key={`${huidigeAvatar?.id}-${avatarAnimation}`}
+                                  className={`${styles.avatarSlide} ${avatarDirection > 0 ? styles.avatarSlideNext : styles.avatarSlidePrevious} ${['profile-22', 'profile-23', 'profile-24'].includes(huidigeAvatar?.id ?? '') ? styles.avatarCompact : ''}`}
+                                >
+                                  {huidigeAvatar?.image ? (
+                                    <img
+                                      src={huidigeAvatar.image}
+                                      alt="Your profile"
+                                      referrerPolicy="no-referrer"
+                                    />
+                                  ) : huidigeAvatar?.provider ? (
+                                    <span className={styles.providerFallback}>
+                                      {providerIsApple ? (
+                                        <AppleGlyph />
+                                      ) : (
+                                        <span className={styles.googleAvatarIcon}>G</span>
+                                      )}
+                                    </span>
+                                  ) : null}
+                                </div>
                               </div>
 
                               <small>

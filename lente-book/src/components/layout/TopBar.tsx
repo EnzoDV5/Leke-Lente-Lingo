@@ -8,6 +8,10 @@ import {
 
 import BurgerMenu from './BurgerMenu'
 import { useAuth } from '../../features/auth/AuthContext'
+import {
+  fallbackProfileAvatar,
+  resolveProfileAvatar,
+} from '../../lib/profileAvatars'
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
 import styles from './TopBar.module.css'
 
@@ -22,7 +26,7 @@ const NAV = [
   },
   {
     to: '/woordjag',
-    label: 'Woordjag',
+    label: 'Lente Bingo',
   },
 ]
 
@@ -30,22 +34,32 @@ export default function TopBar() {
   const [open, setOpen] = useState(false)
   const [loggingOut, setLoggingOut] =
     useState(false)
+  const [deletingAccount, setDeletingAccount] = useState(false)
+  const [accountDialog, setAccountDialog] = useState<'logout' | 'delete' | null>(null)
   const [profileImageFailed, setProfileImageFailed] =
     useState(false)
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const { user, profile, logOut } = useAuth()
+  const { user, profile, logOut, deleteAccount, authError } = useAuth()
 
   const isOnboarding = pathname === '/welkom'
 
-  const profileImage =
+  const providerProfileImage =
     user?.photoURL ??
     user?.providerData.find(
       (provider) => provider.providerId === 'google.com',
     )?.photoURL ??
     profile?.googlePhoto ??
     null
+
+  const selectedProfileImage = resolveProfileAvatar(
+    profile?.character,
+  ) ?? fallbackProfileAvatar(profile?.uid)
+
+  const profileImage = profile?.useGooglePhoto
+    ? providerProfileImage
+    : selectedProfileImage
 
   const displayProfileImage =
     profileImageFailed
@@ -56,9 +70,25 @@ export default function TopBar() {
     setProfileImageFailed(false)
   }, [profileImage])
 
+  useEffect(() => {
+    setOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!accountDialog) return
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape' && !loggingOut && !deletingAccount) {
+        setAccountDialog(null)
+      }
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [accountDialog, deletingAccount, loggingOut])
+
   const handleLogOut = async () => {
     if (loggingOut) return
 
+    setAccountDialog(null)
     setLoggingOut(true)
     document.documentElement.classList.add(
       'lente-logging-out',
@@ -155,6 +185,23 @@ export default function TopBar() {
     setLoggingOut(false)
   }
 
+  const requestLogOut = async () => {
+    setOpen(false)
+    setAccountDialog('logout')
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deletingAccount) return
+    setDeletingAccount(true)
+    const deleted = await deleteAccount()
+    if (deleted) {
+      setAccountDialog(null)
+      navigate('/welkom', { replace: true })
+      return
+    }
+    setDeletingAccount(false)
+  }
+
   return (
     <>
       <header
@@ -179,6 +226,7 @@ export default function TopBar() {
 
         <Link
           to={isOnboarding ? '/welkom' : '/'}
+          viewTransition
           className={styles.logoLink}
           aria-label="Lentedag-tuisblad"
         >
@@ -199,6 +247,7 @@ export default function TopBar() {
                 <NavLink
                   key={item.label}
                   to={item.to}
+                  viewTransition
                   className={({ isActive }) =>
                     `${styles.navLink} ${
                       isActive
@@ -247,7 +296,7 @@ export default function TopBar() {
                   type="button"
                   className={styles.logoutButton}
                   disabled={loggingOut}
-                  onClick={() => void handleLogOut()}
+                  onClick={() => setAccountDialog('logout')}
                   aria-label={loggingOut ? 'Teken tans uit' : 'Teken uit'}
                   title="Teken uit"
                 >
@@ -277,8 +326,64 @@ export default function TopBar() {
         <BurgerMenu
           open={open}
           onClose={() => setOpen(false)}
-          onLogOut={handleLogOut}
+          onLogOut={requestLogOut}
         />
+      )}
+
+      {accountDialog && (
+        <div
+          className={styles.accountBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !deletingAccount) setAccountDialog(null)
+          }}
+        >
+          <section className={styles.accountDialog} role="dialog" aria-modal="true" aria-labelledby="account-dialog-title">
+            <div key={accountDialog} className={styles.dialogContent}>
+              <span className={styles.dialogBadge} aria-hidden="true">
+                {accountDialog === 'delete' ? '!' : '↗'}
+              </span>
+              <p className={styles.dialogKicker}>MY REKENING</p>
+              <h2 id="account-dialog-title">
+                {accountDialog === 'delete' ? 'Vee alles uit?' : 'Wil jy uitteken?'}
+              </h2>
+              <p>
+                {accountDialog === 'delete'
+                  ? 'Hierdie vee jou profiel, woorde, stemme, foto’s en Lente Bingo-vordering permanent uit. Dit kan nie teruggedraai word nie.'
+                  : 'Jy sal na die welkomskerm gaan. Wanneer jy weer aanmeld, begin jy altyd by die tuisblad.'}
+              </p>
+
+              {authError && accountDialog === 'delete' && (
+                <p className={styles.dialogError} role="alert">{authError}</p>
+              )}
+
+              <div className={styles.dialogActions}>
+                <button
+                  type="button"
+                  className={styles.dialogCancel}
+                  disabled={deletingAccount}
+                  onClick={() => accountDialog === 'delete' ? setAccountDialog('logout') : setAccountDialog(null)}
+                >
+                  {accountDialog === 'delete' ? 'Terug' : 'Bly hier'}
+                </button>
+                {accountDialog === 'logout' ? (
+                  <>
+                    <button type="button" className={styles.dialogLogout} onClick={() => void handleLogOut()}>
+                      Ja, teken uit
+                    </button>
+                    <button type="button" className={styles.dialogDeleteLink} onClick={() => setAccountDialog('delete')}>
+                      Vee my rekening uit
+                    </button>
+                  </>
+                ) : (
+                  <button type="button" className={styles.dialogDelete} disabled={deletingAccount} onClick={() => void handleDeleteAccount()}>
+                    {deletingAccount ? 'Vee tans uit…' : 'Ja, vee alles permanent uit'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
+        </div>
       )}
     </>
   )

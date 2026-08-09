@@ -1,3 +1,12 @@
-.tabs { display: inline-flex; padding: .3rem; gap: .3rem; background: var(--color-card); border: 2px solid var(--color-ink); border-radius: var(--radius-pill); }
-.tab { font-family: var(--font-display); font-weight: 600; font-size: .85rem; padding: .45rem 1.1rem; border: none; background: transparent; color: var(--color-ink); border-radius: var(--radius-pill); cursor: pointer; white-space: nowrap; }
-.aktief { background: var(--color-ink); color: var(--color-paper); }
+.tabs { display: inline-flex; padding: .3rem; gap: .3rem; background: var(--color-card); border: 3px solid var(--color-oranje); border-radius: var(--radius-control); box-shadow: 4px 4px 0 var(--color-ink); }
+.tab { font-family: var(--font-display); font-weight: 800; font-size: .85rem; padding: .45rem 1.1rem; border: 2px solid transparent; background: transparent; color: var(--color-ink); border-radius: 8px; cursor: pointer; white-space: nowrap; transition: transform 150ms ease, background 150ms ease; }
+.tab:hover { transform: translateY(-1px); background: var(--color-paper); }
+.aktief { border-color: var(--color-ink); background: var(--color-geel); color: var(--color-ink); animation: activeTabIn 260ms cubic-bezier(.18,1.35,.4,1) both; }
+
+@keyframes activeTabIn {
+  from { transform: scale(.88); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aktief { animation: none; }
+}

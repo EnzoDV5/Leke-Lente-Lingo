@@ -6,9 +6,8 @@ import {
   useState,
   type CSSProperties,
 } from 'react'
-import { useLocation } from 'react-router-dom'
-import Actions from './sections/Actions'
 import Leaderboard from './sections/Leaderboard'
+import PosterCollection from './sections/PosterCollection'
 import HoeDitWerk from './sections/HoeDitWerk'
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
 import styles from './Home.module.css'
@@ -55,6 +54,8 @@ const MOBILE_PHOTO_POSITIONS = [
   [0, 83], [20, 80], [40, 84], [61, 81], [79, 85],
 ]
 
+const PHOTO_TOTAL = 1284
+
 type PhotoPositionStyle = CSSProperties & {
   '--photo-index': number
   '--mobile-photo-x': string
@@ -70,20 +71,42 @@ export default function Home() {
   const fallIsArmed = useRef(false)
   const fallSequenceComplete = useRef(false)
   const previousScrollPosition = useRef(0)
-  const location = useLocation()
-  const routeState = location.state as {
-    onboardingReveal?: boolean
-    onboardingLogoLeft?: number
-    onboardingLogoTop?: number
-    onboardingLogoWidth?: number
-    onboardingLogoHeight?: number
-  } | null
-  const hasLogoHandoff = Boolean(
-    routeState?.onboardingReveal &&
-    routeState.onboardingLogoWidth &&
-    routeState.onboardingLogoHeight
-  )
-  const [handoffLocked, setHandoffLocked] = useState(hasLogoHandoff)
+  const [photoCount, setPhotoCount] = useState(0)
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    if (reduceMotion) {
+      setPhotoCount(PHOTO_TOTAL)
+      return
+    }
+
+    let animationFrame = 0
+    let startTime: number | null = null
+    const delay = 700
+    const duration = 1500
+
+    const countUp = (time: number) => {
+      if (startTime === null) startTime = time
+      const elapsed = time - startTime
+
+      if (elapsed < delay) {
+        animationFrame = window.requestAnimationFrame(countUp)
+        return
+      }
+
+      const progress = Math.min((elapsed - delay) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 4)
+      setPhotoCount(Math.round(PHOTO_TOTAL * eased))
+
+      if (progress < 1) animationFrame = window.requestAnimationFrame(countUp)
+    }
+
+    animationFrame = window.requestAnimationFrame(countUp)
+    return () => window.cancelAnimationFrame(animationFrame)
+  }, [])
 
   useLayoutEffect(() => {
     const sharedLogo = document.querySelector<HTMLImageElement>(
@@ -92,26 +115,39 @@ export default function Home() {
     const logo = heroLogoRef.current
     if (!sharedLogo || !logo) return
 
-    let secondFrame = 0
+    logo.style.visibility = 'hidden'
+    let handoffAnimation: Animation | null = null
     const firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => {
+      const source = sharedLogo.getBoundingClientRect()
+      const target = logo.getBoundingClientRect()
+      const moveX = target.left + target.width / 2 - (source.left + source.width / 2)
+      const moveY = target.top + target.height / 2 - (source.top + source.height / 2)
+      const scale = target.width / Math.max(source.width, 1)
+
+      handoffAnimation = sharedLogo.animate(
+        [
+          { transform: 'translate3d(0, 0, 0) scale(1)' },
+          { transform: `translate3d(${moveX}px, ${moveY}px, 0) scale(${scale})` },
+        ],
+        {
+          duration: 980,
+          easing: 'cubic-bezier(.16, 1, .3, 1)',
+          fill: 'forwards',
+        },
+      )
+
+      void handoffAnimation.finished.catch(() => undefined).then(() => {
         sharedLogo.remove()
+        logo.style.visibility = ''
       })
     })
 
     return () => {
       window.cancelAnimationFrame(firstFrame)
-      window.cancelAnimationFrame(secondFrame)
+      handoffAnimation?.cancel()
+      logo.style.visibility = ''
     }
   }, [])
-
-  useEffect(() => {
-    if (!handoffLocked) return
-
-    const releaseResponsiveSize = () => setHandoffLocked(false)
-    window.addEventListener('resize', releaseResponsiveSize, { once: true })
-    return () => window.removeEventListener('resize', releaseResponsiveSize)
-  }, [handoffLocked])
 
   useEffect(() => {
     let animationFrame = 0
@@ -294,28 +330,29 @@ export default function Home() {
             alt="Leke Lente Lingo"
             className={[
               styles.heroLogo,
-              handoffLocked
-                ? styles.handedOffLogo
-                : '',
             ].filter(Boolean).join(' ')}
-            style={handoffLocked ? {
-              width: `${routeState?.onboardingLogoWidth}px`,
-              height: `${routeState?.onboardingLogoHeight}px`,
-            } : undefined}
           />
 
-          <div className={styles.photoTotal} aria-label="1 284 foto's">
-            <span aria-hidden="true">📸</span>
-            <strong>1 284</strong>
-            <small>FOTO'S</small>
+          <div className={styles.photoTotal} aria-label="1 284 foto's gedeel">
+            <span className={styles.cameraIcon} aria-hidden="true">
+              <i />
+            </span>
+            <span className={styles.photoCountCopy} aria-hidden="true">
+              <strong>{photoCount.toLocaleString('af-ZA')}</strong>
+              <small>FOTO'S GEDEEL</small>
+            </span>
+            <span className={styles.liveSpark} aria-hidden="true">
+              <i />
+              LIVE
+            </span>
           </div>
         </div>
       </section>
 
       <div className={styles.homeContent}>
         <Marquee />
-        <Actions />
         <Leaderboard />
+        <PosterCollection />
         <HoeDitWerk />
       </div>
     </>

@@ -32,7 +32,7 @@ service cloud.firestore {
         && request.resource.data.email
           == resource.data.email;
 
-      allow delete: if false;
+      allow delete: if isOwner(userId);
 
       /*
        * Individual poster progress
@@ -58,7 +58,7 @@ service cloud.firestore {
               'challengeCompletedAt'
             ]);
 
-        allow delete: if false;
+        allow delete: if isOwner(userId);
       }
     }
 

@@ -1,7 +1,7 @@
 .topBar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 60;
   width: 100%;
   height: 108px;
   overflow-x: clip;
@@ -306,6 +306,7 @@
 
   background: #ed4924;
   border-radius: 999px;
+  pointer-events: none;
   transition:
     transform 220ms ease,
     opacity 160ms ease;
@@ -408,6 +409,7 @@
   .topBar {
     height: 78px;
     overflow: visible;
+    isolation: isolate;
   }
 
   .navRibbon,
@@ -448,6 +450,9 @@
     padding: 4px 9px 4px 5px;
     gap: 6px;
     border-radius: 13px;
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease;
   }
 
   .profileCard:hover,
@@ -496,6 +501,226 @@
   }
 }
 
+.accountBackdrop {
+  position: fixed;
+  z-index: 10020;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(20 18 12 / 58%);
+  backdrop-filter: blur(7px);
+  animation: accountBackdropIn 220ms ease both;
+}
+
+.accountDialog {
+  position: relative;
+  width: min(470px, 100%);
+  box-sizing: border-box;
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 3px solid var(--color-oranje);
+  border-radius: 30px;
+  box-shadow: 10px 12px 0 var(--color-sagpienk);
+  text-align: center;
+  animation: accountDialogIn 360ms cubic-bezier(.22, 1, .36, 1) both;
+  max-height: calc(100svh - 2rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-oranje) transparent;
+}
+
+.dialogContent {
+  animation: dialogContentSwap 460ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.dialogBadge {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  margin: -3.2rem auto .9rem;
+  place-items: center;
+  color: var(--color-ink);
+  background: var(--color-geel);
+  border: 3px solid var(--color-ink);
+  border-radius: 50%;
+  box-shadow: 4px 5px 0 var(--color-oranje);
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.dialogKicker {
+  margin: 0 0 .35rem;
+  color: var(--color-oranje);
+  font-family: var(--font-pixel);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.accountDialog h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 7vw, 2.7rem);
+  line-height: 1;
+}
+
+.dialogContent > p:not(.dialogKicker, .dialogError) {
+  max-width: 38ch;
+  margin: .85rem auto 1.35rem;
+  color: #625e56;
+  font-size: .9rem;
+  line-height: 1.55;
+}
+
+.dialogError {
+  margin: 0 0 1rem;
+  padding: .65rem .75rem;
+  color: #8a1d12;
+  background: #ffe0d6;
+  border: 2px solid var(--color-oranje);
+  border-radius: 14px;
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.dialogActions {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: .7rem;
+}
+
+.dialogActions button {
+  min-height: 48px;
+  padding: .75rem .85rem;
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-control);
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.dialogActions button:not(:disabled):hover {
+  transform: translateY(-3px);
+}
+
+.dialogCancel {
+  color: var(--color-ink);
+  background: #fff;
+}
+
+.dialogLogout {
+  color: var(--color-ink);
+  background: var(--color-geel);
+  box-shadow: 4px 5px 0 var(--color-oranje);
+}
+
+.dialogDeleteLink {
+  grid-column: 1 / -1;
+  min-height: auto !important;
+  color: #b42f22;
+  background: transparent;
+  border-color: transparent !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dialogDelete {
+  color: #fff;
+  background: #d93627;
+  box-shadow: 4px 5px 0 var(--color-ink);
+}
+
+.dialogActions .dialogDelete {
+  grid-column: 2;
+}
+
+.dialogActions button:disabled {
+  cursor: wait;
+  opacity: .55;
+}
+
+@keyframes accountBackdropIn {
+  from { opacity: 0; }
+}
+
+@keyframes accountDialogIn {
+  from { opacity: 0; transform: translateY(22px) scale(.94) rotate(-1deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+
+@keyframes dialogContentSwap {
+  from {
+    opacity: 0;
+    transform: translateX(22px) scale(.975);
+    filter: blur(4px);
+  }
+  62% {
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .accountBackdrop {
+    align-items: center;
+    padding: .6rem;
+  }
+
+  .accountDialog {
+    width: min(100%, 420px);
+    min-height: min(560px, calc(100svh - 1.2rem));
+    max-height: calc(100svh - 1.2rem);
+    padding: 2.35rem 1.1rem 1.25rem;
+    border-radius: 24px;
+    box-shadow: 7px 8px 0 var(--color-sagpienk);
+  }
+
+  .dialogContent {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .dialogBadge {
+    margin-top: -1.5rem;
+  }
+
+  .dialogContent > p:not(.dialogKicker, .dialogError) {
+    margin-bottom: 1.1rem;
+  }
+
+  .dialogActions {
+    grid-template-columns: 1fr;
+  }
+
+  .dialogActions .dialogDelete,
+  .dialogDeleteLink {
+    grid-column: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accountBackdrop,
+  .accountDialog,
+  .dialogContent,
+  .dialogActions button {
+    animation-duration: 1ms;
+    transition: none;
+  }
+}
+
 @media (max-width: 360px) {
   .navRibbon {
     width: min(42vw, 145px);
@@ -533,6 +758,21 @@
   .menuButton {
     width: 54px;
     height: 58px;
+  }
+}
+
+@media (max-width: 900px) {
+  .onboardingBar .logoLink {
+    top: max(11px, env(safe-area-inset-top));
+    left: max(14px, env(safe-area-inset-left));
+    padding: 2px;
+  }
+
+  .onboardingBar .logo {
+    width: auto;
+    height: 53px;
+    max-width: min(38vw, 145px);
+    object-fit: contain;
   }
 }
 

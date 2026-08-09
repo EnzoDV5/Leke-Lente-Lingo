@@ -7,7 +7,7 @@ import styles from './Actions.module.css'
 const AKSIES = [
   { to: '/woordeboek', label: 'Woordeboek',   icon: '📖', kleur: 'bg-blou text-paper'  },
   { to: '/foto',       label: 'Voeg Foto By', icon: '📸', kleur: 'bg-pienk text-paper' },
-  { to: '/woordjag',   label: 'Woordjag',     icon: '🎯', kleur: 'bg-groen text-ink'   },
+  { to: '/woordjag',   label: 'Lente Bingo',  icon: '🎯', kleur: 'bg-groen text-ink'   },
 ]
 
 export default function Actions() {
@@ -17,7 +17,7 @@ export default function Actions() {
       <div className={styles.grid}>
         {AKSIES.map((a, i) => (
           <Reveal key={a.label} delay={i * 120}>
-            <Link to={a.to} className={`${styles.card} ${a.kleur}`}>
+            <Link to={a.to} viewTransition className={`${styles.card} ${a.kleur}`}>
               <span className={styles.icon}>{a.icon}</span>
               <span className={styles.label}>{a.label}</span>
             </Link>

@@ -5,7 +5,6 @@
 
 .shellContent {
   position: relative;
-  z-index: 1;
   min-height: 100vh;
 
   display: flex;
@@ -13,8 +12,150 @@
 }
 
 .page {
+  position: relative;
+  z-index: 1;
   width: 100%;
   flex: 1;
+}
+
+.innerRoute > section > :not(header),
+.innerRoute > main > :not(header) {
+  animation: routeContentIn 680ms calc(var(--route-motion-delay) + 200ms) cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.homeRoute {
+  animation: homeRouteIn 720ms 760ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.homeReveal .homeRoute {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  animation: none;
+}
+
+.contentSurface {
+  position: absolute;
+  z-index: 0;
+  top: 388px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 100vh;
+  background: var(--color-paper);
+  pointer-events: none;
+  transition: top 760ms cubic-bezier(.76, 0, .24, 1);
+  will-change: top;
+}
+
+.heroDivider {
+  position: absolute;
+  z-index: 40;
+  top: 388px;
+  right: 0;
+  left: 0;
+  height: 5px;
+  background: var(--color-ink);
+  opacity: 1;
+  pointer-events: none;
+  transition:
+    top 760ms cubic-bezier(.76, 0, .24, 1),
+    opacity 260ms ease;
+  will-change: top, opacity;
+}
+
+.dividerCompact { top: 388px; }
+.dividerDetail { top: 448px; }
+.dividerWoordjag { top: 538px; }
+.dividerHome { top: 112svh; }
+.dividerHidden { top: 100svh; }
+.heroDivider.dividerHome,
+.heroDivider.dividerHidden { opacity: 0; }
+
+.heroDivider.dividerHome {
+  transition:
+    top 760ms cubic-bezier(.76, 0, .24, 1),
+    opacity 180ms 580ms ease-out;
+}
+
+@keyframes routeContentIn {
+  from {
+    opacity: 0;
+    transform: translateX(var(--route-enter-x));
+    filter: blur(5px);
+  }
+}
+
+@keyframes homeRouteIn {
+  from {
+    opacity: 0;
+    transform: scale(.97);
+    filter: blur(7px);
+  }
+}
+
+:global(html.lente-home-leaving) .homeRoute > section > * {
+  pointer-events: none;
+  animation: homeHeroOut 620ms cubic-bezier(.64, 0, .78, 0) both;
+}
+
+:global(.lente-scroll-reveal) {
+  opacity: 0;
+  transform: translate3d(0, 38px, 0) scale(.985);
+  filter: blur(3px);
+  transition:
+    opacity 720ms cubic-bezier(.22, 1, .36, 1) var(--scroll-reveal-delay, 0ms),
+    transform 820ms cubic-bezier(.16, 1, .3, 1) var(--scroll-reveal-delay, 0ms),
+    filter 650ms ease var(--scroll-reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+
+:global(.lente-scroll-reveal[data-reveal-motion='left']) {
+  transform: translate3d(-46px, 22px, 0) rotate(-.7deg) scale(.98);
+}
+
+:global(.lente-scroll-reveal[data-reveal-motion='right']) {
+  transform: translate3d(46px, 22px, 0) rotate(.7deg) scale(.98);
+}
+
+:global(.lente-scroll-reveal[data-reveal-motion='scale']) {
+  transform: translate3d(0, 24px, 0) scale(.92);
+}
+
+:global(.lente-scroll-reveal.lente-scroll-revealed) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotate(0) scale(1);
+  filter: blur(0);
+}
+
+@media (max-width: 680px) {
+  :global(.lente-scroll-reveal),
+  :global(.lente-scroll-reveal[data-reveal-motion='left']),
+  :global(.lente-scroll-reveal[data-reveal-motion='right']) {
+    transform: translate3d(0, 28px, 0) scale(.985);
+  }
+
+  :global(.lente-scroll-reveal.lente-scroll-revealed) {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(.lente-scroll-reveal),
+  :global(.lente-scroll-reveal.lente-scroll-revealed) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+@keyframes homeHeroOut {
+  to {
+    opacity: 0;
+    transform: translateY(-34px) scale(.92);
+    filter: blur(7px);
+  }
 }
 
 .homeReveal .footer {
@@ -24,6 +165,16 @@
     520ms
     ease-out
     both;
+}
+
+.footerFlush {
+  position: relative;
+  z-index: 8;
+  margin-top: clamp(5rem, 8vw, 8rem);
+}
+
+@media (max-width: 700px) {
+  .footerFlush { margin-top: -5rem; }
 }
 
 @keyframes homePageReveal {
@@ -39,8 +190,29 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .innerRoute > section > :not(header),
+  .innerRoute > main > :not(header) { animation: none; }
+  .homeRoute { animation: none; }
+  :global(html.lente-home-leaving) .homeRoute > section > * {
+    animation-duration: 1ms;
+  }
+  .heroDivider { transition-duration: 1ms; }
+  .contentSurface { transition-duration: 1ms; }
   .homeReveal .footer {
     animation-duration: 1ms;
     animation-delay: 0ms;
   }
+}
+
+@media (max-width: 900px) {
+  .dividerHome { top: 108svh; }
+  .dividerCompact { top: 358px; }
+  .dividerDetail { top: 418px; }
+  .dividerWoordjag { top: 508px; }
+}
+
+@media (max-width: 600px) {
+  .dividerCompact { top: 323px; }
+  .dividerDetail { top: 488px; }
+  .dividerWoordjag { top: 528px; }
 }

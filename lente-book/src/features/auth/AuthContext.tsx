@@ -7,24 +7,34 @@ import {
 } from 'react'
 
 import {
+  deleteUser,
   onAuthStateChanged,
+  reauthenticateWithPopup,
   signInWithPopup,
   signOut,
   type User,
 } from 'firebase/auth'
 
 import {
+  collection,
+  deleteDoc,
   doc,
+  getDocs,
   getDoc,
+  query,
   runTransaction,
   serverTimestamp,
+  where,
+  writeBatch,
 } from 'firebase/firestore'
+import { deleteObject, ref } from 'firebase/storage'
 
 import {
   appleProvider,
   auth,
   db,
   googleProvider,
+  storage,
 } from '../../lib/firebase'
 
 export type LenteProfile = {
@@ -66,6 +76,7 @@ type AuthContextValue = {
   ) => Promise<boolean>
 
   logOut: () => Promise<boolean>
+  deleteAccount: () => Promise<boolean>
   clearAuthError: () => void
 }
 
@@ -533,6 +544,73 @@ export function AuthProvider({
     }
   }
 
+  const deleteAccount = async () => {
+    if (!user) return false
+
+    setAuthError('')
+
+    try {
+      const usesApple = user.providerData.some(
+        (provider) => provider.providerId === 'apple.com',
+      )
+      await reauthenticateWithPopup(
+        user,
+        usesApple ? appleProvider : googleProvider,
+      )
+
+      const [wordsSnapshot, votesSnapshot, photosSnapshot, postersSnapshot] = await Promise.all([
+        getDocs(query(collection(db, 'words'), where('createdByUid', '==', user.uid))),
+        getDocs(query(collection(db, 'votes'), where('userId', '==', user.uid))),
+        getDocs(query(collection(db, 'photos'), where('createdByUid', '==', user.uid))),
+        getDocs(collection(db, 'users', user.uid, 'posters')),
+      ])
+
+      await Promise.all(
+        photosSnapshot.docs.map(async (photoDocument) => {
+          const storagePath = String(photoDocument.data().storagePath ?? '')
+          if (!storagePath) return
+          try {
+            await deleteObject(ref(storage, storagePath))
+          } catch (storageError) {
+            const errorCode = storageError && typeof storageError === 'object' && 'code' in storageError
+              ? String(storageError.code)
+              : ''
+            if (errorCode !== 'storage/object-not-found') throw storageError
+          }
+        }),
+      )
+
+      const documentsToDelete = [
+        ...wordsSnapshot.docs.map((item) => item.ref),
+        ...votesSnapshot.docs.map((item) => item.ref),
+        ...photosSnapshot.docs.map((item) => item.ref),
+        ...postersSnapshot.docs.map((item) => item.ref),
+      ]
+
+      const username = profile?.username.replace(/^@/, '').toLowerCase()
+      if (username) documentsToDelete.push(doc(db, 'usernames', username))
+
+      for (let index = 0; index < documentsToDelete.length; index += 450) {
+        const batch = writeBatch(db)
+        documentsToDelete.slice(index, index + 450).forEach((reference) => batch.delete(reference))
+        await batch.commit()
+      }
+
+      await deleteDoc(doc(db, 'users', user.uid))
+      await deleteUser(user)
+
+      setUser(null)
+      setProfile(null)
+      return true
+    } catch (error) {
+      console.error('Account deletion error:', error)
+      setAuthError(
+        'Ons kon nie jou rekening uitvee nie. Meld weer aan en probeer asseblief weer.',
+      )
+      return false
+    }
+  }
+
   const clearAuthError = () => {
     setAuthError('')
   }
@@ -548,6 +626,7 @@ export function AuthProvider({
     checkUsernameAvailability,
     saveProfile,
     logOut,
+    deleteAccount,
     clearAuthError,
   }
 

@@ -13,6 +13,7 @@ import type {
 } from 'firebase/auth'
 
 import { db } from './firebase'
+import { stableProfileAvatarId } from './profileAvatars'
 import type {
   FestivalArea,
   VoteValue,
@@ -22,6 +23,7 @@ type CreatorProfile = {
   username: string
   character: string
   useGooglePhoto: boolean
+  googlePhoto?: string | null
 }
 
 type ParentWord = {
@@ -67,9 +69,9 @@ export async function addWord({
   }
 
   const avatar =
-    profile.useGooglePhoto && user.photoURL
-      ? user.photoURL
-      : profile.character
+    profile.useGooglePhoto
+      ? user.photoURL ?? profile.googlePhoto ?? ''
+      : stableProfileAvatarId(profile.character)
 
   const wordReference = await addDoc(
     collection(db, 'words'),

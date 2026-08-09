@@ -45,17 +45,21 @@ type JagKaartProps = {
   challenge: ChallengeDefinition
   progress: ChallengeProgress
   wildcardLocked: boolean
-  onSimulate: () => void
+  wildcardProgress?: number
+  onScan: () => void
+  revealClue?: boolean
 }
 
 export default function JagKaart({
   challenge,
   progress,
   wildcardLocked,
-  onSimulate,
+  wildcardProgress = 0,
+  onScan,
+  revealClue = false,
 }: JagKaartProps) {
   const [flipped, setFlipped] =
-    useState(false)
+    useState(revealClue)
 
   const [imageFailed, setImageFailed] =
     useState(false)
@@ -75,18 +79,29 @@ export default function JagKaart({
       `${rotation}deg`,
 
     '--poster-counter-tilt':
-      `${rotation * -1}deg`,
+      `${rotation * -0.25}deg`,
   } as CSSProperties
 
   return (
     <article
-      className={styles.shell}
+      id={`poster-${challenge.id}`}
+      className={`${styles.shell} ${challenge.id === 'wildcard' ? styles.wildcardShell : ''}`}
       style={cardStyle}
     >
       <div
         className={`${styles.card} ${
           flipped ? styles.flipped : ''
         }`}
+        role="button"
+        tabIndex={0}
+        aria-label={`${challenge.name}. ${flipped ? 'Wys plakkaat' : 'Wys leidraad'}`}
+        onClick={() => setFlipped((current) => !current)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            setFlipped((current) => !current)
+          }
+        }}
       >
         <div className={styles.front}>
           <span
@@ -102,14 +117,6 @@ export default function JagKaart({
             }`}
           >
             <div className={styles.fallback}>
-              <span
-                className={
-                  styles.posterNumber
-                }
-              >
-                0{challenge.number}
-              </span>
-
               <span
                 className={
                   styles.posterIcon
@@ -142,7 +149,11 @@ export default function JagKaart({
             )}
           </div>
 
-          {!progress.collected && (
+          <span className={styles.posterNumber}>
+            0{challenge.number}
+          </span>
+
+          {!progress.collected && !locked && (
             <span
               className={styles.question}
             >
@@ -151,7 +162,10 @@ export default function JagKaart({
           )}
 
           {locked && (
-            <span className={styles.lock}>
+            <span
+              className={styles.lock}
+              data-progress={`${Math.min(wildcardProgress, 5)}/5 versamel`}
+            >
               🔒
             </span>
           )}
@@ -161,6 +175,7 @@ export default function JagKaart({
               VERSAMEL!
             </span>
           )}
+
         </div>
 
         <div className={styles.back}>
@@ -186,6 +201,20 @@ export default function JagKaart({
             >
               Versamel eers die ander vyf.
             </strong>
+          )}
+
+          {!locked && (
+            <button
+              type="button"
+              className={styles.backScanButton}
+              onKeyDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation()
+                onScan()
+              }}
+            >
+              ▣ Skandeer QR
+            </button>
           )}
         </div>
       </div>
@@ -220,29 +249,6 @@ export default function JagKaart({
         </span>
       </div>
 
-      <div className={styles.actions}>
-        <button
-          type="button"
-          className={styles.clueButton}
-          onClick={() =>
-            setFlipped(
-              (current) => !current,
-            )
-          }
-        >
-          {flipped
-            ? 'Wys plakkaat'
-            : 'Wys leidraad'}
-        </button>
-
-        <button
-          type="button"
-          className={styles.scanButton}
-          onClick={onSimulate}
-        >
-          ▣ Simuleer QR
-        </button>
-      </div>
     </article>
   )
 }
