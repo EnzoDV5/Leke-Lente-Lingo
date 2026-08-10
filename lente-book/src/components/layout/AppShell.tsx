@@ -31,7 +31,9 @@ const routeOrder = (path: string) =>
 const heroKind = (path: string) => {
   if (path === '/') return 'home'
   if (path === '/woordjag') return 'woordjag'
+  if (path === '/challenge/foto') return 'compact'
   if (path.startsWith('/woordeboek/')) return 'detail'
+  if (path.startsWith('/challenge/')) return 'challenge'
   if (path === '/woordeboek' || path === '/foto') return 'compact'
   return 'hidden'
 }
@@ -61,6 +63,8 @@ export default function AppShell() {
         ? styles.dividerWoordjag
         : currentHeroKind === 'detail'
           ? styles.dividerDetail
+          : currentHeroKind === 'challenge'
+            ? styles.dividerChallenge
           : currentHeroKind === 'compact'
           ? styles.dividerCompact
           : styles.dividerHidden
@@ -118,7 +122,7 @@ export default function AppShell() {
 
     const registerRevealItems = () => {
       const candidates = page.querySelectorAll(
-        '[data-scroll-reveal], section, article, ul > li',
+        '[data-scroll-reveal], section > div, article, ul > li',
       )
       let revealIndex = 0
       candidates.forEach((element) => {

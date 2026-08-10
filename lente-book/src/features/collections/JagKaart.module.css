@@ -127,6 +127,7 @@
 .backScanButton {
   position: relative;
   z-index: 2;
+  display: inline-block;
   margin-top: 1rem;
   padding: .75rem 1rem;
   border: 3px solid var(--color-oranje);
@@ -135,6 +136,7 @@
   color: #fff;
   font-family: var(--font-pixel);
   font-weight: 900;
+  text-decoration: none;
   text-transform: uppercase;
   box-shadow: 4px 4px 0 var(--color-geel);
   cursor: pointer;
@@ -339,6 +341,21 @@
 
 .statusOpen {
   background: var(--poster-colour);
+}
+
+.simulatorLink {
+  display: block;
+  width: fit-content;
+  margin: .75rem auto 0;
+  padding: .45rem .7rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-geel);
+  color: var(--color-ink);
+  font-family: var(--font-pixel);
+  font-size: .62rem;
+  font-weight: 900;
+  text-decoration: none;
 }
 
 

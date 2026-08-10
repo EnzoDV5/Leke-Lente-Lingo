@@ -14,6 +14,7 @@ import PageLoader from '../../components/ui/PageLoader'
 import { PROFILE_AVATARS } from '../../lib/profileAvatars'
 import { useAuth } from '../auth/AuthContext'
 import styles from './Onboarding.module.css'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 const PROFIEL_KLEURE = [
   '#f5c518',
@@ -159,6 +160,11 @@ export default function Onboarding() {
   const state =
     location.state as LocationState | null
 
+  const authReturnPath =
+    state?.from ??
+    window.sessionStorage.getItem('lente-auth-return') ??
+    '/'
+
   const [stap, setStap] =
     useState<OnboardingStap>(1)
 
@@ -220,6 +226,7 @@ export default function Onboarding() {
   ] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deletingAccount, setDeletingAccount] = useState(false)
+  useBodyScrollLock(showLogoutConfirm)
 
   const [
     homeTransition,
@@ -529,8 +536,9 @@ export default function Onboarding() {
         !isTransitioning &&
         busy === null
       ) {
+        window.sessionStorage.removeItem('lente-auth-return')
         navigate(
-          state?.from ?? '/',
+          authReturnPath,
           {
             replace: true,
           },
@@ -557,7 +565,7 @@ export default function Onboarding() {
     busy,
     isTransitioning,
     navigate,
-    state?.from,
+    authReturnPath,
   ])
 
   useEffect(() => {
@@ -715,6 +723,11 @@ export default function Onboarding() {
   }
 
   const animeerNaTuis = async () => {
+    if (authReturnPath !== '/') {
+      window.sessionStorage.removeItem('lente-auth-return')
+      navigate(authReturnPath, { replace: true })
+      return
+    }
     if (
       window.innerWidth <= 680 &&
       window.scrollY > 0

@@ -190,6 +190,7 @@ export function useLeaderboard() {
   }, [rankedWords])
 
   return {
+    words: rankedWords,
     topWords,
     worstWords,
 

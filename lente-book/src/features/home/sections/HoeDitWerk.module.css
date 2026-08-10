@@ -1,4 +1,13 @@
-.section { position: relative; }
+.section {
+  position: relative;
+  z-index: 3;
+  overflow: hidden;
+  border-top-left-radius: 56px;
+  border-top-right-radius: 56px;
+}
+.section > div {
+  padding-top: clamp(6rem, 8vw, 7.5rem);
+}
 .layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: start; }
 
 .story { max-width: 520px; }

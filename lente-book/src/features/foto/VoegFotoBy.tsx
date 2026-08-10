@@ -32,15 +32,11 @@ import {
   stableProfileAvatarId,
 } from '../../lib/profileAvatars'
 import styles from './VoegFotoBy.module.css'
+import { completeChallenge } from '../../lib/challengeProgress'
+import ChallengeSuccess from '../challenges/ChallengeSuccess'
 
 const MAX_SIZE = 10 * 1024 * 1024
-const FRAME_COLOURS = [
-  ['pienk', '#f81878'],
-  ['goud', '#f5c518'],
-  ['groen', '#18d860'],
-  ['blou', '#3151df'],
-  ['pers', '#7828b8'],
-] as const
+const PHOTO_FRAME_COLOUR = '#fbf7ef'
 
 function cleanFileName(fileName: string) {
   return fileName
@@ -48,7 +44,9 @@ function cleanFileName(fileName: string) {
     .replace(/[^a-z0-9.-]/g, '-')
 }
 
-export default function VoegFotoBy() {
+type VoegFotoByProps = { challengeMode?: boolean }
+
+export default function VoegFotoBy({ challengeMode = false }: VoegFotoByProps) {
   const previewStageRef = useRef<HTMLDivElement | null>(null)
   const navigate = useNavigate()
   const {
@@ -65,9 +63,6 @@ export default function VoegFotoBy() {
   const [word, setWord] =
     useState('')
 
-  const [frameColour, setFrameColour] =
-    useState('pienk')
-
   const [uploading, setUploading] =
     useState(false)
 
@@ -77,12 +72,13 @@ export default function VoegFotoBy() {
   const [message, setMessage] =
     useState('')
 
+  const [challengeCompleted, setChallengeCompleted] = useState(false)
+
   const [fieldErrors, setFieldErrors] = useState({
     photo: '',
     word: '',
   })
 
-  const frameAccent = FRAME_COLOURS.find(([name]) => name === frameColour)?.[1] ?? '#f81878'
   const creatorAvatar = profile?.useGooglePhoto
     ? user?.photoURL ?? profile.googlePhoto ?? fallbackProfileAvatar(profile.uid)
     : resolveProfileAvatar(profile?.character) ?? fallbackProfileAvatar(profile?.uid)
@@ -229,7 +225,7 @@ export default function VoegFotoBy() {
             profile.username,
           createdByAvatar: avatar,
 
-          frameColour,
+          frameColour: PHOTO_FRAME_COLOUR,
           approved: false,
 
           createdAt:
@@ -239,9 +235,13 @@ export default function VoegFotoBy() {
 
       setFile(null)
       setWord('')
-      setFrameColour('pienk')
       setFieldErrors({ photo: '', word: '' })
-      navigate('/', { replace: true, state: { photoUploaded: true } })
+      if (challengeMode) {
+        await completeChallenge(user.uid, 'photo', true)
+        setChallengeCompleted(true)
+      } else {
+        navigate('/', { replace: true, state: { photoUploaded: true } })
+      }
     } catch (error) {
       console.error(
         'Photo upload failed:',
@@ -303,14 +303,15 @@ export default function VoegFotoBy() {
 
   return (
     <section className={styles.page}>
+      {challengeCompleted && <ChallengeSuccess challengeId="photo" icon="📸" title="Oomblik gedoop!" text="Jou feesfoto het nou sy eie woord en jou Foto-doop-plakkaat is verdien." />}
       <CompactHero
-        kicker="★ Foto-doop ★"
-        title="Voeg ’n Foto By"
+        kicker={challengeMode ? '04 · FOTO-DOOP' : '★ Foto-doop ★'}
+        title={challengeMode ? 'Doop jou feesoomblik' : 'Voeg ’n Foto By'}
         subtitle="Vang die oomblik, gee dit ’n woord en plaas dit op die muur."
       />
 
       <div className={styles.wrap}>
-        <div className={styles.kaart} data-scroll-reveal="scale" style={{ '--frame-accent': frameAccent } as CSSProperties}>
+        <div className={styles.kaart} data-scroll-reveal="scale">
           <div
             ref={previewStageRef}
             className={styles.previewStage}
@@ -368,15 +369,6 @@ export default function VoegFotoBy() {
               )}
               <input className={styles.veld} value={word} placeholder="Gee dit ’n woord…" maxLength={40} onChange={(event) => setWord(event.target.value)} />
             </label>
-
-            <fieldset className={styles.colourPicker}>
-              <legend>Kies jou skadukleur</legend>
-              <div>
-                {FRAME_COLOURS.map(([name, colour]) => (
-                  <button key={name} type="button" className={frameColour === name ? styles.selectedColour : ''} style={{ '--swatch': colour } as CSSProperties} onClick={() => setFrameColour(name)} aria-label={`${name} raam`} aria-pressed={frameColour === name} />
-                ))}
-              </div>
-            </fieldset>
 
             <span className={styles.as}>Geplaas as {profile?.username}</span>
 

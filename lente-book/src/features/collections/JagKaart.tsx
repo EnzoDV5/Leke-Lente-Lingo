@@ -2,6 +2,7 @@ import {
   useState,
   type CSSProperties,
 } from 'react'
+import { Link } from 'react-router-dom'
 
 import type {
   ChallengeDefinition,
@@ -203,7 +204,7 @@ export default function JagKaart({
             </strong>
           )}
 
-          {!locked && (
+          {!locked && challenge.id !== 'wildcard' && (
             <button
               type="button"
               className={styles.backScanButton}
@@ -215,6 +216,17 @@ export default function JagKaart({
             >
               ▣ Skandeer QR
             </button>
+          )}
+
+          {!locked && challenge.id === 'wildcard' && !progress.collected && (
+            <Link
+              className={styles.backScanButton}
+              to="/challenge/wildcard"
+              onKeyDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+            >
+              ⚡ Skep my Wildcard
+            </Link>
           )}
         </div>
       </div>
@@ -249,6 +261,35 @@ export default function JagKaart({
         </span>
       </div>
 
+      {challenge.id === 'doop' && (
+        <Link
+          className={styles.simulatorLink}
+          to="/challenge/doop/poep-pods-warm-seat?area=bathroom&simulator=1"
+          onClick={(event) => event.stopPropagation()}
+        >
+          Bekyk simulator →
+        </Link>
+      )}
+      {challenge.id === 'remix' && (
+        <Link className={styles.simulatorLink} to="/challenge/remix/poep-pods-warm-seat?area=bathroom&simulator=1" onClick={(event) => event.stopPropagation()}>
+          Bekyk simulator →
+        </Link>
+      )}
+      {challenge.id === 'guess' && (
+        <Link className={styles.simulatorLink} to="/challenge/raai?simulator=1" onClick={(event) => event.stopPropagation()}>
+          Bekyk simulator →
+        </Link>
+      )}
+      {challenge.id === 'photo' && (
+        <Link className={styles.simulatorLink} to="/challenge/foto?simulator=1" onClick={(event) => event.stopPropagation()}>
+          Bekyk simulator →
+        </Link>
+      )}
+      {challenge.id === 'friend' && (
+        <Link className={styles.simulatorLink} to="/challenge/maat?simulator=1" onClick={(event) => event.stopPropagation()}>
+          Bekyk simulator →
+        </Link>
+      )}
     </article>
   )
 }

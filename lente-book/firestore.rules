@@ -41,25 +41,66 @@ service cloud.firestore {
       match /posters/{posterId} {
         allow read: if isOwner(userId);
 
-        allow create: if isOwner(userId)
-          && request.resource.data.posterId
-            == posterId;
+        allow create: if (isOwner(userId)
+          && request.resource.data.posterId == posterId)
+          || (signedIn()
+            && (posterId == 'friend' || posterId == 'doop')
+            && request.resource.data.inviteId is string
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.status == 'completed'
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviteeUid == request.auth.uid
+            && ((posterId == 'friend'
+                && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId)
+              || (posterId == 'doop' && userId == request.auth.uid)));
 
-        allow update: if isOwner(userId)
-          && request.resource.data.posterId
-            == resource.data.posterId
-          && request.resource.data
-            .diff(resource.data)
-            .affectedKeys()
-            .hasOnly([
-              'collected',
-              'challengeCompleted',
-              'collectedAt',
-              'challengeCompletedAt'
-            ]);
+        allow update: if (isOwner(userId)
+          && request.resource.data.posterId == resource.data.posterId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'collected', 'challengeCompleted', 'collectedAt', 'challengeCompletedAt'
+          ]))
+          || (signedIn()
+            && (posterId == 'friend' || posterId == 'doop')
+            && request.resource.data.posterId == posterId
+            && request.resource.data.inviteId is string
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.status == 'completed'
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviteeUid == request.auth.uid
+            && ((posterId == 'friend'
+                && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId)
+              || (posterId == 'doop' && userId == request.auth.uid)));
 
         allow delete: if isOwner(userId);
       }
+    }
+
+    match /friendInvites/{inviteId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.id == inviteId
+        && request.resource.data.inviterUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.inviteeUid == null;
+      allow update: if signedIn()
+        && resource.data.status == 'pending'
+        && resource.data.expiresAt > request.time
+        && resource.data.inviterUid != request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','inviteeUid','inviteeUsername','wordId','wordText','completedAt','updatedAt'])
+        && request.resource.data.status == 'completed'
+        && request.resource.data.inviteeUid == request.auth.uid
+        && get(/databases/$(database)/documents/words/$(request.resource.data.wordId)).data.createdByUid == request.auth.uid
+        && get(/databases/$(database)/documents/words/$(request.resource.data.wordId)).data.phraseId == resource.data.phraseId;
+      allow delete: if signedIn() && resource.data.inviterUid == request.auth.uid && resource.data.status == 'pending';
+    }
+
+    match /customPhrases/{phraseId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.id == phraseId
+        && request.resource.data.createdByUid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() >= 12
+        && request.resource.data.text.size() <= 180
+        && request.resource.data.isActive == true;
+      allow update: if false;
+      allow delete: if signedIn() && resource.data.createdByUid == request.auth.uid;
     }
 
     /*

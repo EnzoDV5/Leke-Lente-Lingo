@@ -25,11 +25,13 @@ export default function ProtectedRoute() {
     !user ||
     !profile?.onboardingComplete
   ) {
+    const returnPath = `${location.pathname}${location.search}${location.hash}`
+    window.sessionStorage.setItem('lente-auth-return', returnPath)
     return (
       <Navigate
         to="/welkom"
         state={{
-          from: location.pathname,
+          from: returnPath,
         }}
         replace
       />

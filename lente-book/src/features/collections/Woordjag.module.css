@@ -318,6 +318,8 @@
   place-items: center;
   padding: 1rem;
   background: rgba(25, 23, 20, 0.82);
+  overflow: hidden;
+  touch-action: none;
 }
 
 .modal {
@@ -330,6 +332,20 @@
   box-shadow: 12px 12px 0 #ffca18;
   text-align: center;
   border-radius: var(--radius-festival);
+  box-sizing: border-box;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+@media (max-width: 560px), (max-height: 650px) {
+  .modalBackdrop { align-items: end; padding: .45rem; }
+  .modal { width: 100%; max-height: calc(100dvh - .9rem); padding: 1.4rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-width: 3px; border-radius: 22px 22px 16px 16px; box-shadow: 5px 6px 0 #ffca18; }
+  .fakeQr { font-size: 3.3rem; }
+  .modal h2 { padding-inline: 1.8rem; font-size: clamp(1.65rem, 8vw, 2.15rem); }
+  .selectLabel { margin-top: .8rem; }
+  .openButton { margin-top: .9rem; padding: .8rem; border-width: 3px; }
 }
 
 .close {

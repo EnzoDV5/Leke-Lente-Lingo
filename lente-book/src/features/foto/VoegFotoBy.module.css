@@ -12,7 +12,6 @@
 }
 
 .kaart {
-  --frame-accent: var(--color-pienk);
   display: grid;
   grid-template-columns: minmax(280px, .92fr) minmax(320px, 1.08fr);
   align-items: center;
@@ -44,8 +43,7 @@
   background: var(--color-paper);
   border-radius: 9px;
   box-shadow:
-    10px 11px 0 var(--frame-accent),
-    16px 17px 0 rgb(20 18 12 / 14%);
+    7px 8px 0 rgb(22 21 15 / 30%);
   transform: rotate(-1.4deg);
   transition: transform 320ms cubic-bezier(.2, .8, .2, 1), box-shadow 320ms ease;
 }
@@ -54,8 +52,7 @@
 .editorFrame:focus-within {
   transform: rotate(0deg) translateY(-4px);
   box-shadow:
-    10px 15px 0 var(--frame-accent),
-    16px 21px 0 rgb(20 18 12 / 14%);
+    13px 15px 0 rgb(22 21 15 / 42%);
 }
 
 .dropzone {
@@ -272,8 +269,7 @@
   line-height: .95;
 }
 
-.fieldLabel,
-.colourPicker legend {
+.fieldLabel {
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: .88rem;
@@ -313,40 +309,6 @@
   animation: errorIn 260ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
-.colourPicker {
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.colourPicker > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .7rem;
-  margin-top: .65rem;
-}
-
-.colourPicker button {
-  --swatch: var(--color-pienk);
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  background: var(--swatch);
-  border: 3px solid var(--color-ink);
-  border-radius: 50%;
-  box-shadow: 3px 4px 0 rgb(20 18 12 / 16%);
-  cursor: pointer;
-  transition: transform 180ms cubic-bezier(.2, .8, .2, 1), box-shadow 180ms ease;
-}
-
-.colourPicker button:hover {
-  transform: translateY(-3px);
-}
-
-.colourPicker .selectedColour {
-  box-shadow: 0 0 0 4px var(--color-paper), 0 0 0 7px var(--color-ink);
-  transform: translateY(-4px) scale(1.06);
-}
 
 .as {
   color: #716e67;
@@ -452,7 +414,6 @@
   .dropzone::after,
   .changePhoto,
   .veld,
-  .colourPicker button,
   .deel,
   .plaas {
     transition: none;

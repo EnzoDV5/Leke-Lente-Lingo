@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './QrScanner.module.css'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 type BarcodeResult = { rawValue?: string }
 type BarcodeDetectorInstance = { detect: (source: HTMLVideoElement) => Promise<BarcodeResult[]> }
 type BarcodeDetectorConstructor = new (options: { formats: string[] }) => BarcodeDetectorInstance
 
 export default function QrScanner({ onClose }: { onClose: () => void }) {
+  useBodyScrollLock()
   const videoRef = useRef<HTMLVideoElement>(null)
   const navigate = useNavigate()
   const [message, setMessage] = useState('Maak jou kamera gereed…')

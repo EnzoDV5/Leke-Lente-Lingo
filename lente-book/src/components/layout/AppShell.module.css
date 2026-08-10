@@ -66,6 +66,7 @@
 
 .dividerCompact { top: 388px; }
 .dividerDetail { top: 448px; }
+.dividerChallenge { top: 558px; }
 .dividerWoordjag { top: 538px; }
 .dividerHome { top: 112svh; }
 .dividerHidden { top: 100svh; }
@@ -208,11 +209,13 @@
   .dividerHome { top: 108svh; }
   .dividerCompact { top: 358px; }
   .dividerDetail { top: 418px; }
+  .dividerChallenge { top: 558px; }
   .dividerWoordjag { top: 508px; }
 }
 
 @media (max-width: 600px) {
   .dividerCompact { top: 323px; }
   .dividerDetail { top: 488px; }
+  .dividerChallenge { top: 598px; }
   .dividerWoordjag { top: 528px; }
 }

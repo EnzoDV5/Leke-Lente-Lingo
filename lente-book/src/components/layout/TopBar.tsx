@@ -7,6 +7,8 @@ import {
 } from 'react-router-dom'
 
 import BurgerMenu from './BurgerMenu'
+import ProfileModal from '../profile/ProfileModal'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { useAuth } from '../../features/auth/AuthContext'
 import {
   fallbackProfileAvatar,
@@ -38,6 +40,8 @@ export default function TopBar() {
   const [accountDialog, setAccountDialog] = useState<'logout' | 'delete' | null>(null)
   const [profileImageFailed, setProfileImageFailed] =
     useState(false)
+  const [profileModalOpen, setProfileModalOpen] = useState(false)
+  useBodyScrollLock(Boolean(accountDialog))
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -263,10 +267,11 @@ export default function TopBar() {
 
             <div className={styles.actions}>
               {user && profile && (
-                <Link
-                  to="/welkom"
+                <button
+                  type="button"
                   className={styles.profileCard}
                   aria-label="Maak my profiel oop"
+                  onClick={() => setProfileModalOpen(true)}
                 >
                   <span className={styles.avatar}>
                     {displayProfileImage ? (
@@ -288,7 +293,7 @@ export default function TopBar() {
                       {profile.username}
                     </strong>
                   </span>
-                </Link>
+                </button>
               )}
 
               {user && (
@@ -385,6 +390,7 @@ export default function TopBar() {
           </section>
         </div>
       )}
+      <ProfileModal open={profileModalOpen} onClose={() => setProfileModalOpen(false)} />
     </>
   )
 }

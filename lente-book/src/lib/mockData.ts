@@ -41,14 +41,20 @@ const maakWoorde = (
     handle,
     stemme,
   }))
-  const sterte = ['koors', 'kriewel', 'kabaal']
-  const remixes = entries.slice(0, 3).map(([woord, , stemme], index) => ({
+  const sterte = ['koors', 'kriewel', 'kabaal', 'vonkel']
+  const remixHandles = [
+    '@woord_wurm',
+    '@lente_lawaai',
+    '@fees_fabriek',
+    '@taal_towenaar',
+  ]
+  const remixes = entries.slice(0, 4).map(([woord, , stemme], index) => ({
     id: `${prefix}-remix-${index + 1}`,
     woord: `${woord}-${sterte[index]}`,
-    handle: ['@woord_wurm', '@lente_lawaai', '@fees_fabriek'][index],
+    handle: remixHandles[index],
     stemme: Math.max(24, Math.round(stemme * (0.22 - index * 0.035))),
     verbeterVan: woord,
-    verbeterDeur: ['@woord_wurm', '@lente_lawaai', '@fees_fabriek'][index],
+    verbeterDeur: remixHandles[index],
   }))
 
   const lentedagWoord = {

@@ -37,6 +37,7 @@ import CompactHero from '../../components/ui/CompactHero'
 
 import styles from './Woordjag.module.css'
 import { db } from '../../lib/firebase'
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 
 const AREA_NAMES: Record<
   string,
@@ -82,6 +83,7 @@ export default function Woordjag() {
   )
 
   const [scannerOpen, setScannerOpen] = useState(false)
+  useBodyScrollLock(Boolean(simulating))
   const [wildcardJoined, setWildcardJoined] = useState(false)
   const [wildcardCelebrating, setWildcardCelebrating] = useState(false)
   const [wildcardEntrance, setWildcardEntrance] = useState(false)
@@ -107,16 +109,19 @@ export default function Woordjag() {
     searchParams.get('collected')
 
   useEffect(() => {
-    if (loading || !wildcardUnlocked) return
+    if (loading) return
 
     const isMobile = window.matchMedia('(max-width: 700px)').matches
-    const unlockedByLatestPoster = Boolean(
-      newlyCollected &&
-      CORE_CHALLENGE_IDS.includes(newlyCollected as ChallengeId),
-    )
-
     if (!isMobile) return
-    if (!unlockedByLatestPoster) {
+
+    if (!progress.wildcard.collected) {
+      setWildcardJoined(false)
+      setWildcardCelebrating(false)
+      return
+    }
+
+    const wildcardJustCompleted = newlyCollected === 'wildcard'
+    if (!wildcardJustCompleted) {
       setWildcardJoined(true)
       return
     }
@@ -137,7 +142,7 @@ export default function Woordjag() {
       window.clearTimeout(celebrationTimer)
       window.clearTimeout(joinTimer)
     }
-  }, [loading, newlyCollected, wildcardUnlocked])
+  }, [loading, newlyCollected, progress.wildcard.collected])
 
   useEffect(() => {
     const reward = rewardRef.current
@@ -564,13 +569,13 @@ export default function Woordjag() {
         <div className={styles.wildcardPoster}>
           <span className={styles.wildcardNumber}>06</span>
           <img src="/posters/wildcard.webp" alt="Wildcard-plakkaat" />
-          {!wildcardUnlocked && (
-            <span className={styles.wildcardLock} aria-label={`Wildcard gesluit. ${Math.min(collectedCount, 5)} van 5 versamel.`}>
+          {!progress.wildcard.collected && (
+            <span className={styles.wildcardLock} aria-label={wildcardUnlocked ? 'Wildcard-uitdaging gereed.' : `Wildcard gesluit. ${Math.min(collectedCount, 5)} van 5 versamel.`}>
               <span>🔒</span>
-              <strong>{Math.min(collectedCount, 5)}/5 versamel</strong>
+              <strong>{wildcardUnlocked ? 'UITDAGING GEREED' : `${Math.min(collectedCount, 5)}/5 versamel`}</strong>
             </span>
           )}
-          <strong>{wildcardUnlocked ? 'ONTSLUIT!' : '5 PLAKKATE BENODIG'}</strong>
+          <strong>{progress.wildcard.collected ? 'VERSAMEL!' : wildcardUnlocked ? 'SKEP OM TE VERSAMEL' : '5 PLAKKATE BENODIG'}</strong>
         </div>
 
         <span className={styles.rewardLegacyIcon}>
@@ -587,29 +592,35 @@ export default function Woordjag() {
 
           <p className={styles.rewardDescription}>
             {wildcardUnlocked
-              ? 'Skep jou eie scenario en gee dit ’n nuwe woord.'
+              ? progress.wildcard.collected
+                ? 'Jou eie frase en woord het die Wildcard-plakkaat onthul.'
+                : 'Jy het die ander vyf! Skep nou jou eie scenario en gee dit ’n nuwe woord om die Wildcard te verdien.'
               : 'Versamel vyf plakkate om jou eie scenario te skep.'}
           </p>
 
           <p className={styles.rewardLegacyDescription}>
             {wildcardUnlocked
-              ? 'Jy het die kernstel voltooi. Skan nou die Wildcard om jou eie scenario en woord te skep.'
+              ? progress.wildcard.collected
+                ? 'Die Wildcard is nou permanent deel van jou versameling.'
+                : 'Geen QR-kode is nodig nie. Maak die uitdaging oop en voltooi jou eie frase en woord.'
               : 'Versamel Doop Dit, Steel & Verbeter, Raai die Woord, Foto-doop en Daag ’n Maat Uit.'}
           </p>
         </div>
 
         <button
           type="button"
-          disabled={!wildcardUnlocked}
+          disabled={!wildcardUnlocked || progress.wildcard.collected}
           onClick={() =>
             navigate(
-              '/scan/wildcard',
+              '/challenge/wildcard',
             )
           }
         >
-          {wildcardUnlocked
-            ? 'Open Wildcard →'
-            : `${collectedCount}/5`}
+          {progress.wildcard.collected
+            ? 'Wildcard versamel ✓'
+            : wildcardUnlocked
+              ? 'Skep my Wildcard →'
+              : `${collectedCount}/5`}
         </button>
         </div>
       </section>
