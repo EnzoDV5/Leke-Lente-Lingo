@@ -1,6 +1,6 @@
-.shell {
+﻿.shell {
   scroll-margin-block: 110px;
-  --poster-colour: #ffca18;
+  --poster-colour: #eda61a;
   --poster-tilt: 0deg;
   --poster-counter-tilt: 0deg;
 
@@ -117,7 +117,7 @@
   position: relative;
   z-index: 1;
   margin-top: 1rem;
-  color: #ef321d;
+  color: #e8432b;
 }
 
 .tape {
@@ -203,9 +203,9 @@
   border: 2px solid var(--color-oranje);
   border-radius: 50%;
   background: var(--color-geel);
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-weight: 700;
   font-size: .72rem;
-  font-weight: 900;
   box-shadow: 3px 3px 0 var(--color-oranje);
 }
 
@@ -264,7 +264,8 @@
 
 .lock::after {
   content: attr(data-progress);
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-weight: 700;
   font-size: .72rem;
   text-transform: uppercase;
   white-space: nowrap;
@@ -280,9 +281,9 @@
   border-radius: 10px;
   padding: 0.35rem 0.5rem;
   background: #fff7df;
-  color: #ef321d;
-  font-family: var(--font-display);
-  font-weight: 900;
+  color: #e8432b;
+  font-family: var(--font-body);
+  font-weight: 700;
 }
 
 .meta {
@@ -309,7 +310,8 @@
 
 .meta strong {
   overflow: hidden;
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
+  font-weight: 700;
   font-size: .82rem;
   letter-spacing: .015em;
   text-overflow: ellipsis;
@@ -336,7 +338,7 @@
 }
 
 .statusDone {
-  background: #20c84b;
+  background: #279e52;
 }
 
 .statusOpen {
@@ -353,7 +355,7 @@
   background: var(--color-geel);
   color: var(--color-ink);
   font-family: var(--font-pixel);
-  font-size: .62rem;
+  font-size: .85rem;
   font-weight: 900;
   text-decoration: none;
 }

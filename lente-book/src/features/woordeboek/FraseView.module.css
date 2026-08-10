@@ -1,6 +1,6 @@
 .page { min-height: 100vh; overflow-x: hidden; background: transparent; }
 .wrap { max-width: 880px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-.terug { display: inline-flex; min-height: 48px; align-items: center; padding: .7rem 1rem; box-sizing: border-box; font-family: var(--font-display); font-weight: 800; font-size: .95rem; color: var(--color-ink); background: var(--color-paper); border: 2px solid var(--color-ink); border-radius: 999px; box-shadow: 4px 5px 0 var(--color-oranje); text-decoration: none; margin-bottom: 1rem; transition: transform 180ms ease, box-shadow 180ms ease; }
+.terug { display: inline-flex; min-height: 48px; align-items: center; padding: .7rem 1rem; box-sizing: border-box; font-family: var(--font-pixel); font-weight: 800; font-size: .95rem; color: var(--color-ink); background: var(--color-paper); border: 2px solid var(--color-ink); border-radius: 999px; box-shadow: 4px 5px 0 var(--color-oranje); text-decoration: none; margin-bottom: 1rem; transition: transform 180ms ease, box-shadow 180ms ease; }
 .terug:hover { transform: translateY(-2px); box-shadow: 4px 7px 0 var(--color-oranje); }
 .heroTerug {
   display: inline-flex;
@@ -16,7 +16,7 @@
   background: var(--color-paper);
   color: var(--color-ink);
   box-shadow: 5px 6px 0 var(--color-oranje);
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: clamp(.86rem, 1.35vw, 1rem);
   font-weight: 900;
   line-height: 1;
@@ -87,8 +87,8 @@
   font-variant-numeric: tabular-nums;
 }
 .wordCount > span:last-child { display: grid; line-height: 1; }
-.wordCount b { font-family: var(--font-display); font-size: .72rem; }
-.wordCount small { margin-top: 2px; font-family: var(--font-pixel); font-size: .53rem; letter-spacing: .08em; }
+.wordCount b { font-family: var(--font-body); font-weight: 700; font-size: .82rem; }
+.wordCount small { margin-top: 2px; font-family: var(--font-body); font-weight: 700; font-size: .68rem; letter-spacing: .06em; }
 .leeg { color: var(--color-ink); text-align: center; padding: 2rem 0; }
 .invoer { scroll-margin-top: 108px; background: var(--color-card); border: 2px solid var(--color-ink); border-radius: var(--radius-card); padding: 1rem; margin: 1.25rem 0; }
 .etiket { display: block; font-family: var(--font-display); font-weight: 700; font-size: .9rem; color: var(--color-ink); margin-bottom: .6rem; }
@@ -106,19 +106,19 @@
 .invoerRy { display: flex; gap: .5rem; }
 .veld { flex: 1; min-width: 0; padding: .7rem .9rem; font-family: var(--font-body); font-size: 1rem; border: 2px solid var(--color-ink); border-radius: var(--radius-pill); outline: none; }
 .veld:focus { border-color: var(--color-oranje); }
-.plaas { flex-shrink: 0; font-family: var(--font-display); font-weight: 700; color: var(--color-paper); background: var(--color-pienk); border: none; padding: 0 1.2rem; border-radius: var(--radius-pill); cursor: pointer; box-shadow: var(--shadow-lift); }
+.plaas { flex-shrink: 0; font-family: var(--font-pixel); font-weight: 700; color: var(--color-paper); background: var(--color-pienk); border: none; padding: 0 1.2rem; border-radius: var(--radius-pill); cursor: pointer; box-shadow: var(--shadow-lift); }
 .as { display: block; font-size: .75rem; color: #777; margin-top: .5rem; }
-.kanselleer { display: inline-flex; align-items: center; gap: .35rem; margin-top: .75rem; padding: .55rem .8rem; border: 2px solid var(--color-oranje); border-radius: 999px; background: #fff0ec; color: var(--color-oranje); box-shadow: 3px 3px 0 var(--color-sagpienk); font-family: var(--font-display); font-size: .78rem; font-weight: 900; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease; }
+.kanselleer { display: inline-flex; align-items: center; gap: .35rem; margin-top: .75rem; padding: .55rem .8rem; border: 2px solid var(--color-oranje); border-radius: 999px; background: #fff0ec; color: var(--color-oranje); box-shadow: 3px 3px 0 var(--color-sagpienk); font-family: var(--font-pixel); font-size: .78rem; font-weight: 900; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease; }
 .kanselleer:hover { transform: translateY(-2px); background: white; box-shadow: 4px 5px 0 var(--color-sagpienk); }
 .kanselleer:focus-visible { outline: 3px solid var(--color-geel); outline-offset: 2px; }
-.alleKop { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; color: var(--color-ink); margin: 0 0 1rem; }
+.alleKop { font-family: var(--font-pixel); font-weight: 800; font-size: 1.6rem; color: var(--color-ink); margin: 0 0 1rem; }
 .woordLys { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .8rem; }
 .woordItem { position: relative; display: flex; align-items: center; gap: .85rem; min-height: 76px; background: var(--color-card); border-radius: 17px; padding: .9rem 1rem; box-shadow: var(--shadow-lift); }
 .focusedWord { outline: 4px solid var(--color-geel); background: #fff4a8; box-shadow: 7px 7px 0 var(--color-oranje); animation: focusedWordPulse 900ms 2 ease-in-out; }
-.focusedWord::after { content: "VAN DIE PODIUM"; position: absolute; right: .65rem; top: -.72rem; padding: .28rem .5rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-geel); color: var(--color-ink); font-family: var(--font-pixel); font-size: .48rem; }
+.focusedWord::after { content: "VAN DIE PODIUM"; position: absolute; right: .65rem; top: -.72rem; padding: .28rem .5rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-geel); color: var(--color-ink); font-family: var(--font-body); font-weight: 700; font-size: .48rem; }
 @keyframes focusedWordPulse { 50% { transform: translateY(-4px) scale(1.015); } }
 .newlyCreatedWord { z-index: 2; scroll-margin-top: 125px; outline: 4px solid var(--color-groen); background: #dfffdc; box-shadow: 9px 9px 0 var(--color-geel); animation: newWordArrives 1100ms cubic-bezier(.16,1,.3,1) both, newWordGlow 900ms 1100ms 2 ease-in-out; }
-.newlyCreatedWord::after { content: "JOU NUWE WOORD!"; position: absolute; right: .7rem; top: -.8rem; padding: .3rem .55rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-groen); color: var(--color-ink); font-family: var(--font-pixel); font-size: .5rem; }
+.newlyCreatedWord::after { content: "JOU NUWE WOORD!"; position: absolute; right: .7rem; top: -.8rem; padding: .3rem .55rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-groen); color: var(--color-ink); font-family: var(--font-body); font-weight: 700; font-size: .5rem; }
 @keyframes newWordArrives { from { opacity: 0; transform: translateY(70px) scale(.84) rotate(-2deg); filter: blur(7px); } 70% { transform: translateY(-6px) scale(1.025) rotate(.5deg); } }
 @keyframes newWordGlow { 50% { transform: translateY(-5px); box-shadow: 9px 14px 0 var(--color-oranje); } }
 .rang { font-family: var(--font-display); font-weight: 900; width: 2.4rem; text-align: center; flex-shrink: 0; font-size: 1rem; }
@@ -130,7 +130,7 @@
 .verbeter { font-size: .76rem; font-weight: 700; color: var(--color-oranje); margin-top: .15rem; }
 .steelKnop { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border: 2px solid var(--color-ink); border-radius: 50%; background: var(--color-ink); color: var(--color-paper); box-shadow: 2px 2px 0 var(--color-oranje); font-size: 1.05rem; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease; }
 .steelKnop:hover { transform: translateY(-2px) rotate(-5deg); box-shadow: 3px 4px 0 var(--color-oranje); }
-.stemKnop { flex-shrink: 0; font-family: var(--font-display); font-weight: 700; font-size: .85rem; background: var(--color-goud); color: var(--color-ink); border: 2px solid var(--color-ink); padding: .35rem .7rem; border-radius: var(--radius-pill); cursor: pointer; }
+.stemKnop { flex-shrink: 0; font-family: var(--font-pixel); font-weight: 700; font-size: .85rem; background: var(--color-goud); color: var(--color-ink); border: 2px solid var(--color-ink); padding: .35rem .7rem; border-radius: var(--radius-pill); cursor: pointer; }
 @media (min-width: 768px) { .wrap { padding: 2rem 2rem 4rem; } }
 
 .voteActions {
@@ -146,7 +146,7 @@
   border-radius: 999px;
   background: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-weight: 800;
   cursor: pointer;
 }

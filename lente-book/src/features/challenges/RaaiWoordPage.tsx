@@ -58,7 +58,7 @@ export default function RaaiWoordPage() {
   return (
     <section className={styles.page}>
       {completed && <ChallengeSuccess challengeId="guess" icon="👀" title="Reg geraai!" text="Jy het die geheime woord by sy oorspronklike frase gepas." />}
-      <CompactHero className={styles.guessHero} kicker="03 · RAAI DIE WOORD" title="By watter frase hoort dié woord?" statement detail topAction={<Link to="/woordjag" className={styles.back}><span>←</span> My plakkate</Link>}>
+      <CompactHero className={styles.guessHero} kicker="03 · RAAI DIE WOORD" title="By watter frase hoort dié woord?" statement detail topAction={<Link to="/woordjag" className={styles.back}>My plakkate</Link>}>
         <div className={styles.mysteryWord}><img src={word.avatar} alt="" /><div><small>DIE GEHEIME WOORD</small><strong>{word.text}</strong><span>{word.username} · 👍 {word.upVotes}</span></div></div>
       </CompactHero>
       <div className={styles.wrap}>
@@ -70,7 +70,7 @@ export default function RaaiWoordPage() {
           const wrong = result === 'wrong' && selected
           return <button key={phrase.id} type="button" className={`${styles.choice} ${correct ? styles.correct : ''} ${wrong ? styles.wrong : ''}`} onClick={() => void guess(phrase.id)} disabled={result !== null}><span>0{index + 1}</span><div><small>{AREA_NAMES[phrase.area]}</small><strong>{phrase.text}</strong></div><i>{correct ? '✓' : wrong ? '×' : 'KIES'}</i></button>
         })}</div>
-        {result && <section className={`${styles.feedback} ${result === 'correct' ? styles.feedbackCorrect : styles.feedbackWrong}`} role="status"><span>{result === 'correct' ? '✓' : '×'}</span><div><strong>{result === 'correct' ? 'Reg geraai!' : 'Nie heeltemal nie.'}</strong><p>{result === 'correct' ? (fromScan ? 'Die Raai die Woord-plakkaat is nou versamel.' : 'Jy het die woord by sy frase gepas.') : 'Dit was jou een raai. Die regte frase is in groen gewys.'}</p></div>{result === 'wrong' && <button type="button" onClick={nextWord}>Probeer ’n nuwe woord →</button>}</section>}
+        {result && <section className={`${styles.feedback} ${result === 'correct' ? styles.feedbackCorrect : styles.feedbackWrong}`} role="status"><span>{result === 'correct' ? '✓' : '×'}</span><div><strong>{result === 'correct' ? 'Reg geraai!' : 'Nie heeltemal nie.'}</strong><p>{result === 'correct' ? (fromScan ? 'Die Raai die Woord-plakkaat is nou versamel.' : 'Jy het die woord by sy frase gepas.') : 'Dit was jou een raai. Die regte frase is in groen gewys.'}</p></div>{result === 'wrong' && <button type="button" onClick={nextWord}>Probeer ’n nuwe woord</button>}</section>}
       </div>
     </section>
   )

@@ -159,7 +159,7 @@ export default function FraseView() {
           to="/woordeboek"
           className={styles.terug}
         >
-          ← Terug na Woordeboek
+          Terug na Woordeboek
         </Link>
 
         <p className={styles.leeg}>
@@ -318,7 +318,6 @@ export default function FraseView() {
         detail
         topAction={(
           <Link to="/woordeboek" viewTransition className={styles.heroTerug}>
-            <span aria-hidden="true">←</span>
             Terug na Woordeboek
           </Link>
         )}

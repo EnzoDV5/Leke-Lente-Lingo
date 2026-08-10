@@ -23,12 +23,12 @@
 .bordOpskrif { display: flex; align-items: center; gap: .6rem; padding: .2rem .15rem; color: var(--color-oranje); }
 .bordOpskrif > span { color: var(--color-geel); font-size: 1.25rem; text-shadow: 1px 1px 0 var(--color-ink); }
 .bordOpskrif h2 { margin: 0; font-family: var(--font-pixel); font-size: clamp(1.15rem, 3vw, 1.55rem); line-height: 1; text-transform: uppercase; }
-.bordOpskrif small { margin-left: auto; font-family: var(--font-display); font-size: .7rem; font-weight: 900; text-transform: uppercase; }
+.bordOpskrif small { margin-left: auto; font-family: var(--font-body); font-size: .82rem; font-weight: 700; text-transform: uppercase; }
 .bordFrases { display: grid; gap: .8rem; }
 .topWoorde { display: grid; gap: 1rem; }
 .topWoordeKop { display: flex; align-items: center; gap: .8rem; padding: .3rem .2rem .6rem; color: var(--color-oranje); }
 .topWoordeKop > span { font-size: 2.1rem; }
-.topWoordeKop small { font-family: var(--font-pixel); font-size: .55rem; text-transform: uppercase; }
+.topWoordeKop small { font-family: var(--font-body); font-weight: 700; font-size: .72rem; text-transform: uppercase; }
 .topWoordeKop h2 { margin: .1rem 0 0; font-family: var(--font-pixel); font-size: clamp(1.45rem,4vw,2rem); text-transform: uppercase; }
 .topWoordeLys { display: grid; gap: .75rem; }
 

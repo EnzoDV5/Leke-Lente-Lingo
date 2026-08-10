@@ -619,7 +619,7 @@ export default function Woordjag() {
           {progress.wildcard.collected
             ? 'Wildcard versamel ✓'
             : wildcardUnlocked
-              ? 'Skep my Wildcard →'
+              ? 'Skep my Wildcard'
               : `${collectedCount}/5`}
         </button>
         </div>
@@ -770,7 +770,7 @@ export default function Woordjag() {
                 simulateBoardQr
               }
             >
-              Maak challenge oop →
+              Maak challenge oop
             </button>
           </section>
         </div>

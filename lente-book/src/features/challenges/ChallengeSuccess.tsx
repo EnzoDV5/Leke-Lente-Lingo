@@ -27,7 +27,7 @@ export default function ChallengeSuccess({ challengeId, title, text, icon }: Pro
         <h2 id="challenge-success-title">{title}</h2>
         <p className={styles.copy}>{rewardText}</p>
         <div className={styles.posterStamp}><span>✓</span><div><strong>PLAKKAAT VERDIEN</strong><small>Dit wag in jou versameling</small></div></div>
-        <button type="button" onClick={() => navigate(`/woordjag?collected=${earnedChallengeId}`, { replace: true })}>Klaar · Wys my plakkaat →</button>
+        <button type="button" onClick={() => navigate(`/woordjag?collected=${earnedChallengeId}`, { replace: true })}>Klaar · Wys my plakkaat</button>
       </section>
     </div>
   )

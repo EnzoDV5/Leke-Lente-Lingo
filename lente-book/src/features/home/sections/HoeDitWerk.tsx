@@ -12,7 +12,7 @@ const MEGANIKA = [
     kort: 'Skep en stem vir nuwe woorde.',
     beskrywing: 'Kies ’n fees-scenario, dink die woord wat nog nie bestaan nie en plaas dit in die boek. Lees ander mense se voorstelle, steel en verbeter ’n idee, of stem die raakste woord boontoe.',
     to: '/woordeboek',
-    aksie: 'Maak Woordeboek oop',
+    aksie: 'Woordeboek',
     kleur: 'oranje',
   },
   {
@@ -22,7 +22,7 @@ const MEGANIKA = [
     kort: 'Gee ’n feesoomblik sy eie naam.',
     beskrywing: 'Vang iets wat net by Lentedag kan gebeur, doop die foto met jou nuwe woord en voeg dit by die lewendige muur. Die foto gee konteks; die woord laat die oomblik voortleef.',
     to: '/foto',
-    aksie: 'Voeg ’n foto by',
+    aksie: 'Foto',
     kleur: 'pienk',
   },
   {
@@ -32,7 +32,7 @@ const MEGANIKA = [
     kort: 'Soek plakkate en ontsluit uitdagings.',
     beskrywing: 'Beweeg deur die fees, vind die versteekte plakkate en skandeer hul QR-kodes. Elke plakkaat maak ’n nuwe taal-uitdaging oop; voltooi die stel om die Wildcard te ontsluit.',
     to: '/woordjag',
-    aksie: 'Begin Lente Bingo',
+    aksie: 'Bingo',
     kleur: 'groen',
   },
   {
@@ -42,7 +42,7 @@ const MEGANIKA = [
     kort: 'Die gemeenskap kies die jaar se wenner.',
     beskrywing: 'Elke stem help die sterkste nuwe woord groei. Aan die einde word die voorstel met die meeste steun daardie jaar se Lente-woord, ’n klein stukkie taalgeskiedenis wat by die fees gebore is.',
     to: '/woordeboek',
-    aksie: 'Stem vir ’n woord',
+    aksie: 'Stem',
     kleur: 'geel',
   },
 ]
@@ -102,7 +102,7 @@ export default function HoeDitWerk() {
                     <div>
                       <p>{item.beskrywing}</p>
                       <Link className={styles.action} to={item.to} viewTransition>
-                        {item.aksie} <span aria-hidden="true">→</span>
+                        {item.aksie}
                       </Link>
                     </div>
                   </div>

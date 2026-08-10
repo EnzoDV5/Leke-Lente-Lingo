@@ -1286,14 +1286,7 @@ export default function Onboarding() {
                           </p>
                         )}
 
-                        <small
-                          className={styles.privaatheid}
-                        >
-                          Geen wagwoord of lang
-                          vorm nie. Ons gebruik
-                          net jou naam en foto om
-                          jou plasings te herken.
-                        </small>
+
                       </div>
                     )}
 
@@ -1316,16 +1309,16 @@ export default function Onboarding() {
                         >
                           {REELS.map((reel) => (
                             <li key={reel.n}>
-                              <span
-                                className={
-                                  styles.reelNommer
-                                }
-                              >
-                                {reel.n}
-                              </span>
-
                               <div>
-                                <strong>
+                                <strong className={styles.reelTitelRy}>
+                                  <span
+                                    className={
+                                      styles.reelNommer
+                                    }
+                                  >
+                                    {reel.n}
+                                  </span>
+
                                   {reel.titel}
                                 </strong>
 

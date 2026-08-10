@@ -138,7 +138,7 @@ export default function BurgerMenu({
           textColor="#f8e42b"
           activeColor="#ffffff"
           side="right"
-          fontSize={1.9}
+          fontSize={1.65}
           spacing={1.76}
           curve={1}
           tilt={12}

@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   min-height: 100vh;
   padding-bottom: 6rem;
   overflow-x: hidden;
@@ -24,9 +24,9 @@
   padding: .65rem .85rem;
   border: 3px solid #191714;
   border-radius: var(--radius-festival);
-  background: #ffca18;
+  background: #eda61a;
   color: #191714;
-  box-shadow: 5px 5px 0 #ef321d;
+  box-shadow: 5px 5px 0 #e8432b;
   text-align: left;
 }
 
@@ -57,7 +57,7 @@
 .progressTrack span {
   display: block;
   height: 100%;
-  background: #20c84b;
+  background: #279e52;
   transition: width 400ms ease;
 }
 
@@ -142,7 +142,7 @@
   margin-top: 1.5rem;
   padding: 1rem;
   border: 4px solid #191714;
-  background: #20c84b;
+  background: #279e52;
   box-shadow: 6px 6px 0 #191714;
   border-radius: var(--radius-festival);
 }
@@ -190,14 +190,14 @@
   height: 54px;
   place-items: center;
   border: 3px solid #191714;
-  background: #2858df;
+  background: #2857c9;
   font-size: 1.7rem;
   border-radius: var(--radius-control);
 }
 
 .instructions h2 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: 1.2rem;
   text-transform: uppercase;
 }
@@ -239,7 +239,7 @@
 }
 
 .error {
-  color: #b51d10;
+  color: #b33420;
   font-weight: 800;
 }
 
@@ -257,7 +257,7 @@
 }
 
 .rewardOpen {
-  background: #ffca18;
+  background: #eda61a;
 }
 
 .reward > span {
@@ -273,7 +273,7 @@
 
 .reward h2 {
   margin: 0.15rem 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: clamp(
     1.5rem,
     4vw,
@@ -291,17 +291,17 @@
   border: 3px solid var(--color-oranje);
   background: var(--color-pienk);
   color: #fff;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 5px 5px 0 #ef321d;
+  box-shadow: 5px 5px 0 #e8432b;
   border-radius: var(--radius-control);
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
 .reward button:not(:disabled):hover {
   transform: translateY(-3px);
-  box-shadow: 5px 8px 0 #ef321d;
+  box-shadow: 5px 8px 0 #e8432b;
 }
 
 .reward button:disabled {
@@ -329,7 +329,7 @@
   border: 5px solid #191714;
   background: #fff7df;
   color: #191714;
-  box-shadow: 12px 12px 0 #ffca18;
+  box-shadow: 12px 12px 0 #eda61a;
   text-align: center;
   border-radius: var(--radius-festival);
   box-sizing: border-box;
@@ -341,7 +341,7 @@
 
 @media (max-width: 560px), (max-height: 650px) {
   .modalBackdrop { align-items: end; padding: .45rem; }
-  .modal { width: 100%; max-height: calc(100dvh - .9rem); padding: 1.4rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-width: 3px; border-radius: 22px 22px 16px 16px; box-shadow: 5px 6px 0 #ffca18; }
+  .modal { width: 100%; max-height: calc(100dvh - .9rem); padding: 1.4rem 1rem calc(1rem + env(safe-area-inset-bottom)); border-width: 3px; border-radius: 22px 22px 16px 16px; box-shadow: 5px 6px 0 #eda61a; }
   .fakeQr { font-size: 3.3rem; }
   .modal h2 { padding-inline: 1.8rem; font-size: clamp(1.65rem, 8vw, 2.15rem); }
   .selectLabel { margin-top: .8rem; }
@@ -366,7 +366,7 @@
 
 .modalKicker {
   margin: 0.5rem 0 0.15rem;
-  color: #ef321d;
+  color: #e8432b;
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: 0.15em;
@@ -374,7 +374,7 @@
 
 .modal h2 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: 2.3rem;
   text-transform: uppercase;
 }
@@ -405,9 +405,9 @@
   margin-top: 1.25rem;
   padding: 1rem;
   border: 4px solid #191714;
-  background: #ef321d;
+  background: #e8432b;
   color: white;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-weight: 900;
   text-transform: uppercase;
   box-shadow: 5px 5px 0 #191714;
@@ -427,7 +427,7 @@
 }
 
 .modalError {
-  color: #b51d10 !important;
+  color: #b33420 !important;
   font-weight: 800;
 }
 
@@ -515,12 +515,12 @@
 .rewardCopy > p:last-child { margin-bottom: 0; }
 .rewardCard > button { min-width: 160px; }
 
-.wildcardPoster { position: relative; overflow: hidden; width: 100%; aspect-ratio: 3 / 4; padding: .45rem; border: 4px solid var(--color-oranje); border-radius: 24px; background: #fbf7ef; box-shadow: 7px 8px 0 #8334be; transform-origin: center bottom; animation: wildcardLift 1ms linear both; animation-timeline: view(); animation-range: entry 0% entry 82%; }
+.wildcardPoster { position: relative; overflow: hidden; width: 100%; aspect-ratio: 3 / 4; padding: .45rem; border: 4px solid var(--color-oranje); border-radius: 24px; background: #fbf7ef; box-shadow: 7px 8px 0 #7828b8; transform-origin: center bottom; animation: wildcardLift 1ms linear both; animation-timeline: view(); animation-range: entry 0% entry 82%; }
 .wildcardPoster img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
-.wildcardNumber { position: absolute; z-index: 3; top: .85rem; left: .85rem; display: grid; width: 38px; height: 38px; place-items: center; border: 2px solid var(--color-oranje); border-radius: 50%; background: var(--color-geel); font-family: var(--font-pixel); font-size: .72rem; box-shadow: 3px 3px 0 var(--color-oranje); }
+.wildcardNumber { position: absolute; z-index: 3; top: .85rem; left: .85rem; display: grid; width: 38px; height: 38px; place-items: center; border: 2px solid var(--color-oranje); border-radius: 50%; background: var(--color-geel); font-family: var(--font-body); font-weight: 700; font-size: .72rem; box-shadow: 3px 3px 0 var(--color-oranje); }
 .wildcardLock { position: absolute; z-index: 3; inset: .45rem; display: grid; align-content: center; justify-items: center; gap: .7rem; border-radius: 16px; background: rgba(251,247,239,.72); font-size: clamp(3rem, 7vw, 5rem); }
-.wildcardLock strong { min-width: 142px; box-sizing: border-box; padding: .75rem 1rem; border: 3px solid var(--color-oranje); border-radius: 12px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-pixel); font-size: .84rem; text-align: center; text-transform: uppercase; box-shadow: 4px 4px 0 var(--color-geel); }
-.wildcardPoster > strong { position: absolute; z-index: 4; right: .8rem; bottom: .8rem; left: .8rem; padding: .55rem; border: 2px solid var(--color-oranje); border-radius: 10px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-pixel); font-size: .67rem; text-align: center; }
+.wildcardLock strong { min-width: 142px; box-sizing: border-box; padding: .75rem 1rem; border: 3px solid var(--color-oranje); border-radius: 12px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-body); font-weight: 700; font-size: .84rem; text-align: center; text-transform: uppercase; box-shadow: 4px 4px 0 var(--color-geel); }
+.wildcardPoster > strong { position: absolute; z-index: 4; right: .8rem; bottom: .8rem; left: .8rem; padding: .55rem; border: 2px solid var(--color-oranje); border-radius: 10px; background: #fbf7ef; color: var(--color-oranje); font-family: var(--font-body); font-weight: 700; font-size: .67rem; text-align: center; }
 
 @keyframes wildcardLift {
   0% { opacity: 0; transform: perspective(900px) translateY(55%) rotateX(28deg) scale(.82); filter: blur(5px); }
@@ -532,7 +532,7 @@
 .rewardCopy { color: #fff; }
 .rewardLegacyDescription { display: none; }
 .rewardDescription { max-width: 620px; }
-.rewardKicker { color: var(--color-geel); font-family: var(--font-pixel); }
+.rewardKicker { color: var(--color-geel); font-family: var(--font-body); font-weight: 700; }
 .rewardCopy h2 { color: #fff; font-family: var(--font-pixel); font-weight: 900; line-height: .88; text-shadow: 3px 3px 0 var(--color-oranje); }
 .rewardCopy > p:last-child { color: #fff; font-weight: 800; line-height: 1.5; }
 

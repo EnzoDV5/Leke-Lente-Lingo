@@ -373,11 +373,11 @@ export default function VoegFotoBy({ challengeMode = false }: VoegFotoByProps) {
             <span className={styles.as}>Geplaas as {profile?.username}</span>
 
             <button className={styles.deel} disabled={sharing || uploading} onClick={() => void sharePhoto()}>
-              {sharing ? 'Maak deelvenster oop...' : 'Deel eers ↗'}
+              {sharing ? 'Maak deelvenster oop...' : 'Deel eers'}
             </button>
 
             <button className={styles.plaas} disabled={uploading} onClick={() => void uploadPhoto()}>
-              {uploading ? 'Laai foto op...' : 'Plaas op die muur →'}
+              {uploading ? 'Laai foto op...' : 'Plaas op die muur'}
             </button>
 
             {message && <p className={styles.message}>{message}</p>}

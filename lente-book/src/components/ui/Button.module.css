@@ -1,6 +1,6 @@
 .knop {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-  font-family: var(--font-display); font-weight: 700; text-decoration: none;
+  font-family: var(--font-pixel); font-weight: 700; text-decoration: none;
   border: none; cursor: pointer; line-height: 1; text-align: center;
   transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }

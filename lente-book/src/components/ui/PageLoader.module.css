@@ -1,4 +1,4 @@
-.loader {
+﻿.loader {
   position: relative;
   z-index: 100;
   width: 100%;
@@ -33,7 +33,7 @@
   overflow: hidden;
   padding: 4px;
   background: #fbf7ef;
-  border: 3px solid #ed4924;
+  border: 3px solid #e8432b;
   border-radius: 999px;
   box-shadow: 0 6px 0 rgba(0, 87, 181, .2);
 }
@@ -43,7 +43,7 @@
   width: 45%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #f8e42b 0 34%, #ef96c7 34% 68%, #f81878 68%);
+  background: linear-gradient(90deg, #f2c230 0 34%, #f4a8ce 34% 68%, #e2127e 68%);
   animation: loadingBar 1.35s cubic-bezier(.65, 0, .35, 1) infinite;
 }
 
@@ -66,7 +66,7 @@
   font-size: clamp(.72rem, 1.5vw, 1rem);
   font-weight: 800;
   letter-spacing: .08em;
-  text-shadow: 2px 2px 0 #087ff0;
+  text-shadow: 2px 2px 0 #2857c9;
 }
 
 @keyframes loadingBar {

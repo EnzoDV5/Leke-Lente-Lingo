@@ -1,11 +1,11 @@
 .blad {
-  --festival-orange: #ed4924;
-  --festival-pink: #ef96c7;
-  --festival-yellow: #f8e42b;
+  --festival-orange: #e8432b;
+  --festival-pink: #f4a8ce;
+  --festival-yellow: #f2c230;
   --festival-cream: #fbf7ef;
   --festival-ink: #17150f;
-  --festival-blue: #087ff0;
-  --festival-green: #19d669;
+  --festival-blue: #2857c9;
+  --festival-green: #279e52;
 
   position: relative;
   isolation: isolate;
@@ -223,7 +223,7 @@
 }
 
 .vorderStap small {
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.64rem;
   font-weight: 700;
   line-height: 1.1;
@@ -245,13 +245,13 @@
 
   background: var(--festival-cream);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
 }
 
 .vorderStap small {
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 700;
   line-height: 1.15;
@@ -335,12 +335,17 @@
   text-align: center;
 }
 
+.reelsStap,
+.profielStap {
+  text-align: center;
+}
+
 .oog {
   margin: 0 0 0.35rem;
 
   color: var(--festival-pink);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -371,10 +376,13 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
-  font-size: 0.86rem;
-  font-weight: 500;
-  line-height: 1.35;
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.4;
+  -webkit-text-stroke: 0.75px currentColor;
+  paint-order: stroke fill;
+  text-shadow: 0 0 0.4px currentColor, 0 0 0.4px currentColor;
 }
 
 /* Login buttons */
@@ -455,7 +463,7 @@
 
 .aanmeldKnop:hover:not(:disabled),
 .hoofKnop:hover:not(:disabled) {
-  background: #fff14b;
+  background: #f7d23a;
 
   transform:
     translateY(-2px);
@@ -497,7 +505,7 @@
 
   color: #9a948d;
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.7rem;
   line-height: 1.4;
 }
@@ -507,7 +515,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
   font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
@@ -561,7 +569,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -571,11 +579,13 @@
 
   color: white;
 
-  font-family: var(--font-pixel);
-  font-size: 0.92rem;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.1;
   text-transform: uppercase;
+  -webkit-text-stroke: 0.6px rgba(23, 21, 15, 0.55);
+  paint-order: stroke fill;
 }
 
 .reelsLys p {
@@ -583,10 +593,12 @@
 
   color: var(--festival-cream);
 
-  font-family: var(--font-pixel);
-  font-size: 0.73rem;
-  font-weight: 500;
-  line-height: 1.3;
+  font-family: var(--font-display);
+  font-size: 0.83rem;
+  font-weight: 700;
+  line-height: 1.35;
+  -webkit-text-stroke: 0.6px rgba(23, 21, 15, 0.7);
+  paint-order: stroke fill;
 }
 
 .reelsStap .hoofKnop,
@@ -603,7 +615,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -643,7 +655,7 @@
 .naamVeld span {
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
   font-weight: 700;
 }
 
@@ -659,7 +671,7 @@
   background: transparent;
   color: var(--festival-ink);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-display);
   font-size: 1rem;
 }
 
@@ -716,7 +728,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.76rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -754,6 +766,7 @@
     var(--festival-orange);
   border-radius: 12px;
 
+  font-family: var(--font-pixel);
   font-size: 1.45rem;
 
   cursor: pointer;
@@ -1100,7 +1113,7 @@
   }
 
   .paneelBeskrywing {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
   }
 
   .aanmeldKnop,
@@ -1451,7 +1464,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.62rem;
   font-weight: 700;
   text-overflow: ellipsis;
@@ -1486,14 +1499,14 @@
 
   color: #9a948d;
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-body);
   font-size: 0.62rem;
   font-weight: 700;
   line-height: 1.25;
 }
 
 .statusAvailable {
-  color: #15994d;
+  color: #1f8a46;
 }
 
 .statusTaken {
@@ -1523,7 +1536,7 @@
 .reelsLys p {
   margin-top: 0.15rem;
 
-  font-size: 0.68rem;
+  font-size: 0.78rem;
 }
 
 .reelsStap .hoofKnop {
@@ -1632,7 +1645,7 @@
     margin-top: 0.65rem;
     margin-bottom: 0.85rem;
 
-    font-size: 0.98rem;
+    font-size: 1.08rem;
     line-height: 1.45;
   }
 
@@ -1721,12 +1734,12 @@
 
   /* Larger rules text */
   .reelsLys strong {
-    font-size: 0.98rem;
+    font-size: 1.08rem;
     line-height: 1.15;
   }
 
   .reelsLys p {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
     line-height: 1.4;
   }
 
@@ -2275,7 +2288,7 @@
     var(--festival-orange);
 
   font-family:
-    var(--font-pixel);
+    var(--font-display);
   font-size: 0.95rem;
   line-height: 1.4;
 }
@@ -2407,7 +2420,7 @@
   .paneelBeskrywing {
     max-width: none;
 
-    font-size: 0.9rem;
+    font-size: 1.00rem;
     line-height: 1.45;
   }
 
@@ -2445,11 +2458,11 @@
   }
 
   .reelsLys strong {
-    font-size: 0.9rem;
+    font-size: 1.00rem;
   }
 
   .reelsLys p {
-    font-size: 0.72rem;
+    font-size: 0.82rem;
   }
 
   /* Avatar above username */
@@ -2740,8 +2753,11 @@
 
 .logoutConfirmIcon {
   display: grid;
+  flex-shrink: 0;
   width: 58px;
   height: 58px;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
   place-items: center;
   margin: 0 auto 0.8rem;
   border: 3px solid var(--festival-orange);
@@ -2772,10 +2788,10 @@
 .deleteAccountButton {
   grid-column: 1 / -1;
   padding: .45rem;
-  color: #b42f22;
+  color: #b33420;
   background: transparent;
   border: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: .76rem;
   font-weight: 900;
   text-decoration: underline;
@@ -3753,8 +3769,18 @@
 .paneelBeskrywing {
   max-width: 62ch;
 
-  font-size: 1.04rem !important;
+  font-size: 1.15rem !important;
   line-height: 1.45 !important;
+}
+
+/* The logout/delete confirm popup is a compact dialog, not a full onboarding
+   step — keep its description modest instead of the step-sized treatment. */
+.logoutConfirm .paneelBeskrywing {
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  -webkit-text-stroke: 0.3px currentColor !important;
+  text-shadow: none !important;
 }
 
 .privaatheid {
@@ -3814,14 +3840,14 @@
 }
 
 .reelsLys strong {
-  font-size: 0.92rem !important;
+  font-size: 1.02rem !important;
   line-height: 1.1 !important;
 }
 
 .reelsLys p {
   margin-top: 0.2rem;
 
-  font-size: 0.76rem !important;
+  font-size: 0.86rem !important;
   line-height: 1.35 !important;
 }
 
@@ -3930,7 +3956,7 @@
     margin-top: 0.55rem;
     margin-bottom: 0.75rem;
 
-    font-size: 0.92rem !important;
+    font-size: 1.02rem !important;
     line-height: 1.45 !important;
   }
 
@@ -3961,11 +3987,11 @@
   }
 
   .reelsLys strong {
-    font-size: 0.86rem !important;
+    font-size: 0.96rem !important;
   }
 
   .reelsLys p {
-    font-size: 0.72rem !important;
+    font-size: 0.82rem !important;
   }
 
   .stapNavigasie {
@@ -4148,7 +4174,7 @@
 .reelsLys p {
   margin-top: 0.4rem;
 
-  font-size: 0.84rem !important;
+  font-size: 0.94rem !important;
   line-height: 1.48 !important;
 }
 
@@ -4362,7 +4388,7 @@
   .vorderNaamBoog text {
     fill: currentColor;
 
-    font-family: var(--font-pixel);
+    font-family: var(--font-body);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.1px;
@@ -4586,11 +4612,11 @@
   }
 
   .reelsLys strong {
-    font-size: 0.92rem !important;
+    font-size: 1.02rem !important;
   }
 
   .reelsLys p {
-    font-size: 0.82rem !important;
+    font-size: 0.92rem !important;
     line-height: 1.42 !important;
   }
 
@@ -4713,9 +4739,12 @@
     max-width: 34ch;
     margin: 0 auto;
     color: var(--festival-orange);
-    font-family: var(--font-pixel);
-    font-size: clamp(0.88rem, 3.65vw, 1.02rem);
+    font-family: var(--font-display);
+    font-size: 1.22rem;
+    font-weight: 700;
     line-height: 1.4;
+    -webkit-text-stroke: 0.5px currentColor;
+    paint-order: stroke fill;
   }
 
   .reelsStap > .paneelTitel,
@@ -4737,6 +4766,7 @@
     color: var(--festival-orange);
     background: var(--festival-yellow);
     box-shadow: 0 4px 0 rgba(237, 73, 36, .22);
+    font-family: var(--font-pixel);
     font-size: clamp(0.9rem, 4vw, 1.08rem);
     line-height: 1.05;
     letter-spacing: .015em;
@@ -4905,7 +4935,7 @@
   }
 
   .reelsLys p {
-    font-size: 0.9rem !important;
+    font-size: 1.00rem !important;
     line-height: 1.48 !important;
   }
 
@@ -4950,7 +4980,7 @@
   }
 
   .paneelBeskrywing {
-    font-size: 0.98rem !important;
+    font-size: 1.22rem !important;
     line-height: 1.5 !important;
   }
 
@@ -4959,7 +4989,7 @@
   }
 
   .reelsLys p {
-    font-size: 0.94rem !important;
+    font-size: 1.04rem !important;
     line-height: 1.5 !important;
   }
 
@@ -5657,16 +5687,16 @@
    rather than squeezing content underneath the buttons. */
 @media (max-width: 680px) {
   .mobieleStapTweeBlad {
-    --mobiele-paneel-hoogte: 650px;
+    --mobiele-paneel-hoogte: 630px;
     height: auto;
-    min-height: max(100svh, 718px);
+    min-height: max(100svh, 698px);
     overflow-y: visible;
   }
 
   .mobieleStapDrieBlad {
-    --mobiele-paneel-hoogte: 630px;
+    --mobiele-paneel-hoogte: 585px;
     height: auto;
-    min-height: max(100svh, 698px);
+    min-height: max(100svh, 653px);
     overflow-y: visible;
   }
 
@@ -5784,7 +5814,7 @@
   }
 
   .mobieleBevestigingBlad .logoutConfirm {
-    padding-top: clamp(24px, 4svh, 36px);
+    padding-top: clamp(8px, 1.5svh, 16px);
   }
 
   .mobieleBevestigingBlad .logoutConfirmAksies {
@@ -5862,3 +5892,165 @@
     );
   }
 }
+
+/* Force step 2 and step 3's descriptions to match step 1's size exactly --
+   this file has many competing !important rules for .paneelBeskrywing at
+   different breakpoints; this is the final word so it always wins. */
+.reelsStap .paneelBeskrywing,
+.profielStap .paneelBeskrywing {
+  font-size: 1.15rem !important;
+}
+
+@media (max-width: 680px) {
+  .reelsStap .paneelBeskrywing,
+  .profielStap .paneelBeskrywing {
+    font-size: 1.22rem !important;
+  }
+}
+
+/* Rule number now sits inline next to its rule title instead of as a
+   separate left-hand column badge — mobile only. On desktop, the number
+   goes back to floating outside the title as its own corner badge, since
+   the wide two-column card layout there needs the title's own column free
+   for text only. */
+@media (max-width: 680px) {
+  .reelsLys li {
+    grid-template-columns: 1fr !important;
+  }
+
+  .reelsLys .reelTitelRy {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .reelsLys .reelTitelRy .reelNommer {
+    flex-shrink: 0;
+  }
+}
+
+@media (min-width: 681px) {
+  .reelsLys {
+    margin-top: 1.5rem;
+  }
+
+  .reelsLys li {
+    position: relative;
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .reelsLys li > div {
+    padding-left: 2.6rem;
+    text-align: left;
+  }
+
+  .reelsLys .reelTitelRy {
+    display: block;
+    text-align: left;
+  }
+
+  .reelsLys strong,
+  .reelsLys p {
+    text-align: left;
+  }
+
+  .reelsLys .reelTitelRy .reelNommer {
+    position: absolute;
+    top: 50%;
+    left: 0.7rem;
+    transform: translateY(-50%);
+  }
+}
+
+/* Trim the rules list a little so step 2's content-driven panel (same
+   mechanism as step 1) comfortably fits its extra rule cards. */
+@media (max-width: 680px) {
+  .mobieleStapOpskrif p {
+    font-size: 1.05rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .reelsLys {
+    gap: 0.45rem !important;
+  }
+
+  .reelsLys li {
+    padding: 0.6rem 0.75rem !important;
+  }
+
+  .reelTitelRy {
+    gap: 0.4rem !important;
+  }
+
+  .reelsLys strong {
+    font-size: 0.92rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .reelsLys p {
+    margin-top: 0.15rem !important;
+    font-size: 0.8rem !important;
+    line-height: 1.28 !important;
+  }
+
+  .reelNommer {
+    width: 1.7rem !important;
+    height: 1.7rem !important;
+    font-size: 0.72rem !important;
+  }
+}
+
+/* Breathing room between the step-2 intro sentence and the rules list, and
+   a bit more legible type inside each rule card. */
+@media (max-width: 680px) {
+  .mobieleStapOpskrif {
+    margin-top: 1.15rem !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  /* Step 3's panel is shorter, so keep its intro sentence closer to the
+     tracker so the avatar circle below has room and doesn't get clipped. */
+  .mobieleStapDrieBlad .mobieleStapOpskrif {
+    margin-top: 0.3rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .reelsLys {
+    margin-top: 0.95rem !important;
+  }
+
+  .reelsLys strong {
+    font-size: 1.02rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .reelsLys p {
+    margin-top: 0.2rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .reelNommer {
+    width: 1.8rem !important;
+    height: 1.8rem !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* The bottom button row stays anchored to the bottom of the step card itself
+   (not the whole screen), so it never floats outside the rounded panel. It
+   still won't drift with the content above it within that card. No added
+   background — stays transparent, just the buttons themselves. */
+@media (max-width: 680px) {
+  .vasteNavigasie {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 60 !important;
+    margin-top: auto !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+

@@ -18,7 +18,7 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
       <div className={styles.author}>
         <img className={!frase.createdByUsername ? styles.officialLogo : ''} src={phraseAvatar} alt="" />
         <span>
-          <small>{frase.createdByUsername ? 'Nuwe frase deur' : frase.bord}</small>
+          {frase.createdByUsername && <small>Nuwe frase deur</small>}
           <strong>{phraseAuthor}</strong>
         </span>
       </div>
@@ -38,7 +38,7 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
         </div>
         <div className={styles.actions}>
           {top && <span className={styles.cardVotes}>👍 <b>{top.stemme}</b></span>}
-          <Link to={`/woordeboek/${frase.id}`} className={styles.knoppie}>Meer <span aria-hidden="true">→</span></Link>
+          <Link to={`/woordeboek/${frase.id}`} className={styles.knoppie}>Meer</Link>
         </div>
       </div>
     </article>

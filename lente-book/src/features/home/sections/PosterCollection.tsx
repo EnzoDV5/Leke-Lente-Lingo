@@ -52,22 +52,14 @@ export default function PosterCollection() {
       sectionRef={sectionRef}
       style={{ '--grass-scroll-y': '0px' } as CSSProperties}
     >
-      <Reveal>
+      <strong className={styles.count}>{loading ? '…' : collectedCount}<span>/6</span></strong>
+
+      <Reveal className={styles.headerReveal}>
         <header className={styles.header}>
-          <div>
-            <p className={styles.kicker}>★ JOU LENTE BINGO ★</p>
-            <h2>My Plakkaat-versameling</h2>
-            <p className={styles.intro}>Tik ’n plakkaat om direk na sy leidraad te gaan.</p>
-          </div>
-          <strong className={styles.count}>{loading ? '…' : collectedCount}<span>/6</span></strong>
+          <p className={styles.kicker}>★ JOU LENTE BINGO ★</p>
+          <h2>My Plakkaat versameling</h2>
         </header>
       </Reveal>
-
-      <p className={`${styles.scrollHint} ${posterStripScrolled ? styles.hintHidden : ''}`}>
-        <span aria-hidden="true">â†</span>
-        Sleep links en regs om al die plakkate te sien
-        <span aria-hidden="true">â†’</span>
-      </p>
 
       <div
         className={styles.row}
@@ -96,6 +88,14 @@ export default function PosterCollection() {
           )
         })}
       </div>
+
+      <p className={styles.intro}>Tik &rsquo;n plakkaat om direk na sy leidraad te gaan.</p>
+
+      <p className={`${styles.scrollHint} ${posterStripScrolled ? styles.hintHidden : ''}`}>
+        <span aria-hidden="true">&larr;</span>
+        Sleep links en regs om al die plakkate te sien
+        <span aria-hidden="true">&rarr;</span>
+      </p>
     </Section>
   )
 }

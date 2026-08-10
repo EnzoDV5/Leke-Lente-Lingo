@@ -12,25 +12,26 @@ html {
 
 @theme {
   /* atmosphere + surfaces */
-  --color-sky:     #0A8AF0;
+  --color-sky:     #4FC6EF;
   --color-paper:   #FBF7EF;
   --color-card:    #FFFFFF;
   --color-ink:     #16150F;
 
-  /* Lentedag brights (sampled from the real site) */
-  --color-oranje:  #EE5A2E;
-  --color-pienk:   #F81878;
-  --color-sagpienk:#F898C0;
-  --color-geel:    #F2E23E;
-  --color-goud:    #F5C518;
-  --color-groen:   #18D860;
-  --color-blou:    #1848D8;
+  /* Leke Lente Lingo campaign brights (sampled from the campaign logo) */
+  --color-teal:    #2FADA6;
+  --color-oranje:  #E8432B;
+  --color-pienk:   #E2127E;
+  --color-sagpienk:#F4A8CE;
+  --color-geel:    #F2C230;
+  --color-goud:    #EDA61A;
+  --color-groen:   #279E52;
+  --color-blou:    #2857C9;
   --color-pers:    #7828B8;
 
-  /* type — swap --font-display for the real Lentedag brand font later */
-  --font-display:  "Fredoka", system-ui, sans-serif;
-  --font-body:     "Nunito", system-ui, sans-serif;
-  --font-pixel:    "Pixelify Sans", monospace;
+  /* type — Leke Lente Lingo campaign fonts (Adobe/Typekit kit ipt8mli) */
+  --font-display:  "itc-american-typewriter", Georgia, serif;
+  --font-body:     "itc-american-typewriter", Georgia, serif;
+  --font-pixel:    "ltr-ncnd-variable", system-ui, sans-serif;
 
   /* soft + rounded */
   --radius-card:   20px;
@@ -51,7 +52,33 @@ body {
   background: var(--color-sky);
   color: var(--color-ink);
   font-family: var(--font-body);
+  font-weight: 700;
+  /* itc-american-typewriter only ships Light(300)/Bold(700) faces; Light
+     is too thin to read at UI text sizes, so Bold is the readable default */
+  /* LTR NCND is a variable font; push it to its boldest instance
+     wherever --font-pixel is used for the campaign's marker-style headings */
+  font-variation-settings: "wght" 900;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Buttons/inputs/selects don't reliably inherit font-variation-settings from
+   body (browsers reset form-control fonts independently), so the campaign's
+   paint font can render at its thin default weight inside clickable controls.
+   Force the heavy instance directly on every element so button labels never
+   fall back to the thin weight, and add a hairline stroke as a legibility
+   backstop for this font at small UI sizes. */
+button,
+input,
+select,
+textarea,
+a {
+  font-variation-settings: "wght" 900;
+}
+
+button,
+a[class] {
+  -webkit-text-stroke: 0.55px currentColor;
+  paint-order: stroke fill;
 }
 
 #root {

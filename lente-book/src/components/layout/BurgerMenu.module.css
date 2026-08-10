@@ -1,4 +1,4 @@
-.overlay {
+﻿.overlay {
   transform-origin: calc(100% - 35px) 39px;
   visibility: hidden;
   pointer-events: none;
@@ -125,7 +125,7 @@
 
 .socialButton:hover,
 .socialButton:focus-visible {
-  color: #ffe700;
+  color: #f7d23a;
   transform: translateY(-3px) scale(1.08);
   outline: none;
 }
@@ -141,7 +141,7 @@
 
 .socialButton .spotifyIcon path {
   fill: none;
-  stroke: #367fb8;
+  stroke: #2857c9;
   stroke-width: 1.55;
   stroke-linecap: round;
 }

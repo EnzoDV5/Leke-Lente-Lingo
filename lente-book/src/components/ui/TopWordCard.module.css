@@ -1,6 +1,6 @@
 .card { display: grid; grid-template-columns: auto auto minmax(0,1fr) auto auto; align-items: center; gap: .8rem; padding: .8rem 1rem; border: 3px solid var(--color-oranje); border-radius: 18px; background: var(--color-card); color: var(--color-ink); box-shadow: 5px 5px 0 var(--color-sagpienk); text-decoration: none; transition: transform 220ms cubic-bezier(.16,1,.3,1), box-shadow 220ms ease; }
 .card:hover, .card:focus-visible { transform: translateY(-4px) translateX(3px); box-shadow: 2px 8px 0 var(--color-geel); outline: none; }
-.rank { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: var(--color-geel); font-family: var(--font-pixel); font-size: .75rem; box-shadow: 2px 2px 0 var(--color-oranje); }
+.rank { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: var(--color-geel); font-family: var(--font-body); font-weight: 700; font-size: .75rem; box-shadow: 2px 2px 0 var(--color-oranje); }
 .card img { width: 50px; height: 50px; border: 3px solid var(--color-oranje); border-radius: 50%; background: white; object-fit: cover; }
 .card img.brandAvatar { padding: 5px; box-sizing: border-box; object-fit: contain; }
 .copy { display: grid; min-width: 0; }

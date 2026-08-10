@@ -45,7 +45,7 @@ export default function SteelVerbeterPage() {
 
   return (
     <section className={styles.page}>
-      <CompactHero className={styles.remixHero} kicker={`02 · STEEL & VERBETER · ${AREA_NAMES[activePhrase.area]}`} title={activePhrase.text} statement detail topAction={<Link to="/woordjag" className={styles.back}><span>←</span> My plakkate</Link>}>
+      <CompactHero className={styles.remixHero} kicker={`02 · STEEL & VERBETER · ${AREA_NAMES[activePhrase.area]}`} title={activePhrase.text} statement detail topAction={<Link to="/woordjag" className={styles.back}>My plakkate</Link>}>
         <div className={styles.heroControls}>
           <button type="button" onClick={() => move(-1)} aria-label="Vorige frase">‹</button>
           <div><small>FRASE {activeIndex + 1} VAN {availablePhrases.length}</small><strong>{fromScan ? 'PLAKKAAT GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong><span>{availablePhrases.map((phrase, index) => <button key={phrase.id} type="button" className={index === activeIndex ? styles.activeDot : ''} onClick={() => setActiveIndex(index)} aria-label={`Wys frase ${index + 1}`} />)}</span></div>
@@ -100,7 +100,7 @@ function RemixChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayPh
         <small>STAP 2 · VERBETER</small>
         <h2>{selected ? `Maak “${selected.text}” beter` : 'Kies ’n woord hier bo'}</h2>
         <p>Die oorspronklike bly vas. Voeg jou eie draai aan die einde by.</p>
-        <div><input ref={inputRef} disabled={!selected} value={remix} maxLength={40} placeholder="Jou verbetering…" onChange={(event) => { if (!selected) return; const next = event.target.value; if (next.startsWith(selected.text)) setRemix(next) }} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={!selected || submitting || remix === selected.text} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas verbetering →'}</button></div>
+        <div><input ref={inputRef} disabled={!selected} value={remix} maxLength={40} placeholder="Jou verbetering…" onChange={(event) => { if (!selected) return; const next = event.target.value; if (next.startsWith(selected.text)) setRemix(next) }} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={!selected || submitting || remix === selected.text} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas verbetering'}</button></div>
         <span>Geplaas as {profile.username}</span>
         {message && <p className={styles.message} role="status">{message}</p>}
       </section>

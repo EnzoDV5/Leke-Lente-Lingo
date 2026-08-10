@@ -8,7 +8,7 @@
 }
 .card:hover { transform: translateY(-4px); }
 .icon  { font-size: 1.75rem; }
-.label { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; }
+.label { font-family: var(--font-pixel); font-weight: 700; font-size: 1.25rem; }
 
 @media (min-width: 768px) {
   .wrap { padding: 3.5rem 2rem; }

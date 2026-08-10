@@ -1,4 +1,4 @@
-.topBar {
+﻿.topBar {
   position: sticky;
   top: 0;
   z-index: 60;
@@ -21,9 +21,9 @@
   height: 53px;
 
   background: #fbf7ef;
-  border-top: 3px solid #ed4924;
-  border-right: 3px solid #ed4924;
-  border-bottom: 3px solid #ed4924;
+  border-top: 3px solid #e8432b;
+  border-right: 3px solid #e8432b;
+  border-bottom: 3px solid #e8432b;
   border-radius: 0 16px 16px 0;
 
   box-shadow: 0 5px 0 rgba(22, 21, 15, 0.08);
@@ -75,7 +75,7 @@
 .navLink {
   position: relative;
 
-  color: #ed4924;
+  color: #e8432b;
   font-family:
     var(--font-pixel),
     "Pixelify Sans",
@@ -103,7 +103,7 @@
 
   height: 3px;
   border-radius: 999px;
-  background: #f8e42b;
+  background: #f2c230;
 
   transform: scaleX(0);
   transform-origin: center;
@@ -112,7 +112,7 @@
 
 .navLink:hover,
 .activeNavLink {
-  color: #f81878;
+  color: #e2127e;
   transform: translateY(-2px);
 }
 
@@ -151,7 +151,7 @@
 
   color: #17150f;
   background: #fbf7ef;
-  border: 3px solid #ed4924;
+  border: 3px solid #e8432b;
   border-radius: 16px;
 
   box-shadow: 0 5px 0 rgba(22, 21, 15, 0.1);
@@ -180,11 +180,11 @@
   place-items: center;
   padding: 0;
 
-  border: 3px solid #ed4924;
+  border: 3px solid #e8432b;
   border-radius: 14px;
 
-  background: #f8e42b;
-  color: #ed4924;
+  background: #f2c230;
+  color: #e8432b;
 
   font-family:
     var(--font-pixel),
@@ -213,7 +213,7 @@
 }
 
 .logoutButton:hover:not(:disabled) {
-  background: #ef96c7;
+  background: #f4a8ce;
   transform: translateY(-2px);
 }
 
@@ -231,8 +231,8 @@
   place-items: center;
   overflow: hidden;
 
-  background: #f8e42b;
-  border: 2px solid #ed4924;
+  background: #f2c230;
+  border: 2px solid #e8432b;
   border-radius: 11px;
 
   font-size: 1.35rem;
@@ -255,7 +255,7 @@
 .profileDetails small {
   margin-bottom: 1px;
 
-  color: #ed4924;
+  color: #e8432b;
   font-family:
     var(--font-pixel),
     "Pixelify Sans",
@@ -290,8 +290,8 @@
 
   padding: 0;
 
-  background: #f8e42b;
-  border: 3px solid #ed4924;
+  background: #f2c230;
+  border: 3px solid #e8432b;
   border-radius: 13px;
 
   box-shadow: 0 5px 0 rgba(22, 21, 15, 0.12);
@@ -304,7 +304,7 @@
   height: 3px;
   margin: 4px auto;
 
-  background: #ed4924;
+  background: #e8432b;
   border-radius: 999px;
   pointer-events: none;
   transition:
@@ -423,7 +423,7 @@
     top: 8px;
     width: min(48vw, 172px);
     height: 58px;
-    border-right: 3px solid #ed4924;
+    border-right: 3px solid #e8432b;
     border-radius: 0 16px 16px 0;
   }
 
@@ -559,15 +559,15 @@
 .dialogKicker {
   margin: 0 0 .35rem;
   color: var(--color-oranje);
-  font-family: var(--font-pixel);
-  font-size: .68rem;
-  font-weight: 900;
+  font-family: var(--font-body);
+  font-size: .8rem;
+  font-weight: 700;
   letter-spacing: .1em;
 }
 
 .accountDialog h2 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: clamp(1.8rem, 7vw, 2.7rem);
   line-height: 1;
 }
@@ -583,7 +583,7 @@
 .dialogError {
   margin: 0 0 1rem;
   padding: .65rem .75rem;
-  color: #8a1d12;
+  color: #b33420;
   background: #ffe0d6;
   border: 2px solid var(--color-oranje);
   border-radius: 14px;
@@ -602,7 +602,7 @@
   padding: .75rem .85rem;
   border: 2px solid var(--color-ink);
   border-radius: var(--radius-control);
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: .78rem;
   font-weight: 900;
   cursor: pointer;
@@ -627,7 +627,7 @@
 .dialogDeleteLink {
   grid-column: 1 / -1;
   min-height: auto !important;
-  color: #b42f22;
+  color: #b33420;
   background: transparent;
   border-color: transparent !important;
   text-decoration: underline;
@@ -636,7 +636,7 @@
 
 .dialogDelete {
   color: #fff;
-  background: #d93627;
+  background: #e8432b;
   box-shadow: 4px 5px 0 var(--color-ink);
 }
 

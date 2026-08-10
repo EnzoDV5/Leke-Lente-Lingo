@@ -267,27 +267,27 @@ export default function JagKaart({
           to="/challenge/doop/poep-pods-warm-seat?area=bathroom&simulator=1"
           onClick={(event) => event.stopPropagation()}
         >
-          Bekyk simulator →
+          Bekyk simulator
         </Link>
       )}
       {challenge.id === 'remix' && (
         <Link className={styles.simulatorLink} to="/challenge/remix/poep-pods-warm-seat?area=bathroom&simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator →
+          Bekyk simulator
         </Link>
       )}
       {challenge.id === 'guess' && (
         <Link className={styles.simulatorLink} to="/challenge/raai?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator →
+          Bekyk simulator
         </Link>
       )}
       {challenge.id === 'photo' && (
         <Link className={styles.simulatorLink} to="/challenge/foto?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator →
+          Bekyk simulator
         </Link>
       )}
       {challenge.id === 'friend' && (
         <Link className={styles.simulatorLink} to="/challenge/maat?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator →
+          Bekyk simulator
         </Link>
       )}
     </article>

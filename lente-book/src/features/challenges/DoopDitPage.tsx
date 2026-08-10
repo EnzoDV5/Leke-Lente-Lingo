@@ -54,7 +54,7 @@ export default function DoopDitPage() {
         title={activePhrase.text}
         statement
         detail
-        topAction={<Link to="/woordjag" className={styles.back}><span aria-hidden="true">←</span> My plakkate</Link>}
+        topAction={<Link to="/woordjag" className={styles.back}>My plakkate</Link>}
       >
         <div className={styles.heroPhraseControls}>
           <button type="button" onClick={() => move(-1)} aria-label="Vorige frase">‹</button>
@@ -103,7 +103,7 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
       {completed && <ChallengeSuccess challengeId="doop" icon="✏️" title="Jou woord is gebore!" text="Jy het ’n splinternuwe woord vir die frase geskep. Jou Doop Dit-plakkaat is gereed." />}
       <div className={styles.creator}>
         <label htmlFor="doop-word">Doop dit met jou eie woord</label>
-        <div><input ref={inputRef} id="doop-word" value={newWord} maxLength={40} placeholder="Tik jou nuwe woord…" onChange={(event) => setNewWord(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={submitting || newWord.trim().length < 2} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas my woord →'}</button></div>
+        <div><input ref={inputRef} id="doop-word" value={newWord} maxLength={40} placeholder="Tik jou nuwe woord…" onChange={(event) => setNewWord(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={submitting || newWord.trim().length < 2} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas my woord'}</button></div>
         <small>Geplaas as {profile.username}</small>
         {message && <p role="status">{message}</p>}
       </div>
