@@ -99,7 +99,7 @@ export default function ScanRouter() {
 
     if (!isChallengeId(challengeId)) {
       setError(
-        'Hierdie QR-kode behoort nie aan ’n geldige Lente Book-plakkaat nie.',
+        'Hierdie QR-kode behoort nie aan ’n geldige Lente Book-poster nie.',
       )
 
       return
@@ -184,7 +184,7 @@ export default function ScanRouter() {
         )
 
         setError(
-          'Ons kon nie hierdie plakkaat versamel nie. Probeer weer.',
+          'Ons kon nie hierdie poster versamel nie. Probeer weer.',
         )
       },
     )
@@ -239,7 +239,7 @@ export default function ScanRouter() {
 
         <h1 className="mt-4 font-display text-3xl text-white">
           {challenge?.name ??
-            'Plakkaat word oopgemaak'}
+            'Poster word oopgemaak'}
         </h1>
 
         <p className="mt-2 text-white/75">

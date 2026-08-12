@@ -1,4 +1,6 @@
-.card { padding: 1rem; border: 3px solid var(--color-oranje); border-radius: 24px; box-shadow: 6px 6px 0 var(--color-sagpienk); }
+.card { position: relative; overflow: hidden; padding: 1rem; border: 3px solid var(--color-oranje); border-radius: 24px; box-shadow: 6px 6px 0 var(--color-sagpienk); }
+.card::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: var(--texture-grain); background-repeat: repeat; background-size: 800px; }
+.card > * { position: relative; z-index: 1; }
 .author { display: inline-flex; align-items: center; gap: .28rem; margin-bottom: .85rem; padding: .35rem .65rem .35rem .35rem; border: 2px solid var(--color-ink); border-radius: 999px; background: var(--color-paper); color: var(--color-ink); box-shadow: 3px 3px 0 rgba(22,21,15,.16); }
 .author img, .wordAvatar { display: block; overflow: hidden; border-radius: 50%; object-fit: cover; }
 .author img { width: 34px; height: 34px; border: 2px solid var(--color-oranje); }

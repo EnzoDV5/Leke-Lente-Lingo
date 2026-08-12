@@ -111,7 +111,7 @@
 .kanselleer { display: inline-flex; align-items: center; gap: .35rem; margin-top: .75rem; padding: .55rem .8rem; border: 2px solid var(--color-oranje); border-radius: 999px; background: #fff0ec; color: var(--color-oranje); box-shadow: 3px 3px 0 var(--color-sagpienk); font-family: var(--font-pixel); font-size: .78rem; font-weight: 900; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease; }
 .kanselleer:hover { transform: translateY(-2px); background: white; box-shadow: 4px 5px 0 var(--color-sagpienk); }
 .kanselleer:focus-visible { outline: 3px solid var(--color-geel); outline-offset: 2px; }
-.alleKop { font-family: var(--font-pixel); font-weight: 800; font-size: 1.6rem; color: var(--color-ink); margin: 0 0 1rem; }
+.alleKop { font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; font-size: 1.75rem; color: var(--color-ink); margin: 0 0 1rem; }
 .woordLys { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .8rem; }
 .woordItem { position: relative; display: flex; align-items: center; gap: .85rem; min-height: 76px; background: var(--color-card); border-radius: 17px; padding: .9rem 1rem; box-shadow: var(--shadow-lift); }
 .focusedWord { outline: 4px solid var(--color-geel); background: #fff4a8; box-shadow: 7px 7px 0 var(--color-oranje); animation: focusedWordPulse 900ms 2 ease-in-out; }

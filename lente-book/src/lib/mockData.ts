@@ -15,7 +15,7 @@ export const fotos: Foto[] = [
 
 export const hoeStappe: HoeStap[] = [
   { nommer: 1, titel: 'Vind ’n bord', kleur: 'bg-goud text-ink',
-    beskrywing: 'Soek krytborde en plakate regoor Lentedag ,  elkeen het ’n beskrywing van iets waarvoor Afrikaans nog nie ’n woord het nie.' },
+    beskrywing: 'Soek krytborde en posters regoor Lentedag ,  elkeen het ’n beskrywing van iets waarvoor Afrikaans nog nie ’n woord het nie.' },
   { nommer: 2, titel: 'Dink ’n woord', kleur: 'bg-pienk text-paper',
     beskrywing: 'Hoe sou JY dit noem? Skryf jou eie woord in. Die beskrywing is klaar ,  net die woord moet nog uitgedink word.' },
   { nommer: 3, titel: 'Stem & wen', kleur: 'bg-groen text-ink',

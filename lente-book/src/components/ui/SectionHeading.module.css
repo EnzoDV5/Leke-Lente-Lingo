@@ -5,7 +5,7 @@
   color: var(--color-oranje); margin: 0 0 .5rem;
 }
 .title {
-  font-family: var(--font-pixel); font-weight: 700;
+  font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal;
   font-size: 2rem; line-height: 1; margin: 0; color: var(--color-paper);
 }
 .onCream { color: var(--color-oranje); }

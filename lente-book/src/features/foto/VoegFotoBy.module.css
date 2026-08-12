@@ -28,10 +28,10 @@
   padding: clamp(1.6rem, 4vw, 3rem);
   border-radius: 30px;
   background-color: var(--color-groen);
-  background-image: url('../../assets/elements/grassbackround.webp');
-  background-position: center var(--grass-scroll-y, 0px);
-  background-size: cover;
-  background-repeat: repeat-y;
+  background-image: var(--texture-grain), url('../../assets/elements/grassbackround.webp');
+  background-position: center, center var(--grass-scroll-y, 0px);
+  background-size: 800px, cover;
+  background-repeat: repeat, repeat-y;
   will-change: background-position;
 }
 
@@ -265,7 +265,9 @@
 .controlHeading h2 {
   margin: .15rem 0 0;
   color: var(--color-ink);
-  font-family: var(--font-pixel);
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
+  font-weight: 500;
+  font-variation-settings: normal;
   font-size: clamp(1.65rem, 4vw, 2.7rem);
   line-height: .95;
 }

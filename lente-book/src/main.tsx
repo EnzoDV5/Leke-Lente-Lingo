@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { lazy, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter,
@@ -19,18 +19,23 @@ import OnboardingBackground from './components/decor/OnboardingBackground'
 import AppShell from './components/layout/AppShell'
 import Placeholder from './components/ui/Placeholder'
 
-import Home from './features/home/Home'
-import Woordeboek from './features/woordeboek/Woordeboek'
-import FraseView from './features/woordeboek/FraseView'
-import Woordjag from './features/collections/Woordjag'
-import VoegFotoBy from './features/foto/VoegFotoBy'
-
 import ScanRouter from './features/challenges/ScanRouter'
-import DoopDitPage from './features/challenges/DoopDitPage'
-import SteelVerbeterPage from './features/challenges/SteelVerbeterPage'
-import RaaiWoordPage from './features/challenges/RaaiWoordPage'
-import DaagMaatPage from './features/challenges/DaagMaatPage'
-import WildcardPage from './features/challenges/WildcardPage'
+
+// Onboarding and the QR scan handler are the two entry points people land
+// on directly (from a link or a scanned poster), so they stay eagerly
+// bundled. Everything reached only via in-app navigation (rendered inside
+// AppShell) is lazy-loaded; AppShell wraps its own Suspense boundary around
+// just the routed content, so the header/footer never unmount for it.
+const Home = lazy(() => import('./features/home/Home'))
+const Woordeboek = lazy(() => import('./features/woordeboek/Woordeboek'))
+const FraseView = lazy(() => import('./features/woordeboek/FraseView'))
+const Woordjag = lazy(() => import('./features/collections/Woordjag'))
+const VoegFotoBy = lazy(() => import('./features/foto/VoegFotoBy'))
+const DoopDitPage = lazy(() => import('./features/challenges/DoopDitPage'))
+const SteelVerbeterPage = lazy(() => import('./features/challenges/SteelVerbeterPage'))
+const RaaiWoordPage = lazy(() => import('./features/challenges/RaaiWoordPage'))
+const DaagMaatPage = lazy(() => import('./features/challenges/DaagMaatPage'))
+const WildcardPage = lazy(() => import('./features/challenges/WildcardPage'))
 
 createRoot(
   document.getElementById('root')!,
@@ -50,10 +55,6 @@ createRoot(
             path="/scan/:challengeId"
             element={<ScanRouter />}
           />
-
-          <Route element={<AppShell />}>
-            {/* Keep all your existing routes here */}
-          </Route>
         </Route>
 
           <Route element={<ProtectedRoute />}>

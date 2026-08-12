@@ -4,6 +4,7 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import {
+  Suspense,
   useEffect,
   useRef,
   type MouseEvent,
@@ -11,6 +12,7 @@ import {
 } from 'react'
 import TopBar from './TopBar'
 import Footer from './Footer'
+import PageLoader from '../ui/PageLoader'
 import styles from './AppShell.module.css'
 
 type RouteState = {
@@ -130,6 +132,7 @@ export default function AppShell() {
         if (element.parentElement === page) return
         if (element.closest('header')) return
         if (element.closest('[aria-label="Leke Lente Lingo"]')) return
+        if (element.closest('[data-no-auto-reveal]')) return
 
         registered.add(element)
         const htmlElement = element as HTMLElement
@@ -165,7 +168,7 @@ export default function AppShell() {
   }, [location.key])
 
   const handleNavigationCapture = (event: MouseEvent<HTMLDivElement>) => {
-    if (location.pathname !== '/' || event.defaultPrevented) return
+    if (event.defaultPrevented) return
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
     const anchor = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[href]')
@@ -173,6 +176,21 @@ export default function AppShell() {
 
     const destination = new URL(anchor.href, window.location.href)
     if (destination.origin !== window.location.origin) return
+
+    // A Link to the page you're already on doesn't trigger a route change,
+    // so react-router just no-ops - scroll back to the top instead, which is
+    // what happens on every other navigation.
+    if (destination.pathname === location.pathname && destination.search === location.search) {
+      event.preventDefault()
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      })
+      return
+    }
+
+    if (location.pathname !== '/') return
     if (!(destination.pathname in ROUTE_ORDER)) return
 
     event.preventDefault()
@@ -205,17 +223,19 @@ export default function AppShell() {
           aria-hidden="true"
         />
 
-        <main
-          ref={pageRef}
-          className={`${styles.page} ${location.pathname === '/' ? styles.homeRoute : styles.innerRoute}`}
-          key={location.pathname}
-          style={{
-            '--route-enter-x': routeEnterX,
-            '--route-motion-delay': routeMotionDelay,
-          } as RouteStyle}
-        >
-          <Outlet />
-        </main>
+        <Suspense fallback={<PageLoader />}>
+          <main
+            ref={pageRef}
+            className={`${styles.page} ${location.pathname === '/' ? styles.homeRoute : styles.innerRoute}`}
+            key={location.pathname}
+            style={{
+              '--route-enter-x': routeEnterX,
+              '--route-motion-delay': routeMotionDelay,
+            } as RouteStyle}
+          >
+            <Outlet />
+          </main>
+        </Suspense>
 
         <div className={`${styles.footer} ${location.pathname === '/woordjag' ? styles.footerFlush : ''}`}>
           <Footer />

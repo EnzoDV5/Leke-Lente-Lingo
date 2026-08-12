@@ -8,9 +8,11 @@ import {
 
 import {
   deleteUser,
+  getRedirectResult,
   onAuthStateChanged,
   reauthenticateWithPopup,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
   type User,
 } from 'firebase/auth'
@@ -30,7 +32,6 @@ import {
 import { deleteObject, ref } from 'firebase/storage'
 
 import {
-  appleProvider,
   auth,
   db,
   googleProvider,
@@ -52,11 +53,6 @@ type SaveProfileInput = {
   useGooglePhoto: boolean
 }
 
-type SignInResult = {
-  user: User
-  profile: LenteProfile | null
-}
-
 type AuthContextValue = {
   user: User | null
   profile: LenteProfile | null
@@ -64,8 +60,7 @@ type AuthContextValue = {
   profileLoading: boolean
   authError: string
 
-  signInWithGoogle: () => Promise<SignInResult | null>
-  signInWithApple: () => Promise<SignInResult | null>
+  signInWithGoogle: () => Promise<boolean>
 
   checkUsernameAvailability: (
     username: string,
@@ -98,6 +93,17 @@ function normaliseUsername(
     .replace(/\s+/g, '_')
     .replace(/[^a-zA-Z0-9_]/g, '')
     .toLowerCase()
+}
+
+function shouldFallBackToRedirect(
+  error: unknown,
+): boolean {
+  if (!(error instanceof Error)) return false
+
+  return [
+    'auth/popup-blocked',
+    'auth/operation-not-supported-in-this-environment',
+  ].some((code) => error.message.includes(code))
 }
 
 function friendlyError(
@@ -137,6 +143,14 @@ function friendlyError(
     )
   ) {
     return 'Hierdie e-pos is reeds met ’n ander metode gekoppel.'
+  }
+
+  if (
+    error.message.includes(
+      'auth/web-storage-unsupported',
+    )
+  ) {
+    return 'Jou blaaier blokkeer die berging wat nodig is om aan te meld. Skakel privaat blaai af en probeer weer.'
   }
 
   return 'Iets het verkeerd geloop. Probeer weer.'
@@ -235,25 +249,61 @@ export function AuthProvider({
     return unsubscribe
   }, [])
 
+  useEffect(() => {
+    getRedirectResult(auth).catch((error) => {
+      console.error(
+        'Redirect sign-in error:',
+        error,
+      )
+
+      setAuthError(
+        friendlyError(error),
+      )
+    })
+  }, [])
+
+  // Popups don't depend on the authDomain redirect relay, so they work the
+  // same on localhost, the hosted app, and any device. We only fall back to
+  // a redirect when the environment genuinely can't open a popup (blocked,
+  // or an embedded/in-app browser).
   const signInWithGoogle =
-    async (): Promise<SignInResult | null> => {
+    async (): Promise<boolean> => {
       setAuthError('')
 
       try {
-        const result =
-          await signInWithPopup(
-            auth,
-            googleProvider,
-          )
+        await signInWithPopup(
+          auth,
+          googleProvider,
+        )
 
-        const existingProfile =
-          await loadProfile(result.user)
-
-        return {
-          user: result.user,
-          profile: existingProfile,
-        }
+        return true
       } catch (error) {
+        if (
+          shouldFallBackToRedirect(error)
+        ) {
+          try {
+            await signInWithRedirect(
+              auth,
+              googleProvider,
+            )
+
+            return true
+          } catch (redirectError) {
+            console.error(
+              'Google sign-in error:',
+              redirectError,
+            )
+
+            setAuthError(
+              friendlyError(
+                redirectError,
+              ),
+            )
+
+            return false
+          }
+        }
+
         console.error(
           'Google sign-in error:',
           error,
@@ -263,39 +313,7 @@ export function AuthProvider({
           friendlyError(error),
         )
 
-        return null
-      }
-    }
-
-  const signInWithApple =
-    async (): Promise<SignInResult | null> => {
-      setAuthError('')
-
-      try {
-        const result =
-          await signInWithPopup(
-            auth,
-            appleProvider,
-          )
-
-        const existingProfile =
-          await loadProfile(result.user)
-
-        return {
-          user: result.user,
-          profile: existingProfile,
-        }
-      } catch (error) {
-        console.error(
-          'Apple sign-in error:',
-          error,
-        )
-
-        setAuthError(
-          friendlyError(error),
-        )
-
-        return null
+        return false
       }
     }
 
@@ -349,7 +367,7 @@ export function AuthProvider({
   ): Promise<boolean> => {
     if (!user) {
       setAuthError(
-        'Jy moet eers met Google of Apple aanmeld.',
+        'Jy moet eers met Google aanmeld.',
       )
 
       return false
@@ -550,12 +568,9 @@ export function AuthProvider({
     setAuthError('')
 
     try {
-      const usesApple = user.providerData.some(
-        (provider) => provider.providerId === 'apple.com',
-      )
       await reauthenticateWithPopup(
         user,
-        usesApple ? appleProvider : googleProvider,
+        googleProvider,
       )
 
       const [wordsSnapshot, votesSnapshot, photosSnapshot, postersSnapshot] = await Promise.all([
@@ -622,7 +637,6 @@ export function AuthProvider({
     profileLoading,
     authError,
     signInWithGoogle,
-    signInWithApple,
     checkUsernameAvailability,
     saveProfile,
     logOut,

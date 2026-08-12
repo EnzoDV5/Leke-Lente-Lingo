@@ -6,41 +6,18 @@ import { Link } from 'react-router-dom'
 
 import type {
   ChallengeDefinition,
-  ChallengeId,
 } from '../challenges/challengeConfig'
 
 import type {
   ChallengeProgress,
 } from '../../hooks/useChallengeProgress'
 
+import {
+  POSTER_COLOURS,
+  POSTER_IMAGES,
+} from './posterAssets'
+
 import styles from './JagKaart.module.css'
-
-const POSTER_IMAGES: Record<
-  ChallengeId,
-  string
-> = {
-  doop: '/posters/doop-dit.webp',
-  remix:
-    '/posters/steel-en-verbeter.webp',
-  guess:
-    '/posters/raai-die-woord.webp',
-  photo: '/posters/foto-doop.webp',
-  friend:
-    '/posters/daag-n-maat-uit.webp',
-  wildcard: '/posters/wildcard.webp',
-}
-
-const POSTER_COLOURS: Record<
-  ChallengeId,
-  string
-> = {
-  doop: '#ef321d',
-  remix: '#20c84b',
-  guess: '#ffca18',
-  photo: '#2858df',
-  friend: '#ff1977',
-  wildcard: '#8334be',
-}
 
 type JagKaartProps = {
   challenge: ChallengeDefinition
@@ -95,7 +72,7 @@ export default function JagKaart({
         }`}
         role="button"
         tabIndex={0}
-        aria-label={`${challenge.name}. ${flipped ? 'Wys plakkaat' : 'Wys leidraad'}`}
+        aria-label={`${challenge.name}. ${flipped ? 'Wys poster' : 'Wys leidraad'}`}
         onClick={() => setFlipped((current) => !current)}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -117,24 +94,6 @@ export default function JagKaart({
                 : ''
             }`}
           >
-            <div className={styles.fallback}>
-              <span
-                className={
-                  styles.posterIcon
-                }
-              >
-                {challenge.icon}
-              </span>
-
-              <strong>
-                {challenge.name}
-              </strong>
-
-              <small>
-                LENTE BOOK · 2026
-              </small>
-            </div>
-
             {!imageFailed && (
               <img
                 src={
@@ -142,11 +101,33 @@ export default function JagKaart({
                     challenge.id
                   ]
                 }
-                alt={`${challenge.name}-plakkaat`}
+                alt={`${challenge.name}-poster`}
+                loading="lazy"
+                decoding="async"
                 onError={() =>
                   setImageFailed(true)
                 }
               />
+            )}
+
+            {imageFailed && (
+              <div className={styles.fallback}>
+                <span
+                  className={
+                    styles.posterIcon
+                  }
+                >
+                  {challenge.icon}
+                </span>
+
+                <strong>
+                  {challenge.name}
+                </strong>
+
+                <small>
+                  LENTE BOOK · 2026
+                </small>
+              </div>
             )}
           </div>
 
@@ -214,7 +195,7 @@ export default function JagKaart({
                 onScan()
               }}
             >
-              ▣ Skandeer QR
+              ▣ QR
             </button>
           )}
 

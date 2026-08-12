@@ -1,0 +1,67 @@
+.skeleton {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: #EAE2D2;
+  border-radius: 8px;
+  isolation: isolate;
+  animation: skeletonPop 460ms cubic-bezier(.22, 1, .36, 1) both;
+  animation-delay: var(--skeleton-delay, 0ms);
+}
+
+.skeleton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .55) 50%, transparent 100%);
+  animation: skeletonPulse 1.9s ease-in-out infinite;
+  animation-delay: var(--skeleton-delay, 0ms);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, .9) 46%,
+    rgba(242, 194, 48, .65) 52%,
+    rgba(255, 255, 255, .9) 58%,
+    transparent 74%
+  );
+  background-size: 200% 100%;
+  background-position: -140% 0;
+  animation: skeletonSweep 1.9s cubic-bezier(.4, 0, .3, 1) infinite;
+  animation-delay: var(--skeleton-delay, 0ms);
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+@keyframes skeletonSweep {
+  0% { background-position: -140% 0; }
+  60%, 100% { background-position: 140% 0; }
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: .3; }
+  50% { opacity: .05; }
+}
+
+@keyframes skeletonPop {
+  from { opacity: 0; transform: translateY(6px) scale(.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: skeletonPop 1ms both;
+  }
+
+  .skeleton::before,
+  .skeleton::after {
+    animation: none;
+    opacity: .18;
+  }
+}

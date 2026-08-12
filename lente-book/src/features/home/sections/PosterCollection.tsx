@@ -2,15 +2,34 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import Section from '../../../components/ui/Section'
 import Reveal from '../../../components/ui/Reveal'
+import Skeleton from '../../../components/ui/Skeleton'
 import { useChallengeProgress } from '../../../hooks/useChallengeProgress'
 import { useAuth } from '../../auth/AuthContext'
 import { ALL_CHALLENGE_IDS, CHALLENGES, type ChallengeId } from '../../challenges/challengeConfig'
+import { POSTER_COLOURS, POSTER_IMAGES } from '../../collections/posterAssets'
 import styles from './PosterCollection.module.css'
 
-const POSTERS: Record<ChallengeId, string> = {
-  doop: '/posters/doop-dit.webp', remix: '/posters/steel-en-verbeter.webp',
-  guess: '/posters/raai-die-woord.webp', photo: '/posters/foto-doop.webp',
-  friend: '/posters/daag-n-maat-uit.webp', wildcard: '/posters/wildcard.webp',
+function PosterThumb({ id }: { id: ChallengeId }) {
+  const [imageFailed, setImageFailed] = useState(false)
+  const challenge = CHALLENGES[id]
+
+  if (imageFailed) {
+    return (
+      <div className={styles.fallback}>
+        <strong>{challenge.name}</strong>
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={POSTER_IMAGES[id]}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      onError={() => setImageFailed(true)}
+    />
+  )
 }
 
 export default function PosterCollection() {
@@ -52,18 +71,23 @@ export default function PosterCollection() {
       sectionRef={sectionRef}
       style={{ '--grass-scroll-y': '0px' } as CSSProperties}
     >
-      <strong className={styles.count}>{loading ? '…' : collectedCount}<span>/6</span></strong>
+      <strong className={styles.count}>
+        {loading
+          ? <Skeleton width="1.1rem" height="1.15rem" radius={5} className={styles.countSkeleton} />
+          : collectedCount}
+        <span>/6</span>
+      </strong>
 
       <Reveal className={styles.headerReveal}>
         <header className={styles.header}>
           <p className={styles.kicker}>★ JOU LENTE BINGO ★</p>
-          <h2>My Plakkaat versameling</h2>
+          <h2>My Poster versameling</h2>
         </header>
       </Reveal>
 
       <div
         className={styles.row}
-        aria-label="Jou Lente Bingo-plakkaatversameling"
+        aria-label="Jou Lente Bingo-posterversameling"
         onScroll={(event) => {
           if (event.currentTarget.scrollLeft > 12) {
             setPosterStripScrolled(true)
@@ -77,10 +101,11 @@ export default function PosterCollection() {
           return (
             <Reveal key={id} delay={index * 70}>
               <Link className={`${styles.poster} ${wildcard ? styles.wildcard : ''} ${collected ? styles.collected : styles.locked}`}
+                style={{ '--poster-colour': POSTER_COLOURS[id] } as CSSProperties}
                 to={`/woordjag?poster=${id}&reveal=1`} viewTransition
                 aria-label={`${challenge.name}: ${collected ? 'versamel' : 'nog nie gevind nie'}. Wys leidraad.`}>
                 <span className={styles.number}>0{challenge.number}</span>
-                <img src={POSTERS[id]} alt="" />
+                <PosterThumb id={id} />
                 {!collected && <span className={styles.question} aria-hidden="true">{wildcard ? '🔒' : '?'}</span>}
                 <span className={styles.name}>{challenge.name}</span>
               </Link>
@@ -89,11 +114,11 @@ export default function PosterCollection() {
         })}
       </div>
 
-      <p className={styles.intro}>Tik &rsquo;n plakkaat om direk na sy leidraad te gaan.</p>
+      <p className={styles.intro}>Tik &rsquo;n poster om direk na sy leidraad te gaan.</p>
 
       <p className={`${styles.scrollHint} ${posterStripScrolled ? styles.hintHidden : ''}`}>
         <span aria-hidden="true">&larr;</span>
-        Sleep links en regs om al die plakkate te sien
+        Sleep links en regs om al die posters te sien
         <span aria-hidden="true">&rarr;</span>
       </p>
     </Section>

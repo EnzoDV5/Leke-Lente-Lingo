@@ -5,11 +5,31 @@ import { useAuth } from '../../features/auth/AuthContext'
 import { db } from '../../lib/firebase'
 import { PROFILE_AVATARS, resolveProfileAvatar } from '../../lib/profileAvatars'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
+import Skeleton from '../ui/Skeleton'
 import styles from './ProfileModal.module.css'
 
 type ProfileModalProps = { open: boolean; onClose: () => void }
 type UserWord = { id: string; text: string; phraseId: string; phraseText?: string }
 type Vote = { wordId: string; value: number }
+
+function SavedWordsSkeleton() {
+  return (
+    <div className={styles.wordList} aria-hidden="true">
+      {Array.from({ length: 3 }).map((_, index) => {
+        const delay = index * 70
+        return (
+          <article key={index}>
+            <div>
+              <Skeleton width={`${64 - (index % 2) * 12}%`} height="1rem" radius={6} delay={delay} />
+              <Skeleton width={`${38 - (index % 3) * 6}%`} height=".68rem" radius={6} delay={delay + 40} style={{ marginTop: '.35rem' }} />
+            </div>
+            <Skeleton width={30} height={18} radius={999} delay={delay + 80} />
+          </article>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function ProfileModal({ open, onClose }: ProfileModalProps) {
   useBodyScrollLock(open)
@@ -149,7 +169,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
 
         <section className={styles.saved}>
           <h3>Jou woorde</h3>
-          {loading ? <p>Laai jou skeppings…</p> : words.length ? <div className={styles.wordList}>{words.map((word) => <article key={word.id}><div><strong>{word.text}</strong><span>{word.phraseText || 'Jou Lente-woord'}</span></div><b>♥ {likesByWord.get(word.id) ?? 0}</b></article>)}</div> : <p className={styles.empty}>Jy het nog nie ’n woord geplaas nie.</p>}
+          {loading ? <SavedWordsSkeleton /> : words.length ? <div className={styles.wordList}>{words.map((word) => <article key={word.id}><div><strong>{word.text}</strong><span>{word.phraseText || 'Jou Lente-woord'}</span></div><b>♥ {likesByWord.get(word.id) ?? 0}</b></article>)}</div> : <p className={styles.empty}>Jy het nog nie ’n woord geplaas nie.</p>}
         </section>
 
         {wildcardPhrases.length > 0 && <section className={styles.phrases}><h3>Jou Wildcard-frases</h3>{wildcardPhrases.map((word) => <p key={word.id}>{word.phraseText || word.text}</p>)}</section>}

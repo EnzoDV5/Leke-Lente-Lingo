@@ -8,7 +8,7 @@ export default function TopWordCard({ phrase, word, rank }: { phrase: Frase; wor
   return (
     <Link className={`${styles.card} ${rank <= 3 ? styles[`rank${rank}`] : ''}`} to={`/woordeboek/${phrase.id}?word=${word.id}`} viewTransition>
       <span className={styles.rank}>{rank === 1 ? '👑' : rank}</span>
-      <img className={word.handle === '@lentedag' ? styles.brandAvatar : ''} src={word.handle === '@lentedag' ? lentedagSecondaryLogo : fallbackProfileAvatar(word.handle)} alt="" />
+      <img className={word.handle === '@lentedag' ? styles.brandAvatar : ''} src={word.handle === '@lentedag' ? lentedagSecondaryLogo : fallbackProfileAvatar(word.handle)} alt="" loading="lazy" decoding="async" />
       <span className={styles.copy}><strong>{word.woord}</strong><small>{word.handle}</small></span>
       <span className={styles.votes}>👍 <b>{word.stemme}</b></span>
       <span className={styles.arrow} aria-hidden="true">→</span>

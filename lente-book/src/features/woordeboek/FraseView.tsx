@@ -30,6 +30,7 @@ import type { VoteValue } from '../../types'
 
 import styles from './FraseView.module.css'
 import CompactHero from '../../components/ui/CompactHero'
+import Skeleton from '../../components/ui/Skeleton'
 import lentedagSecondaryLogo from '../../assets/elements/LENTEDAG-logo2.webp'
 import {
   fallbackProfileAvatar,
@@ -37,6 +38,28 @@ import {
 } from '../../lib/profileAvatars'
 
 type DisplayWord = LiveWord & { isDummy?: boolean }
+
+function WoordLysSkeleton() {
+  return (
+    <ul className={styles.woordLys} aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, index) => {
+        const delay = index * 65
+        return (
+          <li key={index} className={styles.woordItem}>
+            <Skeleton width="1.6rem" height="1rem" radius={5} delay={delay} />
+            <Skeleton circle width={58} height={58} delay={delay + 20} />
+            <div className={styles.woordInfo}>
+              <Skeleton width={`${58 - (index % 3) * 8}%`} height="1.1rem" radius={6} delay={delay + 40} />
+              <Skeleton width={`${30 - (index % 2) * 6}%`} height=".7rem" radius={6} delay={delay + 60} style={{ marginTop: '.4rem' }} />
+            </div>
+            <Skeleton circle width={40} height={40} delay={delay + 80} />
+            <Skeleton width={104} height={38} radius={999} delay={delay + 100} />
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
 
 export default function FraseView() {
   const { id = '' } = useParams()
@@ -159,7 +182,7 @@ export default function FraseView() {
           to="/woordeboek"
           className={styles.terug}
         >
-          Terug na Woordeboek
+          <span aria-hidden="true">←</span> Terug na Woordeboek
         </Link>
 
         <p className={styles.leeg}>
@@ -318,6 +341,7 @@ export default function FraseView() {
         detail
         topAction={(
           <Link to="/woordeboek" viewTransition className={styles.heroTerug}>
+            <span aria-hidden="true" />
             Terug na Woordeboek
           </Link>
         )}
@@ -447,9 +471,7 @@ export default function FraseView() {
         </h2>
 
         {loading ? (
-        <p className={styles.leeg}>
-          Woorde groei...
-        </p>
+        <WoordLysSkeleton />
       ) : (
         <ul className={styles.woordLys}>
           {allWords.map((word, index) => (
@@ -473,6 +495,8 @@ export default function FraseView() {
                       fallbackProfileAvatar(word.createdByUid || word.createdByUsername)
                 }
                 alt=""
+                loading="lazy"
+                decoding="async"
               />
 
               <div

@@ -45,10 +45,17 @@
 .hero h1 {
   margin: 0;
   color: var(--color-paper);
-  font-family: var(--font-pixel);
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
+  /* brush-up is a static face shipped only at weight 500 — the global
+     `font-variation-settings: "wght" 900` on body/buttons doesn't apply to
+     static fonts, but forcing a heavier font-weight here would make the
+     browser synthesize a fake bold, which renders soft/blurry on most
+     devices. Keep both pinned to the font's real weight. */
+  font-weight: 500;
+  font-variation-settings: normal;
   font-size: clamp(2.8rem, 7vw, 5.2rem);
-  font-weight: 800;
   line-height: .9;
+  text-rendering: optimizeLegibility;
   -webkit-text-stroke: 1px var(--color-ink);
   paint-order: stroke fill;
   text-shadow:
@@ -111,6 +118,5 @@
   from {
     opacity: 0;
     transform: translateX(var(--route-enter-x, 0px)) scale(.94);
-    filter: blur(6px);
   }
 }

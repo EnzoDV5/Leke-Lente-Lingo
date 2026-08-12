@@ -37,9 +37,10 @@
 .inner h2 {
   margin: 0;
   color: white;
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
   font-size: clamp(3.25rem, 7vw, 6rem);
-  font-weight: 900;
+  font-weight: 500;
+  font-variation-settings: normal;
   line-height: .8;
   letter-spacing: -.035em;
   -webkit-text-stroke: 2px var(--color-ink);

@@ -42,7 +42,7 @@ export default function DoopDitPage() {
   useEffect(() => setActiveIndex(initialIndex), [initialIndex])
 
   if (phrasesLoading && !availablePhrases.length) return <p className={styles.loading}>Frases word gelaai…</p>
-  if (!activePhrase) return <p className={styles.loading}>Hierdie plakkaat se frases kon nie gevind word nie.</p>
+  if (!activePhrase) return <p className={styles.loading}>Hierdie poster se frases kon nie gevind word nie.</p>
 
   const move = (direction: -1 | 1) => setActiveIndex((index) => (index + direction + availablePhrases.length) % availablePhrases.length)
 
@@ -50,17 +50,17 @@ export default function DoopDitPage() {
     <section className={styles.page}>
       <CompactHero
         className={styles.doopHero}
-        kicker={`01 · DOOP DIT · ${AREA_NAMES[activePhrase.area]}`}
+        kicker={`01 · MERK DIT · ${AREA_NAMES[activePhrase.area]}`}
         title={activePhrase.text}
         statement
         detail
-        topAction={<Link to="/woordjag" className={styles.back}>My plakkate</Link>}
+        topAction={<Link to="/woordjag" className={styles.back}><span aria-hidden="true">←</span> My posters</Link>}
       >
         <div className={styles.heroPhraseControls}>
           <button type="button" onClick={() => move(-1)} aria-label="Vorige frase">‹</button>
           <div>
             <small>FRASE {activeIndex + 1} VAN {availablePhrases.length}</small>
-            <strong>{fromScan ? 'PLAKKAAT GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong>
+            <strong>{fromScan ? 'POSTER GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong>
             <span className={styles.heroDots}>{availablePhrases.map((phrase, index) => <button key={phrase.id} type="button" className={index === activeIndex ? styles.activeHeroDot : ''} onClick={() => setActiveIndex(index)} aria-label={`Wys frase ${index + 1}`} />)}</span>
           </div>
           <button type="button" onClick={() => move(1)} aria-label="Volgende frase">›</button>
@@ -91,7 +91,7 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
       await addWord({ text: newWord, phraseId: phrase.id, phraseText: phrase.text, area: phrase.area, user, profile })
       await completeChallenge(user.uid, 'doop', true)
       setNewWord('')
-      setMessage(fromScan ? 'Mooi! Jou woord is geplaas en die plakkaat is versamel.' : 'Mooi! Jou nuwe woord is geplaas.')
+      setMessage(fromScan ? 'Mooi! Jou woord is geplaas en die poster is versamel.' : 'Mooi! Jou nuwe woord is geplaas.')
       setCompleted(true)
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Ons kon nie jou woord plaas nie.')
@@ -100,9 +100,9 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
 
   return (
     <article className={styles.challenge}>
-      {completed && <ChallengeSuccess challengeId="doop" icon="✏️" title="Jou woord is gebore!" text="Jy het ’n splinternuwe woord vir die frase geskep. Jou Doop Dit-plakkaat is gereed." />}
+      {completed && <ChallengeSuccess challengeId="doop" icon="✏️" title="Jou woord is gebore!" text="Jy het ’n splinternuwe woord vir die frase geskep. Jou Merk Dit-poster is gereed." />}
       <div className={styles.creator}>
-        <label htmlFor="doop-word">Doop dit met jou eie woord</label>
+        <label htmlFor="doop-word">Merk dit met jou eie woord</label>
         <div><input ref={inputRef} id="doop-word" value={newWord} maxLength={40} placeholder="Tik jou nuwe woord…" onChange={(event) => setNewWord(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={submitting || newWord.trim().length < 2} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas my woord'}</button></div>
         <small>Geplaas as {profile.username}</small>
         {message && <p role="status">{message}</p>}

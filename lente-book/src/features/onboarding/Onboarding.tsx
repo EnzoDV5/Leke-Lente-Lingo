@@ -39,7 +39,7 @@ const REELS = [
     n: 1,
     titel: 'Vind',
     beskrywing:
-      'Scan ’n Lente Book-plakkaat by die fees.',
+      'Scan ’n Lente Book-poster by die fees.',
   },
   {
     n: 2,
@@ -77,7 +77,6 @@ type OnboardingStap = 1 | 2 | 3
 
 type AanmeldVerskaffer =
   | 'google'
-  | 'apple'
   | null
 
 type UsernameStatus =
@@ -124,20 +123,6 @@ function wag(milliseconds: number) {
   })
 }
 
-function AppleGlyph() {
-  return (
-    <svg
-      viewBox="0 0 384 512"
-      width="26"
-      height="26"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-    </svg>
-  )
-}
-
 export default function Onboarding() {
   const {
     user,
@@ -146,7 +131,6 @@ export default function Onboarding() {
     profileLoading,
     authError,
     signInWithGoogle,
-    signInWithApple,
     checkUsernameAvailability,
     saveProfile,
     logOut,
@@ -270,12 +254,6 @@ export default function Onboarding() {
     skoonUsername.length >= 3 &&
     usernameStatus === 'available'
 
-  const providerIsApple =
-    user?.providerData.some(
-      (provider) =>
-        provider.providerId === 'apple.com',
-    ) ?? false
-
   const providerInitial = (
     user?.displayName?.trim().charAt(0) ||
     user?.email?.trim().charAt(0) ||
@@ -286,8 +264,7 @@ export default function Onboarding() {
     user?.photoURL ??
     user?.providerData.find(
       (provider) =>
-        provider.providerId === 'google.com' ||
-        provider.providerId === 'apple.com',
+        provider.providerId === 'google.com',
     )?.photoURL ??
     null
 
@@ -304,9 +281,7 @@ export default function Onboarding() {
             {
               id: 'provider',
               emoji: providerInitial,
-              naam: providerIsApple
-                ? 'Apple-profiel'
-                : 'Google-profiel',
+              naam: 'Google-profiel',
               kleur: '#ffffff',
               image: providerPhoto,
               provider: true,
@@ -319,7 +294,6 @@ export default function Onboarding() {
     [
       user,
       providerInitial,
-      providerIsApple,
       providerPhoto,
     ],
   )
@@ -517,6 +491,9 @@ export default function Onboarding() {
     )
   }, [profile])
 
+  /* oxlint-disable react-hooks/exhaustive-deps -- wisselStap is recreated
+     every render; adding it here would re-fire this effect on every render
+     instead of only when auth/profile state changes. */
   useEffect(() => {
     if (loading || profileLoading) {
       return
@@ -537,6 +514,7 @@ export default function Onboarding() {
         busy === null
       ) {
         window.sessionStorage.removeItem('lente-auth-return')
+        window.sessionStorage.removeItem('lente-pending-provider')
         navigate(
           authReturnPath,
           {
@@ -553,8 +531,29 @@ export default function Onboarding() {
       busy === null &&
       !isTransitioning
     ) {
-      setHoogsteStap(2)
-      setStap(2)
+      const terugkerendeVerskaffer =
+        window.sessionStorage.getItem(
+          'lente-pending-provider',
+        ) as AanmeldVerskaffer | null
+
+      // A redirect-based Google sign-in reloads the page, so this is
+      // where we pick the flow back up once auth state resolves.
+      if (terugkerendeVerskaffer) {
+        window.sessionStorage.removeItem(
+          'lente-pending-provider',
+        )
+
+        // wisselStap is recreated every render; intentionally left out of
+        // the dependency array below so this only re-fires on auth/profile
+        // state changes, not on every render.
+        void wisselStap(2, {
+          title: 'Success',
+          text: 'Your Google profile is connected.',
+        })
+      } else {
+        setHoogsteStap(2)
+        setStap(2)
+      }
     }
   }, [
     user,
@@ -567,6 +566,7 @@ export default function Onboarding() {
     navigate,
     authReturnPath,
   ])
+  /* oxlint-enable react-hooks/exhaustive-deps */
 
   useEffect(() => {
     if (stap !== 3) return
@@ -785,49 +785,21 @@ export default function Onboarding() {
     clearAuthError()
     setBusy('google')
 
-    const signInResult =
+    window.sessionStorage.setItem(
+      'lente-pending-provider',
+      'google',
+    )
+
+    const started =
       await signInWithGoogle()
 
-    if (
-      signInResult?.profile
-        ?.onboardingComplete
-    ) {
-      setBusy(null)
-      await animeerNaTuis()
-      return
-    }
-
-    if (signInResult) {
-      await wisselStap(2, {
-        title: 'Success',
-        text: 'Your Google profile is connected.',
-      })
-    }
-
-    setBusy(null)
-  }
-
-  const meldApple = async () => {
-    clearAuthError()
-    setBusy('apple')
-
-    const signInResult =
-      await signInWithApple()
-
-    if (
-      signInResult?.profile
-        ?.onboardingComplete
-    ) {
-      setBusy(null)
-      await animeerNaTuis()
-      return
-    }
-
-    if (signInResult) {
-      await wisselStap(2, {
-        title: 'Success',
-        text: 'Your Apple profile is connected.',
-      })
+    // A successful call either resolves here (popup) or navigates the
+    // browser away to Google (redirect fallback). If it failed outright,
+    // clean up and let the user try again.
+    if (!started) {
+      window.sessionStorage.removeItem(
+        'lente-pending-provider',
+      )
     }
 
     setBusy(null)
@@ -1133,7 +1105,7 @@ export default function Onboarding() {
                     >
                       {showDeleteConfirm
                         ? 'Jou profiel, woorde, stemme, foto’s en Lente Bingo-vordering word permanent uitgevee.'
-                        : 'Jy sal na die Google- en Apple-aanmeldskerm terugkeer.'}
+                        : 'Jy sal na die Google-aanmeldskerm terugkeer.'}
                     </p>
 
                     <div className={styles.logoutConfirmAksies}>
@@ -1231,7 +1203,7 @@ export default function Onboarding() {
                         >
                           Teken vinnig aan om
                           woorde te maak, te stem
-                          en jou plakkate te
+                          en jou posters te
                           versamel.
                         </p>
 
@@ -1259,24 +1231,6 @@ export default function Onboarding() {
                             {busy === 'google'
                               ? 'Please wait…'
                               : 'Google'}
-                          </button>
-
-                          <button
-                            type="button"
-                            className={`${styles.aanmeldKnop} ${styles.appleKnop}`}
-                            onClick={() =>
-                              void meldApple()
-                            }
-                            disabled={
-                              busy !== null ||
-                              isTransitioning
-                            }
-                          >
-                            <AppleGlyph />
-
-                            {busy === 'apple'
-                              ? 'Please wait…'
-                              : 'Apple'}
                           </button>
                         </div>
 
@@ -1394,11 +1348,7 @@ export default function Onboarding() {
                                     />
                                   ) : huidigeAvatar?.provider ? (
                                     <span className={styles.providerFallback}>
-                                      {providerIsApple ? (
-                                        <AppleGlyph />
-                                      ) : (
-                                        <span className={styles.googleAvatarIcon}>G</span>
-                                      )}
+                                      <span className={styles.googleAvatarIcon}>G</span>
                                     </span>
                                   ) : null}
                                 </div>

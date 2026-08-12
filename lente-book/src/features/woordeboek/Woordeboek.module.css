@@ -1,11 +1,54 @@
 .page { min-height: 100vh; overflow-x: hidden; background: transparent; }
+
+/* AppShell delays every direct child of the route <section> by up to ~960ms
+   so it can sync with the hero-divider transition (see AppShell.module.css
+   ".innerRoute > section > :not(header)"). Overriding the animation here (2
+   classes beats the 1-class + 2-element global selector) keeps .wrap itself
+   visible from the first paint; .kontroles and .lys carry their own
+   entrance timing below instead, so they aren't hidden by their ancestor's
+   opacity while still syncing with the hero when they need to.
+
+   AppShell also auto-registers every `section > div` / `article` / `ul > li`
+   for its own scroll-triggered IntersectionObserver reveal (opacity:0 until
+   scrolled into view). .wrap and everything inside it (search bar, filter
+   tabs, phrase cards) match that pattern too, which fought with .lys's own
+   mount/filter-switch animation below: content would flash in for a frame,
+   get hidden again once the observer registered it, then only reappear once
+   scrolled into view - which reads as "the page is empty, I can't scroll".
+   The .wrap `data-no-auto-reveal` attribute (see Woordeboek.tsx) opts this
+   whole subtree out of that global system so it relies solely on the fast,
+   scroll-independent animations defined below. */
+.page > .wrap {
+  animation: none;
+}
+
 .wrap {
   position: relative;
   max-width: 720px;
   margin: 0 auto;
   padding: 2rem 1rem 4rem;
 }
-.kontroles { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
+.kontroles {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* .kontroles displays instantly (see .page > .wrap above) but that meant it
+   used to pop in ahead of the hero title, which still waits on
+   --route-motion-delay of its own (CompactHero.module.css .copy). Only the
+   very first paint (isFirstReveal, see Woordeboek.tsx) gets this matching
+   entrance so the search bar settles in the same moment as the hero copy;
+   filter-switch re-renders never carry this class. */
+.kontrolesFirstReveal {
+  animation: kontrolesIn 620ms var(--route-motion-delay, 760ms) cubic-bezier(.18, 1.35, .4, 1) both;
+}
+
+@keyframes kontrolesIn {
+  from { opacity: 0; transform: translateY(16px); }
+}
+
 .lys {
   display: flex;
   flex-direction: column;
@@ -14,22 +57,35 @@
 }
 .topLys { --filter-x: 28px; }
 .allesLys { --filter-x: -28px; }
-.lys > * { animation: filterKaartIn 540ms cubic-bezier(.16, 1, .3, 1) both; }
-.lys > :nth-child(2) { animation-delay: 35ms; }
-.lys > :nth-child(3) { animation-delay: 70ms; }
-.lys > :nth-child(4) { animation-delay: 105ms; }
-.lys > :nth-child(n + 5) { animation-delay: 140ms; }
+
+/* Each phrase group (category section / Top Woorde block) starts hidden and
+   is revealed by an IntersectionObserver in Woordeboek.tsx as it scrolls
+   into view, rather than every group animating together on mount. The
+   observer itself is delayed by --route-motion-delay on the very first
+   reveal so groups already on screen don't settle before the hero-divider
+   finishes moving; scroll-triggered reveals further down the list (and
+   filter-switch remounts) fire immediately once in view. */
+.revealGroup {
+  opacity: 0;
+  transform: translateY(26px) scale(.985);
+  transition: opacity 620ms cubic-bezier(.16, 1, .3, 1), transform 680ms cubic-bezier(.16, 1, .3, 1);
+}
+.revealGroup.groepRevealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 .bordGroep { display: grid; gap: .75rem; }
 .bordOpskrif { display: flex; align-items: center; gap: .6rem; padding: .2rem .15rem; color: var(--color-oranje); }
 .bordOpskrif > span { color: var(--color-geel); font-size: 1.25rem; text-shadow: 1px 1px 0 var(--color-ink); }
-.bordOpskrif h2 { margin: 0; font-family: var(--font-pixel); font-size: clamp(1.15rem, 3vw, 1.55rem); line-height: 1; text-transform: uppercase; }
+.bordOpskrif h2 { margin: 0; font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1; text-transform: uppercase; }
 .bordOpskrif small { margin-left: auto; font-family: var(--font-body); font-size: .82rem; font-weight: 700; text-transform: uppercase; }
 .bordFrases { display: grid; gap: .8rem; }
 .topWoorde { display: grid; gap: 1rem; }
 .topWoordeKop { display: flex; align-items: center; gap: .8rem; padding: .3rem .2rem .6rem; color: var(--color-oranje); }
 .topWoordeKop > span { font-size: 2.1rem; }
 .topWoordeKop small { font-family: var(--font-body); font-weight: 700; font-size: .72rem; text-transform: uppercase; }
-.topWoordeKop h2 { margin: .1rem 0 0; font-family: var(--font-pixel); font-size: clamp(1.45rem,4vw,2rem); text-transform: uppercase; }
+.topWoordeKop h2 { margin: .1rem 0 0; font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; font-size: clamp(1.6rem,4vw,2.2rem); text-transform: uppercase; }
 .topWoordeLys { display: grid; gap: .75rem; }
 
 .lysLeaving {
@@ -43,10 +99,6 @@
   from { opacity: 0; transform: translateX(var(--filter-x)) scale(.992); filter: blur(3px); }
 }
 
-@keyframes filterKaartIn {
-  from { opacity: 0; transform: translateY(8px) scale(.992); }
-}
-
 @keyframes filterLysOut {
   to { opacity: 0; transform: translateX(var(--filter-out-x)) scale(.992); filter: blur(3px); }
 }
@@ -58,5 +110,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .lys,
-  .lys > * { animation: none; }
+  .kontrolesFirstReveal { animation: none; }
+  .revealGroup { opacity: 1; transform: none; transition: none; }
 }

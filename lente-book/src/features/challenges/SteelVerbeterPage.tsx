@@ -40,15 +40,15 @@ export default function SteelVerbeterPage() {
   useEffect(() => setActiveIndex(initialIndex), [initialIndex])
 
   if (loading && !availablePhrases.length) return <p className={styles.loading}>Frases word gelaai…</p>
-  if (!activePhrase) return <p className={styles.loading}>Hierdie plakkaat se frases kon nie gevind word nie.</p>
+  if (!activePhrase) return <p className={styles.loading}>Hierdie poster se frases kon nie gevind word nie.</p>
   const move = (direction: -1 | 1) => setActiveIndex((index) => (index + direction + availablePhrases.length) % availablePhrases.length)
 
   return (
     <section className={styles.page}>
-      <CompactHero className={styles.remixHero} kicker={`02 · STEEL & VERBETER · ${AREA_NAMES[activePhrase.area]}`} title={activePhrase.text} statement detail topAction={<Link to="/woordjag" className={styles.back}>My plakkate</Link>}>
+      <CompactHero className={styles.remixHero} kicker={`02 · STEEL & VERBETER · ${AREA_NAMES[activePhrase.area]}`} title={activePhrase.text} statement detail topAction={<Link to="/woordjag" className={styles.back}><span aria-hidden="true">←</span> My posters</Link>}>
         <div className={styles.heroControls}>
           <button type="button" onClick={() => move(-1)} aria-label="Vorige frase">‹</button>
-          <div><small>FRASE {activeIndex + 1} VAN {availablePhrases.length}</small><strong>{fromScan ? 'PLAKKAAT GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong><span>{availablePhrases.map((phrase, index) => <button key={phrase.id} type="button" className={index === activeIndex ? styles.activeDot : ''} onClick={() => setActiveIndex(index)} aria-label={`Wys frase ${index + 1}`} />)}</span></div>
+          <div><small>FRASE {activeIndex + 1} VAN {availablePhrases.length}</small><strong>{fromScan ? 'POSTER GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong><span>{availablePhrases.map((phrase, index) => <button key={phrase.id} type="button" className={index === activeIndex ? styles.activeDot : ''} onClick={() => setActiveIndex(index)} aria-label={`Wys frase ${index + 1}`} />)}</span></div>
           <button type="button" onClick={() => move(1)} aria-label="Volgende frase">›</button>
         </div>
       </CompactHero>
@@ -82,7 +82,7 @@ function RemixChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayPh
       await addWord({ text: remix, phraseId: phrase.id, phraseText: phrase.text, area: phrase.area, user, profile, parentWord: { id: selected.id, text: selected.text, rootWordId: selected.rootWordId } })
       await completeChallenge(user.uid, 'remix', true)
       setSelected(null); setRemix('')
-      setMessage(fromScan ? 'Skerp! Jou verbetering is geplaas en die plakkaat is versamel.' : 'Skerp! Jou verbetering is geplaas.')
+      setMessage(fromScan ? 'Skerp! Jou verbetering is geplaas en die poster is versamel.' : 'Skerp! Jou verbetering is geplaas.')
       setCompleted(true)
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Ons kon nie jou verbetering plaas nie.') }
     finally { setSubmitting(false) }

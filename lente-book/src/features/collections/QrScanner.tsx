@@ -71,11 +71,11 @@ export default function QrScanner({ onClose }: { onClose: () => void }) {
   }, [navigate])
 
   return (
-    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="Skandeer ’n plakkaat">
+    <div className={styles.backdrop} role="dialog" aria-modal="true" aria-label="Skandeer ’n poster">
       <section className={styles.scanner}>
         <button type="button" className={styles.close} onClick={onClose} aria-label="Maak kamera toe">×</button>
         <p className={styles.kicker}>★ LENTE BINGO ★</p>
-        <h2>Skandeer die plakkaat</h2>
+        <h2>Skandeer die poster</h2>
         <div className={styles.viewport}>
           <video ref={videoRef} muted playsInline />
           <span aria-hidden="true" />

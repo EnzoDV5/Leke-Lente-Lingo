@@ -24,7 +24,7 @@ const NAV = [
   },
   {
     to: '/foto',
-    label: 'Voeg Foto By',
+    label: 'Voeg Foto',
   },
   {
     to: '/woordjag',

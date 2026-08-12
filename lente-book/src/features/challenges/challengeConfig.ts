@@ -46,8 +46,8 @@ export const CHALLENGES: Record<
   doop: {
     id: 'doop',
     number: 1,
-    name: 'Doop Dit',
-    shortName: 'Doop Dit',
+    name: 'Merk Dit',
+    shortName: 'Merk Dit',
     description:
       'Dink ’n nuwe Afrikaanse woord vir die frase uit.',
     clue:
@@ -65,7 +65,7 @@ export const CHALLENGES: Record<
     description:
       'Kies iemand se woord en maak dit nóg beter.',
     clue:
-      'Die tweede plakkaat is langs Doop Dit op elke groot bord.',
+      'Die tweede poster is langs Merk Dit op elke groot bord.',
     colour: 'green',
     icon: '✂️',
     lockedUntilComplete: false,
@@ -79,7 +79,7 @@ export const CHALLENGES: Record<
     description:
       'Kyk na ’n woord en raai by watter frase dit hoort.',
     clue:
-      'Soek hierdie plakkaat naby die ingang of vroeë wandelpad.',
+      'Soek hierdie poster naby die ingang of vroeë wandelpad.',
     colour: 'yellow',
     icon: '👀',
     lockedUntilComplete: false,
@@ -93,7 +93,7 @@ export const CHALLENGES: Record<
     description:
       'Neem ’n foto, gee die oomblik ’n woord en plaas dit op die Fotomuur.',
     clue:
-      'Hierdie plakkaat wag by een van die Lentedag-fotoareas.',
+      'Hierdie poster wag by een van die Lentedag-fotoareas.',
     colour: 'blue',
     icon: '📸',
     lockedUntilComplete: false,
@@ -102,12 +102,12 @@ export const CHALLENGES: Record<
   friend: {
     id: 'friend',
     number: 5,
-    name: 'Daag ’n Maat Uit',
-    shortName: 'Daag ’n Maat Uit',
+    name: 'Challenge ’n Chommie',
+    shortName: 'Challenge ’n Chommie',
     description:
       'Stuur ’n frase na ’n vriend wat nie by die fees is nie.',
     clue:
-      'Soek hierdie plakkaat naby die ingang of wandelpaaie.',
+      'Soek hierdie poster naby die ingang of wandelpaaie.',
     colour: 'pink',
     icon: '📲',
     lockedUntilComplete: false,
@@ -121,7 +121,7 @@ export const CHALLENGES: Record<
     description:
       'Skep jou eie scenario en dink jou eie woord daarvoor uit.',
     clue:
-      'Jy kan die Wildcard-plakkaat sien, maar dit ontsluit eers wanneer die ander vyf versamel is.',
+      'Jy kan die Wildcard-poster sien, maar dit ontsluit eers wanneer die ander vyf versamel is.',
     colour: 'purple',
     icon: '⚡',
     lockedUntilComplete: true,

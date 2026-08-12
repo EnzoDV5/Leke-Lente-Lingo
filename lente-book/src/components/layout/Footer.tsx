@@ -19,7 +19,7 @@ export default function Footer() {
       <img className={`${styles.star} ${styles.starThree}`} src="/elements/star3.webp" alt="" />
 
       <div className={styles.inner}>
-        <h2>SIEN JOU<br />DAAR!</h2>
+        <h2>DIE LENTE<br />BOEK</h2>
 
         <img className={styles.logo} src="/elements/lentedag-logo.webp" alt="Lentedag" />
 
@@ -34,7 +34,7 @@ export default function Footer() {
 
         <nav className={styles.links} aria-label="Voetskrif-kieslys">
           <Link to="/woordeboek" viewTransition>Woordeboek</Link>
-          <Link to="/foto" viewTransition>Voeg Foto By</Link>
+          <Link to="/foto" viewTransition>Voeg Foto</Link>
           <Link to="/woordjag" viewTransition>Lente Bingo</Link>
         </nav>
 

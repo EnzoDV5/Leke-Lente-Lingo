@@ -34,6 +34,7 @@ import {
 import JagKaart from './JagKaart'
 import QrScanner from './QrScanner'
 import CompactHero from '../../components/ui/CompactHero'
+import Skeleton from '../../components/ui/Skeleton'
 
 import styles from './Woordjag.module.css'
 import { db } from '../../lib/firebase'
@@ -47,6 +48,25 @@ const AREA_NAMES: Record<
   smoking: 'Rookarea',
   bar: 'Kroeg',
   stages: 'Verhoë',
+}
+
+function PosterGridSkeleton() {
+  return (
+    <section
+      className={`${styles.grid} ${styles.gridSkeleton}`}
+      aria-label="Jou posters word gelaai"
+      aria-busy="true"
+    >
+      {Array.from({ length: 6 }).map((_, index) => (
+        <Skeleton
+          key={index}
+          className={styles.posterSkeleton}
+          radius={20}
+          delay={index * 90}
+        />
+      ))}
+    </section>
+  )
 }
 
 export default function Woordjag() {
@@ -389,7 +409,7 @@ export default function Woordjag() {
         }
         kicker="Lente Book · 2026"
         title="Lente Bingo"
-        subtitle="Vind die plakkate soos jy deur Lentedag beweeg. Skan, speel en vul jou versameling."
+        subtitle="Vind die posters soos jy deur Lentedag beweeg. Skan, speel en vul jou versameling."
       >
         <div
           className={
@@ -448,7 +468,7 @@ export default function Woordjag() {
               </strong>
 
               <p>
-                Die plakkaat is nou
+                Die poster is nou
                 permanent in jou
                 Lente Book-versameling.
               </p>
@@ -482,9 +502,9 @@ export default function Woordjag() {
           <h2>Hoe werk dit?</h2>
 
           <p>
-            Tik op ’n plakkaat om dit om te
+            Tik op ’n poster om dit om te
             draai en sy leidraad te lees.
-            Gebruik “Skandeer QR” agterop
+            Gebruik “QR” agterop
             om jou kamera oop te maak.
           </p>
         </div>
@@ -497,15 +517,12 @@ export default function Woordjag() {
       )}
 
       {loading ? (
-        <p className={styles.loading}>
-          Jou plakkate word
-          ontwikkel...
-        </p>
+        <PosterGridSkeleton />
       ) : (
         <section
           ref={collectionRef}
           className={styles.grid}
-          aria-label="Jou plakkaatversameling"
+          aria-label="Jou posterversameling"
         >
           {CORE_CHALLENGE_IDS.map(
             (challengeId) => (
@@ -568,14 +585,14 @@ export default function Woordjag() {
         <div className={styles.rewardCard}>
         <div className={styles.wildcardPoster}>
           <span className={styles.wildcardNumber}>06</span>
-          <img src="/posters/wildcard.webp" alt="Wildcard-plakkaat" />
+          <img src="/posters/wildcard.webp" alt="Wildcard-poster" />
           {!progress.wildcard.collected && (
             <span className={styles.wildcardLock} aria-label={wildcardUnlocked ? 'Wildcard-uitdaging gereed.' : `Wildcard gesluit. ${Math.min(collectedCount, 5)} van 5 versamel.`}>
               <span>🔒</span>
               <strong>{wildcardUnlocked ? 'UITDAGING GEREED' : `${Math.min(collectedCount, 5)}/5 versamel`}</strong>
             </span>
           )}
-          <strong>{progress.wildcard.collected ? 'VERSAMEL!' : wildcardUnlocked ? 'SKEP OM TE VERSAMEL' : '5 PLAKKATE BENODIG'}</strong>
+          <strong>{progress.wildcard.collected ? 'VERSAMEL!' : wildcardUnlocked ? 'SKEP OM TE VERSAMEL' : '5 POSTERS BENODIG'}</strong>
         </div>
 
         <span className={styles.rewardLegacyIcon}>
@@ -593,9 +610,9 @@ export default function Woordjag() {
           <p className={styles.rewardDescription}>
             {wildcardUnlocked
               ? progress.wildcard.collected
-                ? 'Jou eie frase en woord het die Wildcard-plakkaat onthul.'
+                ? 'Jou eie frase en woord het die Wildcard-poster onthul.'
                 : 'Jy het die ander vyf! Skep nou jou eie scenario en gee dit ’n nuwe woord om die Wildcard te verdien.'
-              : 'Versamel vyf plakkate om jou eie scenario te skep.'}
+              : 'Versamel vyf posters om jou eie scenario te skep.'}
           </p>
 
           <p className={styles.rewardLegacyDescription}>
@@ -603,7 +620,7 @@ export default function Woordjag() {
               ? progress.wildcard.collected
                 ? 'Die Wildcard is nou permanent deel van jou versameling.'
                 : 'Geen QR-kode is nodig nie. Maak die uitdaging oop en voltooi jou eie frase en woord.'
-              : 'Versamel Doop Dit, Steel & Verbeter, Raai die Woord, Foto-doop en Daag ’n Maat Uit.'}
+              : 'Versamel Merk Dit, Steel & Verbeter, Raai die Woord, Foto-doop en Challenge ’n Chommie.'}
           </p>
         </div>
 

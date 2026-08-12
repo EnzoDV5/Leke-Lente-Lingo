@@ -303,7 +303,7 @@ export default function VoegFotoBy({ challengeMode = false }: VoegFotoByProps) {
 
   return (
     <section className={styles.page}>
-      {challengeCompleted && <ChallengeSuccess challengeId="photo" icon="📸" title="Oomblik gedoop!" text="Jou feesfoto het nou sy eie woord en jou Foto-doop-plakkaat is verdien." />}
+      {challengeCompleted && <ChallengeSuccess challengeId="photo" icon="📸" title="Oomblik gedoop!" text="Jou feesfoto het nou sy eie woord en jou Foto-doop-poster is verdien." />}
       <CompactHero
         kicker={challengeMode ? '04 · FOTO-DOOP' : '★ Foto-doop ★'}
         title={challengeMode ? 'Doop jou feesoomblik' : 'Voeg ’n Foto By'}

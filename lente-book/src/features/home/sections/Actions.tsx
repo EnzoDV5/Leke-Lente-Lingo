@@ -6,7 +6,7 @@ import styles from './Actions.module.css'
 
 const AKSIES = [
   { to: '/woordeboek', label: 'Woordeboek',   icon: '📖', kleur: 'bg-blou text-paper'  },
-  { to: '/foto',       label: 'Voeg Foto By', icon: '📸', kleur: 'bg-pienk text-paper' },
+  { to: '/foto',       label: 'Voeg Foto', icon: '📸', kleur: 'bg-pienk text-paper' },
   { to: '/woordjag',   label: 'Lente Bingo',  icon: '🎯', kleur: 'bg-groen text-ink'   },
 ]
 

@@ -15,7 +15,7 @@ type Props = {
 const LINKS = [
   { to: '/', label: 'Tuis' },
   { to: '/woordeboek', label: 'Woordeboek' },
-  { to: '/foto', label: 'Voeg Foto By' },
+  { to: '/foto', label: 'Voeg Foto' },
   { to: '/woordjag', label: 'Lente Bingo' },
 ]
 

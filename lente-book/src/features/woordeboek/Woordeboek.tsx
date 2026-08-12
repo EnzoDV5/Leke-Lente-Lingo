@@ -21,8 +21,64 @@ export default function Woordeboek() {
   const [visibleFilter, setVisibleFilter] = useState('alles')
   const [filterLeaving, setFilterLeaving] = useState(false)
   const filterTimer = useRef(0)
+  const enteredOnce = useRef(false)
+  const isFirstReveal = !enteredOnce.current
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const lysRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    enteredOnce.current = true
+  }, [])
 
   useEffect(() => () => window.clearTimeout(filterTimer.current), [])
+
+  // Scroll-triggered reveal for the phrase groups (category sections + the
+  // Top Woorde block): below-the-fold groups fade in as they're scrolled
+  // into view instead of all animating together on mount. The very first
+  // reveal additionally waits for --route-motion-delay (the same value the
+  // hero copy in CompactHero uses) so groups already in view don't settle
+  // before the hero-divider transition finishes.
+  useEffect(() => {
+    const groups = lysRef.current
+      ? Array.from(lysRef.current.querySelectorAll<HTMLElement>('[data-reveal-group]'))
+      : []
+    if (!groups.length) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      groups.forEach((el) => el.classList.add(styles.groepRevealed))
+      return
+    }
+
+    let observer: IntersectionObserver | undefined
+
+    const observeGroups = () => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            entry.target.classList.add(styles.groepRevealed)
+            observer?.unobserve(entry.target)
+          })
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -8% 0px' },
+      )
+      groups.forEach((el) => observer!.observe(el))
+    }
+
+    const delay = isFirstReveal
+      ? parseFloat(
+          getComputedStyle(wrapRef.current ?? document.documentElement).getPropertyValue('--route-motion-delay'),
+        ) || 0
+      : 0
+
+    const timer = window.setTimeout(observeGroups, delay)
+
+    return () => {
+      window.clearTimeout(timer)
+      observer?.disconnect()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleFilter, soek])
 
   const changeFilter = (nextFilter: string) => {
     if (nextFilter === filter || filterLeaving) return
@@ -78,8 +134,8 @@ export default function Woordeboek() {
         subtitle="Kies ’n frase ,  dink ’n woord ,  stem vir die beste"
       />
 
-      <div className={styles.wrap}>
-        <div className={styles.kontroles} data-scroll-reveal="up">
+      <div className={styles.wrap} data-no-auto-reveal ref={wrapRef}>
+        <div className={`${styles.kontroles} ${isFirstReveal ? styles.kontrolesFirstReveal : ''}`}>
         <SearchBar waarde={soek} opVerander={setSoek} plekhouer="Soek ’n woord of frase…" />
         <FilterTabs aktief={filter} opKies={changeFilter}
           opsies={[{ sleutel: 'alles', etiket: 'Alles' }, { sleutel: 'top', etiket: 'Top Woorde ★' }]} />
@@ -87,10 +143,11 @@ export default function Woordeboek() {
 
         <div
           key={visibleFilter}
+          ref={lysRef}
           className={`${styles.lys} ${visibleFilter === 'top' ? styles.topLys : styles.allesLys} ${filterLeaving ? styles.lysLeaving : ''} ${filter === 'top' ? styles.naRegs : styles.naLinks}`}
         >
           {visibleFilter === 'top' ? (
-            <section className={styles.topWoorde}>
+            <section className={`${styles.topWoorde} ${styles.revealGroup}`} data-reveal-group>
               <div className={styles.topWoordeKop}>
                 <span aria-hidden="true">🏆</span>
                 <div><small>Regstreeks</small><h2>Top 30 Woorde</h2></div>
@@ -102,7 +159,7 @@ export default function Woordeboek() {
               </div>
             </section>
           ) : bordGroepe.map((groep) => (
-            <section className={styles.bordGroep} key={groep.bord}>
+            <section className={`${styles.bordGroep} ${styles.revealGroup}`} data-reveal-group key={groep.bord}>
               <div className={styles.bordOpskrif}>
                 <span aria-hidden="true">✦</span>
                 <h2>{groep.bord}</h2>

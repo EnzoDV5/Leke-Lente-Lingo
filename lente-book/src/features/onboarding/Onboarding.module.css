@@ -129,6 +129,9 @@
 }
 
 .bladPaneel {
+  position: relative;
+  z-index: 2;
+
   width: 100%;
   min-height: calc(100svh - 300px);
 
@@ -357,13 +360,14 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-pixel);
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
   font-size: clamp(
     2rem,
     4.5vw,
     2.65rem
   );
-  font-weight: 700;
+  font-weight: 500;
+  font-variation-settings: normal;
   line-height: 0.95;
   letter-spacing: 0.01em;
   text-transform: uppercase;
@@ -376,7 +380,7 @@
 
   color: var(--festival-orange);
 
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   font-size: 0.96rem;
   font-weight: 700;
   line-height: 1.4;
@@ -389,8 +393,7 @@
 
 .loginAksies {
   display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.7rem;
 }
 
@@ -427,8 +430,7 @@
     color 120ms ease;
 }
 
-.googleKnop,
-.appleKnop {
+.googleKnop {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -439,15 +441,6 @@
 .hoofKnop {
   background:
     var(--festival-yellow);
-}
-
-.appleKnop {
-  background: white;
-  color: var(--festival-ink);
-}
-
-.appleKnop svg {
-  flex-shrink: 0;
 }
 
 .googleG {
@@ -471,13 +464,6 @@
   box-shadow:
     0 8px 0
     rgba(237, 73, 36, 0.2);
-}
-
-.appleKnop:hover:not(:disabled) {
-  background:
-    var(--festival-pink);
-
-  color: white;
 }
 
 .aanmeldKnop:active:not(:disabled),
@@ -2267,7 +2253,9 @@
     var(--festival-orange);
 
   font-family:
-    var(--font-pixel);
+    var(--font-brush), var(--font-pixel), sans-serif;
+  font-weight: 500;
+  font-variation-settings: normal;
   font-size:
     clamp(
       2rem,
@@ -2288,7 +2276,7 @@
     var(--festival-orange);
 
   font-family:
-    var(--font-display);
+    var(--font-pixel);
   font-size: 0.95rem;
   line-height: 1.4;
 }
@@ -2427,8 +2415,7 @@
   .loginAksies {
     width: 100%;
 
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .aanmeldKnop {
@@ -3397,14 +3384,15 @@
     var(--festival-orange);
 
   font-family:
-    var(--font-pixel);
+    var(--font-brush), var(--font-pixel), sans-serif;
   font-size:
     clamp(
       2rem,
       5vw,
       2.7rem
     );
-  font-weight: 700;
+  font-weight: 500;
+  font-variation-settings: normal;
   line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -3702,11 +3690,6 @@
   font-size: 1.45rem !important;
 }
 
-.appleKnop svg {
-  width: 27px;
-  height: 27px;
-}
-
 /* Larger avatar on mobile too */
 
 @media (max-width: 680px) {
@@ -3755,11 +3738,6 @@
 
   .googleG {
     font-size: 1.55rem !important;
-  }
-
-  .appleKnop svg {
-    width: 29px;
-    height: 29px;
   }
 }
 
@@ -4739,7 +4717,7 @@
     max-width: 34ch;
     margin: 0 auto;
     color: var(--festival-orange);
-    font-family: var(--font-display);
+    font-family: var(--font-pixel);
     font-size: 1.22rem;
     font-weight: 700;
     line-height: 1.4;
@@ -6051,6 +6029,50 @@
     margin-top: auto !important;
     background: transparent !important;
     box-shadow: none !important;
+  }
+}
+
+/* Step 1's Google/Apple buttons sat almost flush against the intro text
+   above them. .paneelBeskrywing's own margin-bottom is overridden many
+   times above, so this adds breathing room on the buttons' side instead --
+   the final word so it always wins. Also ease off the intro text's
+   font-weight and stroke so it reads a touch lighter than the heading. */
+.loginStap .loginAksies {
+  margin-top: 2.75rem;
+}
+
+@media (min-width: 681px) {
+  .loginStap .loginAksies {
+    max-width: 280px;
+    margin-inline: auto;
+  }
+}
+
+.loginStap .paneelBeskrywing {
+  font-weight: 600;
+  -webkit-text-stroke-width: 0.4px;
+}
+
+@media (max-width: 680px) {
+  .loginStap .loginAksies {
+    margin-top: 2.25rem;
+  }
+}
+
+/* Step 1's intro text ran a bit large and sat tucked right under the
+   heading (some breakpoints even pull it up with a negative margin) --
+   shrink it slightly and give it more room to breathe below the title. */
+.loginStap .paneelTitel + .paneelBeskrywing {
+  margin-top: 0.6rem;
+
+  font-size: 1rem !important;
+}
+
+@media (max-width: 680px) {
+  .loginStap .paneelTitel + .paneelBeskrywing {
+    margin-top: 0.5rem;
+
+    font-size: 1.08rem !important;
   }
 }
 

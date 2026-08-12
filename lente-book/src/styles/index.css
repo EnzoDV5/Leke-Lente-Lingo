@@ -10,6 +10,14 @@ html {
   overflow-x: clip;
 }
 
+:root {
+  /* Shared paper-grain overlay for component backgrounds (cards, panels,
+     podium blocks, ...). Layer it on top of a solid background-color via
+     the background shorthand; the source PNG carries its own transparency
+     so the colour underneath shows through. Not used on hero sections. */
+  --texture-grain: url('../assets/elements/paper-grain.webp');
+}
+
 @theme {
   /* atmosphere + surfaces */
   --color-sky:     #4FC6EF;
@@ -32,6 +40,10 @@ html {
   --font-display:  "itc-american-typewriter", Georgia, serif;
   --font-body:     "itc-american-typewriter", Georgia, serif;
   --font-pixel:    "ltr-ncnd-variable", system-ui, sans-serif;
+  /* brush-up only ships a single static weight (500) — force that weight
+     wherever this is used instead of inheriting body's variable "wght" 900,
+     which caused synthetic-bold blur on hero titles */
+  --font-brush:    "brush-up", sans-serif;
 
   /* soft + rounded */
   --radius-card:   20px;

@@ -1,0 +1,50 @@
+.wrap {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  animation: cardIn 420ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  width: min(88vw, 340px);
+  padding: 1.1rem 1.25rem;
+  background: var(--color-card, #fff);
+  border: 3px solid var(--color-ink);
+  border-radius: var(--radius-card, 20px);
+  box-shadow: var(--shadow-soft);
+}
+
+.lines {
+  display: grid;
+  gap: .5rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.label {
+  color: var(--color-ink);
+  font-family: var(--font-pixel), "Pixelify Sans", monospace;
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-align: center;
+  opacity: .75;
+  animation: labelPulse 1.9s ease-in-out infinite;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+}
+
+@keyframes labelPulse {
+  0%, 100% { opacity: .5; }
+  50% { opacity: .95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap { animation: none; }
+  .label { animation: none; opacity: .8; }
+}

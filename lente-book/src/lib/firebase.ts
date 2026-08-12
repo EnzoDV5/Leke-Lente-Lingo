@@ -4,9 +4,10 @@ import {
 } from 'firebase/app'
 
 import {
+  browserLocalPersistence,
   getAuth,
   GoogleAuthProvider,
-  OAuthProvider,
+  setPersistence,
 } from 'firebase/auth'
 
 import {
@@ -17,10 +18,8 @@ import {
   getStorage,
 } from 'firebase/storage'
 
-import {
-  getAnalytics,
-  isSupported,
-  type Analytics,
+import type {
+  Analytics,
 } from 'firebase/analytics'
 
 const firebaseConfig = {
@@ -54,6 +53,20 @@ const app = getApps().length
 
 export const auth = getAuth(app)
 
+// The default indexedDBLocalPersistence can lose its connection when the
+// tab is backgrounded (e.g. while a Google sign-in popup has focus), which
+// throws "Database is closing/hidden" right after a successful sign-in.
+// browserLocalPersistence (localStorage) doesn't have that failure mode.
+setPersistence(
+  auth,
+  browserLocalPersistence,
+).catch((error) => {
+  console.error(
+    'Could not set auth persistence:',
+    error,
+  )
+})
+
 export const db = getFirestore(app)
 
 export const storage = getStorage(app)
@@ -65,21 +78,19 @@ googleProvider.setCustomParameters({
   prompt: 'select_account',
 })
 
-export const appleProvider =
-  new OAuthProvider('apple.com')
-
-appleProvider.addScope('email')
-appleProvider.addScope('name')
-
 export let analytics: Analytics | null = null
 
+// Split into its own chunk instead of the main bundle -- analytics has no
+// effect on anything the user sees, so it doesn't need to block initial load.
 if (typeof window !== 'undefined') {
-  isSupported()
-    .then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app)
-      }
-    })
+  import('firebase/analytics')
+    .then(({ getAnalytics, isSupported }) =>
+      isSupported().then((supported) => {
+        if (supported) {
+          analytics = getAnalytics(app)
+        }
+      }),
+    )
     .catch(() => {
       analytics = null
     })

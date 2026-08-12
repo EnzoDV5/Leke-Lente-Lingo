@@ -197,8 +197,10 @@
 
 .instructions h2 {
   margin: 0;
-  font-family: var(--font-pixel);
-  font-size: 1.2rem;
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
+  font-weight: 500;
+  font-variation-settings: normal;
+  font-size: 1.35rem;
   text-transform: uppercase;
 }
 
@@ -221,10 +223,10 @@
   padding: 2.2rem 1.5rem 2.8rem;
   border-radius: 32px;
   background-color: var(--color-groen);
-  background-image: url('../../assets/elements/grassbackround.webp');
-  background-position: center var(--grass-scroll-y, 0px);
-  background-size: cover;
-  background-repeat: repeat-y;
+  background-image: var(--texture-grain), url('../../assets/elements/grassbackround.webp');
+  background-position: center, center var(--grass-scroll-y, 0px);
+  background-size: 800px, cover;
+  background-repeat: repeat, repeat-y;
   box-shadow: none;
   will-change: background-position;
 }
@@ -273,11 +275,13 @@
 
 .reward h2 {
   margin: 0.15rem 0;
-  font-family: var(--font-pixel);
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
+  font-weight: 500;
+  font-variation-settings: normal;
   font-size: clamp(
-    1.5rem,
+    1.7rem,
     4vw,
-    2.5rem
+    2.7rem
   );
   text-transform: uppercase;
 }
@@ -374,7 +378,9 @@
 
 .modal h2 {
   margin: 0;
-  font-family: var(--font-pixel);
+  font-family: var(--font-brush), var(--font-pixel), sans-serif;
+  font-weight: 500;
+  font-variation-settings: normal;
   font-size: 2.3rem;
   text-transform: uppercase;
 }
@@ -487,11 +493,11 @@
   border: 0;
   border-radius: 42px 42px 0 0;
   background-color: var(--color-groen);
-  background-image: url('../../assets/elements/grassbackround.webp');
-  background-position: center var(--grass-scroll-y, 0px);
-  background-size: cover;
-  background-repeat: repeat-y;
-  background-attachment: fixed;
+  background-image: var(--texture-grain), url('../../assets/elements/grassbackround.webp');
+  background-position: center, center var(--grass-scroll-y, 0px);
+  background-size: 800px, cover;
+  background-repeat: repeat, repeat-y;
+  background-attachment: scroll, fixed;
   box-shadow: none;
   overflow: visible;
 }
@@ -533,14 +539,14 @@
 .rewardLegacyDescription { display: none; }
 .rewardDescription { max-width: 620px; }
 .rewardKicker { color: var(--color-geel); font-family: var(--font-body); font-weight: 700; }
-.rewardCopy h2 { color: #fff; font-family: var(--font-pixel); font-weight: 900; line-height: .88; text-shadow: 3px 3px 0 var(--color-oranje); }
+.rewardCopy h2 { color: #fff; font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; line-height: .88; text-shadow: 3px 3px 0 var(--color-oranje); }
 .rewardCopy > p:last-child { color: #fff; font-weight: 800; line-height: 1.5; }
 
 @media (max-width: 700px) {
   .desktopWildcard { display: none; }
   .mobileWildcard { display: contents; }
   .reward { display: block; isolation: isolate; min-height: 0; margin-top: 6rem; padding: 2.75rem 1rem 0; border-radius: 0; background: transparent; }
-  .reward::before { content: ""; position: absolute; z-index: 0; top: 24rem; right: 0; bottom: 0; left: 0; border-radius: 32px 32px 0 0; background-color: var(--color-groen); background-image: url('../../assets/elements/grassbackround.webp'); background-position: center var(--grass-scroll-y, 0px); background-size: 145% auto; background-repeat: repeat-y; will-change: background-position; }
+  .reward::before { content: ""; position: absolute; z-index: 0; top: 24rem; right: 0; bottom: 0; left: 0; border-radius: 32px 32px 0 0; background-color: var(--color-groen); background-image: var(--texture-grain), url('../../assets/elements/grassbackround.webp'); background-position: center, center var(--grass-scroll-y, 0px); background-size: 800px, 145% auto; background-repeat: repeat, repeat-y; will-change: background-position; }
   .reward::after { content: none; }
   .rewardCard { position: relative; z-index: 1; grid-template-columns: 1fr; gap: 1.2rem; text-align: center; }
   .rewardCopy { order: 1; }
@@ -601,4 +607,22 @@
   .rewardUnlocking .rewardCard > button,
   .rewardUnlocking .wildcardPoster,
   .rewardUnlocking::before { animation-duration: 1ms; animation-delay: 0ms; }
+}
+
+.gridSkeleton {
+  align-items: start;
+}
+
+.posterSkeleton {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-color: #f3ecd9;
+}
+
+.posterSkeleton:nth-child(3n + 1) { transform: rotate(-2.5deg); }
+.posterSkeleton:nth-child(3n + 2) { transform: rotate(1.5deg); }
+.posterSkeleton:nth-child(3n) { transform: rotate(-1deg); }
+
+@media (max-width: 560px) {
+  .posterSkeleton { transform: none !important; }
 }

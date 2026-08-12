@@ -11,7 +11,7 @@
 .layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: start; }
 
 .story { max-width: 520px; }
-.story h2 { margin: 0 0 1.6rem; color: var(--color-oranje); font-family: var(--font-pixel); font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 900; line-height: .78; letter-spacing: -.04em; text-transform: uppercase; }
+.story h2 { margin: 0 0 1.6rem; color: var(--color-oranje); font-family: var(--font-brush), var(--font-pixel), sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 500; font-variation-settings: normal; line-height: .78; letter-spacing: -.04em; text-transform: uppercase; }
 .story h2 span { color: var(--color-sagpienk); }
 .story p { margin: 0 0 1rem; color: #4f4a43; font-size: .98rem; line-height: 1.58; }
 .story .lead { color: var(--color-ink); font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; line-height: 1.35; }

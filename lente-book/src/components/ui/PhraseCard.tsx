@@ -16,7 +16,7 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
   return (
     <article className={styles.card} style={{ background: bgKleur(frase.kleur), color: tekstKleur(frase.kleur) }}>
       <div className={styles.author}>
-        <img className={!frase.createdByUsername ? styles.officialLogo : ''} src={phraseAvatar} alt="" />
+        <img className={!frase.createdByUsername ? styles.officialLogo : ''} src={phraseAvatar} alt="" loading="lazy" decoding="async" />
         <span>
           {frase.createdByUsername && <small>Nuwe frase deur</small>}
           <strong>{phraseAuthor}</strong>
@@ -27,7 +27,7 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
         <div className={styles.top}>
           {top && (
             <>
-              <img className={`${styles.wordAvatar} ${top.handle === '@lentedag' ? styles.brandWordAvatar : ''}`} src={top.handle === '@lentedag' ? lentedagSecondaryLogo : wordAvatar} alt="" />
+              <img className={`${styles.wordAvatar} ${top.handle === '@lentedag' ? styles.brandWordAvatar : ''}`} src={top.handle === '@lentedag' ? lentedagSecondaryLogo : wordAvatar} alt="" loading="lazy" decoding="async" />
               <span className={styles.wordCopy}>
                 <small>Gewildste woord</small>
                 <strong className={styles.woord}>{top.woord}</strong>

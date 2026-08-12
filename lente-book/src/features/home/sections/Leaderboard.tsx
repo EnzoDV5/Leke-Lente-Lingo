@@ -47,6 +47,8 @@ function Avatar({ word }: { word: LeaderboardWord }) {
         src={profileImage ?? word.createdByAvatar}
         alt=""
         className={styles.avatarImg}
+        loading="lazy"
+        decoding="async"
       />
     )
   }
