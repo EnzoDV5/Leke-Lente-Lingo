@@ -35,7 +35,7 @@
   color: var(--color-ink);
   box-shadow: 3px 3px 0 var(--color-ink);
   font-family: var(--font-pixel), monospace;
-  font-size: .82rem;
+  font-size: clamp(.95rem, 1.2vw, 1.12rem);
   font-weight: 800;
   letter-spacing: .06em;
   text-transform: uppercase;

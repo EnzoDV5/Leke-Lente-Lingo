@@ -39,6 +39,7 @@ import Skeleton from '../../components/ui/Skeleton'
 import styles from './Woordjag.module.css'
 import { db } from '../../lib/firebase'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
+import { POSTER_IMAGES } from './posterAssets'
 
 const AREA_NAMES: Record<
   string,
@@ -585,7 +586,7 @@ export default function Woordjag() {
         <div className={styles.rewardCard}>
         <div className={styles.wildcardPoster}>
           <span className={styles.wildcardNumber}>06</span>
-          <img src="/posters/wildcard.webp" alt="Wildcard-poster" />
+          <img src={POSTER_IMAGES.wildcard} alt="Wildcard-poster" />
           {!progress.wildcard.collected && (
             <span className={styles.wildcardLock} aria-label={wildcardUnlocked ? 'Wildcard-uitdaging gereed.' : `Wildcard gesluit. ${Math.min(collectedCount, 5)} van 5 versamel.`}>
               <span>🔒</span>
@@ -620,7 +621,7 @@ export default function Woordjag() {
               ? progress.wildcard.collected
                 ? 'Die Wildcard is nou permanent deel van jou versameling.'
                 : 'Geen QR-kode is nodig nie. Maak die uitdaging oop en voltooi jou eie frase en woord.'
-              : 'Versamel Merk Dit, Steel & Verbeter, Raai die Woord, Foto-doop en Challenge ’n Chommie.'}
+              : 'Versamel Merk Dit, Steel & Verbeter, Raai die Lingo, Foto-doop en Challenge ’n Chommie.'}
           </p>
         </div>
 

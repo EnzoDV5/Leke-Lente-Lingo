@@ -74,7 +74,7 @@ export const CHALLENGES: Record<
   guess: {
     id: 'guess',
     number: 3,
-    name: 'Raai die Woord',
+    name: 'Raai die Lingo',
     shortName: 'Raai',
     description:
       'Kyk na ’n woord en raai by watter frase dit hoort.',

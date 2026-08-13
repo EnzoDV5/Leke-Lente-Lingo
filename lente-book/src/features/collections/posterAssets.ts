@@ -1,12 +1,17 @@
 import type { ChallengeId } from '../challenges/challengeConfig'
+import challengeChommiePoster from '../../assets/elements/posters/challenge n chommie@2x.webp'
+import merkDitPoster from '../../assets/elements/posters/merk dit poster@2x.webp'
+import raaiDieWoordPoster from '../../assets/elements/posters/raai die woord@2x.webp'
+import steelVerbeterPoster from '../../assets/elements/posters/steel en verbeter poster@2x.webp'
+import wildKaartPoster from '../../assets/elements/posters/wild kaart poster@2x.webp'
 
 export const POSTER_IMAGES: Record<ChallengeId, string> = {
-  doop: '/posters/doop-dit.webp',
-  remix: '/posters/steel-en-verbeter.webp',
-  guess: '/posters/raai-die-woord.webp',
+  doop: merkDitPoster,
+  remix: steelVerbeterPoster,
+  guess: raaiDieWoordPoster,
   photo: '/posters/foto-doop.webp',
-  friend: '/posters/daag-n-maat-uit.webp',
-  wildcard: '/posters/wildcard.webp',
+  friend: challengeChommiePoster,
+  wildcard: wildKaartPoster,
 }
 
 // Sampled from each poster's own background so the flat "mystery" card

@@ -37,7 +37,12 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
           )}
         </div>
         <div className={styles.actions}>
-          {top && <span className={styles.cardVotes}>👍 <b>{top.stemme}</b></span>}
+          {top && (
+            <span className={styles.cardVotes} aria-label={`${top.stemme} hou-van stemme`}>
+              <span aria-hidden="true">👍</span>
+              <b>{top.stemme}</b>
+            </span>
+          )}
           <Link to={`/woordeboek/${frase.id}`} className={styles.knoppie}>Meer</Link>
         </div>
       </div>

@@ -79,9 +79,8 @@ export default function VoegFotoBy({ challengeMode = false }: VoegFotoByProps) {
     word: '',
   })
 
-  const creatorAvatar = profile?.useGooglePhoto
-    ? user?.photoURL ?? profile.googlePhoto ?? fallbackProfileAvatar(profile.uid)
-    : resolveProfileAvatar(profile?.character) ?? fallbackProfileAvatar(profile?.uid)
+  const creatorAvatar =
+    resolveProfileAvatar(profile?.character) ?? fallbackProfileAvatar(profile?.uid)
 
   useEffect(() => {
     if (!file) {
@@ -208,9 +207,7 @@ export default function VoegFotoBy({ challengeMode = false }: VoegFotoByProps) {
         )
 
       const avatar =
-        profile.useGooglePhoto
-          ? user.photoURL ?? profile.googlePhoto ?? ''
-          : stableProfileAvatarId(profile.character)
+        stableProfileAvatarId(profile.character)
 
       await addDoc(
         collection(db, 'photos'),

@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore'
 
 import { db } from '../lib/firebase'
+import { useAuth } from '../features/auth/AuthContext'
 import type {
   VoteValue,
 } from '../types'
@@ -40,6 +41,8 @@ export type LeaderboardWord =
   }
 
 export function useLeaderboard() {
+  const { user, loading: authLoading } = useAuth()
+
   const [storedWords, setStoredWords] =
     useState<StoredWord[]>([])
 
@@ -56,6 +59,14 @@ export function useLeaderboard() {
     useState('')
 
   useEffect(() => {
+    if (authLoading) return
+
+    if (!user) {
+      setStoredWords([])
+      setWordsLoading(false)
+      return
+    }
+
     const unsubscribe = onSnapshot(
       collection(db, 'words'),
 
@@ -88,9 +99,17 @@ export function useLeaderboard() {
     )
 
     return unsubscribe
-  }, [])
+  }, [authLoading, user])
 
   useEffect(() => {
+    if (authLoading) return
+
+    if (!user) {
+      setStoredVotes([])
+      setVotesLoading(false)
+      return
+    }
+
     const unsubscribe = onSnapshot(
       collection(db, 'votes'),
 
@@ -123,7 +142,7 @@ export function useLeaderboard() {
     )
 
     return unsubscribe
-  }, [])
+  }, [authLoading, user])
 
   const rankedWords = useMemo(() => {
     return storedWords.map((word) => {

@@ -10,6 +10,8 @@ import Leaderboard from './sections/Leaderboard'
 import PosterCollection from './sections/PosterCollection'
 import HoeDitWerk from './sections/HoeDitWerk'
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
+import binocularsElement from '../../assets/elements/poster elements/binuculars.webp'
+import mouthElement from '../../assets/elements/poster elements/Mouth.webp'
 import styles from './Home.module.css'
 
 const FESTIVAL_PHOTOS = [
@@ -65,6 +67,7 @@ type PhotoPositionStyle = CSSProperties & {
 export default function Home() {
   const wallRef = useRef<HTMLDivElement>(null)
   const heroLogoRef = useRef<HTMLImageElement>(null)
+  const heroMouthRef = useRef<HTMLImageElement>(null)
   const cardFallProgress = useRef<number[]>([])
   const cardFallAnimations = useRef<Animation[]>([])
   const wallIsResetting = useRef(false)
@@ -109,43 +112,69 @@ export default function Home() {
   }, [])
 
   useLayoutEffect(() => {
-    const sharedLogo = document.querySelector<HTMLImageElement>(
-      '[data-shared-logo-transition="forward"]',
+    const targets = {
+      logo: heroLogoRef.current,
+      mouth: heroMouthRef.current,
+    }
+    const sharedPieces = Array.from(
+      document.querySelectorAll<HTMLImageElement>(
+        '[data-shared-brand-piece]',
+      ),
     )
-    const logo = heroLogoRef.current
-    if (!sharedLogo || !logo) return
+    const animations: Animation[] = []
 
-    logo.style.visibility = 'hidden'
-    let handoffAnimation: Animation | null = null
+    if (!sharedPieces.length) return
+
     const firstFrame = window.requestAnimationFrame(() => {
-      const source = sharedLogo.getBoundingClientRect()
-      const target = logo.getBoundingClientRect()
-      const moveX = target.left + target.width / 2 - (source.left + source.width / 2)
-      const moveY = target.top + target.height / 2 - (source.top + source.height / 2)
-      const scale = target.width / Math.max(source.width, 1)
+      sharedPieces.forEach((sharedPiece) => {
+        const piece =
+          sharedPiece.dataset.sharedBrandPiece as keyof typeof targets
+        const target = targets[piece]
+        if (!target) return
 
-      handoffAnimation = sharedLogo.animate(
-        [
-          { transform: 'translate3d(0, 0, 0) scale(1)' },
-          { transform: `translate3d(${moveX}px, ${moveY}px, 0) scale(${scale})` },
-        ],
-        {
-          duration: 980,
-          easing: 'cubic-bezier(.16, 1, .3, 1)',
-          fill: 'forwards',
-        },
-      )
+        target.style.visibility = 'hidden'
 
-      void handoffAnimation.finished.catch(() => undefined).then(() => {
-        sharedLogo.remove()
-        logo.style.visibility = ''
+        const source = sharedPiece.getBoundingClientRect()
+        const destination = target.getBoundingClientRect()
+        const moveX =
+          destination.left +
+          destination.width / 2 -
+          (source.left + source.width / 2)
+        const moveY =
+          destination.top +
+          destination.height / 2 -
+          (source.top + source.height / 2)
+        const scale =
+          destination.width /
+          Math.max(source.width, 1)
+
+        const animation = sharedPiece.animate(
+          [
+            { transform: 'translate3d(0, 0, 0) scale(1)' },
+            { transform: `translate3d(${moveX}px, ${moveY}px, 0) scale(${scale})` },
+          ],
+          {
+            duration: 980,
+            easing: 'cubic-bezier(.16, 1, .3, 1)',
+            fill: 'forwards',
+          },
+        )
+
+        animations.push(animation)
+
+        void animation.finished.catch(() => undefined).then(() => {
+          sharedPiece.remove()
+          target.style.visibility = ''
+        })
       })
     })
 
     return () => {
       window.cancelAnimationFrame(firstFrame)
-      handoffAnimation?.cancel()
-      logo.style.visibility = ''
+      animations.forEach((animation) => animation.cancel())
+      Object.values(targets).forEach((target) => {
+        if (target) target.style.visibility = ''
+      })
     }
   }, [])
 
@@ -324,6 +353,14 @@ export default function Home() {
 
         <div className={styles.heroBrand}>
           <img
+            ref={heroMouthRef}
+            className={styles.heroMouth}
+            src={mouthElement}
+            alt=""
+            aria-hidden="true"
+          />
+
+          <img
             ref={heroLogoRef}
             data-home-hero-logo
             src={lekeLenteLingoLogo}
@@ -331,6 +368,13 @@ export default function Home() {
             className={[
               styles.heroLogo,
             ].filter(Boolean).join(' ')}
+          />
+
+          <img
+            className={styles.heroBinoculars}
+            src={binocularsElement}
+            alt=""
+            aria-hidden="true"
           />
 
           <div className={styles.photoTotal} aria-label="1 284 foto's gedeel">

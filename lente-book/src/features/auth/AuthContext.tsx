@@ -2,55 +2,41 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
 
 import {
-  deleteUser,
-  getRedirectResult,
   onAuthStateChanged,
-  reauthenticateWithPopup,
-  signInWithPopup,
-  signInWithRedirect,
+  signInAnonymously,
   signOut,
   type User,
 } from 'firebase/auth'
 
 import {
-  collection,
-  deleteDoc,
   doc,
-  getDocs,
   getDoc,
-  query,
   runTransaction,
   serverTimestamp,
-  where,
-  writeBatch,
 } from 'firebase/firestore'
-import { deleteObject, ref } from 'firebase/storage'
 
 import {
   auth,
+  authReady,
   db,
-  googleProvider,
-  storage,
 } from '../../lib/firebase'
 
 export type LenteProfile = {
   uid: string
   username: string
   character: string
-  useGooglePhoto: boolean
-  googlePhoto?: string | null
   onboardingComplete: boolean
 }
 
 type SaveProfileInput = {
   username: string
   character: string
-  useGooglePhoto: boolean
 }
 
 type AuthContextValue = {
@@ -60,18 +46,14 @@ type AuthContextValue = {
   profileLoading: boolean
   authError: string
 
-  signInWithGoogle: () => Promise<boolean>
-
   checkUsernameAvailability: (
     username: string,
-  ) => Promise<boolean>
+  ) => Promise<'available' | 'taken' | 'error'>
 
   saveProfile: (
     details: SaveProfileInput,
   ) => Promise<boolean>
 
-  logOut: () => Promise<boolean>
-  deleteAccount: () => Promise<boolean>
   clearAuthError: () => void
 }
 
@@ -84,6 +66,10 @@ const AuthContext =
     AuthContextValue | undefined
   >(undefined)
 
+let anonymousSignInPromise:
+  | Promise<User>
+  | null = null
+
 function normaliseUsername(
   value: string,
 ) {
@@ -95,38 +81,11 @@ function normaliseUsername(
     .toLowerCase()
 }
 
-function shouldFallBackToRedirect(
-  error: unknown,
-): boolean {
-  if (!(error instanceof Error)) return false
-
-  return [
-    'auth/popup-blocked',
-    'auth/operation-not-supported-in-this-environment',
-  ].some((code) => error.message.includes(code))
-}
-
 function friendlyError(
   error: unknown,
 ): string {
   if (!(error instanceof Error)) {
     return 'Iets het verkeerd geloop.'
-  }
-
-  if (
-    error.message.includes(
-      'auth/popup-closed-by-user',
-    )
-  ) {
-    return 'Die aanmeldvenster is toegemaak.'
-  }
-
-  if (
-    error.message.includes(
-      'auth/popup-blocked',
-    )
-  ) {
-    return 'Jou blaaier het die aanmeldvenster geblokkeer.'
   }
 
   if (
@@ -139,21 +98,75 @@ function friendlyError(
 
   if (
     error.message.includes(
-      'auth/account-exists-with-different-credential',
-    )
-  ) {
-    return 'Hierdie e-pos is reeds met ’n ander metode gekoppel.'
-  }
-
-  if (
-    error.message.includes(
       'auth/web-storage-unsupported',
     )
   ) {
     return 'Jou blaaier blokkeer die berging wat nodig is om aan te meld. Skakel privaat blaai af en probeer weer.'
   }
 
+  if (error.message.includes('auth/too-many-requests')) {
+    return 'Te veel pogings. Probeer weer oor ’n rukkie.'
+  }
+
   return 'Iets het verkeerd geloop. Probeer weer.'
+}
+
+function isRecoverableAuthSessionError(
+  error: unknown,
+) {
+  if (!(error instanceof Error)) return false
+
+  return [
+    'auth/invalid-user-token',
+    'auth/user-token-expired',
+    'auth/user-disabled',
+    'auth/user-not-found',
+  ].some((code) => error.message.includes(code))
+}
+
+function clearRemovedAuthFlags() {
+  try {
+    window.localStorage.removeItem(
+      'lente-last-profile',
+    )
+    window.localStorage.removeItem(
+      'lente-post-google-link-logout',
+    )
+    window.localStorage.removeItem(
+      'lente-pending-google-link',
+    )
+  } catch {
+    // Ignore blocked storage.
+  }
+
+  try {
+    window.sessionStorage.removeItem(
+      'lente-post-google-link-logout',
+    )
+    window.sessionStorage.removeItem(
+      'lente-pending-google-link',
+    )
+  } catch {
+    // Ignore blocked storage.
+  }
+}
+
+async function getOrCreateAnonymousUser() {
+  await authReady
+
+  if (auth.currentUser) {
+    return auth.currentUser
+  }
+
+  anonymousSignInPromise ??= signInAnonymously(
+    auth,
+  )
+    .then((credential) => credential.user)
+    .finally(() => {
+      anonymousSignInPromise = null
+    })
+
+  return anonymousSignInPromise
 }
 
 export function AuthProvider({
@@ -165,6 +178,9 @@ export function AuthProvider({
   const [profile, setProfile] =
     useState<LenteProfile | null>(null)
 
+  const profileRef =
+    useRef<LenteProfile | null>(null)
+
   const [loading, setLoading] =
     useState(true)
 
@@ -175,6 +191,10 @@ export function AuthProvider({
 
   const [authError, setAuthError] =
     useState('')
+
+  useEffect(() => {
+    profileRef.current = profile
+  }, [profile])
 
   const loadProfile = async (
     firebaseUser: User,
@@ -215,119 +235,141 @@ export function AuthProvider({
   }
 
   useEffect(() => {
-    const unsubscribe =
-      onAuthStateChanged(
+    let unsubscribe:
+      | (() => void)
+      | undefined
+
+    let cancelled = false
+
+    authReady.then(() => {
+      if (cancelled) return
+      clearRemovedAuthFlags()
+
+      unsubscribe = onAuthStateChanged(
         auth,
         async (firebaseUser) => {
+          if (!firebaseUser) {
+            // Every visitor gets a stable, invisible identity right away —
+            // there's no separate "sign in" step, they just pick a username.
+            try {
+              const anonymousUser =
+                await getOrCreateAnonymousUser()
+
+              if (cancelled) return
+
+              setUser(anonymousUser)
+              setLoading(false)
+              await loadProfile(anonymousUser)
+            } catch (error) {
+              console.error(
+                'Anonymous sign-in error:',
+                error,
+              )
+
+              setAuthError(
+                friendlyError(error),
+              )
+
+              setUser(null)
+              setLoading(false)
+              setProfile(null)
+              setProfileLoading(false)
+            }
+
+            return
+          }
+
           setUser(firebaseUser)
           setLoading(false)
 
-          if (firebaseUser) {
-            await loadProfile(
-              firebaseUser,
-            )
-          } else {
-            setProfile(null)
-            setProfileLoading(false)
-          }
+          await loadProfile(firebaseUser)
         },
-        (error) => {
+        async (error) => {
           console.error(
             'Authentication error:',
             error,
           )
 
+          if (isRecoverableAuthSessionError(error)) {
+            try {
+              if (profileRef.current) {
+                setLoading(false)
+                setProfileLoading(false)
+                setAuthError(
+                  'Jou profiel is nog veilig op hierdie toestel.',
+                )
+
+                if (
+                  window.location.pathname !== '/'
+                ) {
+                  window.location.assign('/')
+                }
+
+                return
+              }
+
+              await signOut(auth).catch(() => undefined)
+              const freshUser =
+                (await signInAnonymously(auth)).user
+
+              setUser(freshUser)
+              setLoading(false)
+              await loadProfile(freshUser)
+              setAuthError('')
+
+              return
+            } catch (recoveryError) {
+              console.error(
+                'Authentication recovery failed:',
+                recoveryError,
+              )
+            }
+          }
+
           setAuthError(
             'Ons kon nie jou aanmeldstatus nagaan nie.',
           )
 
+          setUser(null)
+          setProfile(null)
           setLoading(false)
           setProfileLoading(false)
         },
       )
-
-    return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    getRedirectResult(auth).catch((error) => {
-      console.error(
-        'Redirect sign-in error:',
-        error,
-      )
-
-      setAuthError(
-        friendlyError(error),
-      )
     })
-  }, [])
 
-  // Popups don't depend on the authDomain redirect relay, so they work the
-  // same on localhost, the hosted app, and any device. We only fall back to
-  // a redirect when the environment genuinely can't open a popup (blocked,
-  // or an embedded/in-app browser).
-  const signInWithGoogle =
-    async (): Promise<boolean> => {
-      setAuthError('')
-
-      try {
-        await signInWithPopup(
-          auth,
-          googleProvider,
-        )
-
-        return true
-      } catch (error) {
-        if (
-          shouldFallBackToRedirect(error)
-        ) {
-          try {
-            await signInWithRedirect(
-              auth,
-              googleProvider,
-            )
-
-            return true
-          } catch (redirectError) {
-            console.error(
-              'Google sign-in error:',
-              redirectError,
-            )
-
-            setAuthError(
-              friendlyError(
-                redirectError,
-              ),
-            )
-
-            return false
-          }
-        }
-
-        console.error(
-          'Google sign-in error:',
-          error,
-        )
-
-        setAuthError(
-          friendlyError(error),
-        )
-
-        return false
-      }
+    return () => {
+      cancelled = true
+      unsubscribe?.()
     }
+  }, [])
 
   const checkUsernameAvailability =
     async (
       username: string,
-    ): Promise<boolean> => {
-      if (!user) return false
+    ): Promise<'available' | 'taken' | 'error'> => {
+      let activeUser = user
+
+      if (!activeUser) {
+        try {
+          activeUser =
+            await getOrCreateAnonymousUser()
+          setUser(activeUser)
+        } catch (error) {
+          console.error(
+            'Anonymous sign-in retry failed:',
+            error,
+          )
+
+          return 'error'
+        }
+      }
 
       const cleanUsername =
         normaliseUsername(username)
 
       if (cleanUsername.length < 3) {
-        return false
+        return 'taken'
       }
 
       try {
@@ -345,32 +387,48 @@ export function AuthProvider({
         if (
           !usernameSnapshot.exists()
         ) {
-          return true
+          return 'available'
         }
 
-        return (
-          usernameSnapshot.data().uid ===
-          user.uid
-        )
+        return usernameSnapshot.data().uid ===
+          activeUser.uid
+          ? 'available'
+          : 'taken'
       } catch (error) {
         console.error(
           'Username check failed:',
           error,
         )
 
-        return false
+        return 'error'
       }
     }
 
   const saveProfile = async (
     details: SaveProfileInput,
   ): Promise<boolean> => {
-    if (!user) {
-      setAuthError(
-        'Jy moet eers met Google aanmeld.',
-      )
+    let activeUser = user
 
-      return false
+    if (!activeUser) {
+      // The background anonymous sign-in on load may have failed (e.g. a
+      // transient network hiccup). Give it one more try right here instead
+      // of leaving people stuck with no way forward but a page refresh.
+      try {
+        activeUser =
+          await getOrCreateAnonymousUser()
+        setUser(activeUser)
+      } catch (error) {
+        console.error(
+          'Anonymous sign-in retry failed:',
+          error,
+        )
+
+        setAuthError(
+          friendlyError(error),
+        )
+
+        return false
+      }
     }
 
     const cleanUsername =
@@ -389,7 +447,7 @@ export function AuthProvider({
     const userReference = doc(
       db,
       'users',
-      user.uid,
+      activeUser.uid,
     )
 
     const usernameReference = doc(
@@ -399,13 +457,10 @@ export function AuthProvider({
     )
 
     const newProfile: LenteProfile = {
-      uid: user.uid,
+      uid: activeUser.uid,
       username: `@${cleanUsername}`,
       character:
         details.character,
-      useGooglePhoto:
-        details.useGooglePhoto,
-      googlePhoto: user.photoURL,
       onboardingComplete: true,
     }
 
@@ -427,7 +482,7 @@ export function AuthProvider({
             newUsernameSnapshot.exists() &&
             newUsernameSnapshot
               .data()
-              .uid !== user.uid
+              .uid !== activeUser.uid
           ) {
             throw new Error(
               'USERNAME_TAKEN',
@@ -470,7 +525,7 @@ export function AuthProvider({
               oldUsernameSnapshot.exists() &&
               oldUsernameSnapshot
                 .data()
-                .uid === user.uid
+                .uid === activeUser.uid
           }
 
           if (deleteOldUsername) {
@@ -482,7 +537,7 @@ export function AuthProvider({
           transaction.set(
             usernameReference,
             {
-              uid: user.uid,
+              uid: activeUser.uid,
               username:
                 `@${cleanUsername}`,
               updatedAt:
@@ -497,11 +552,6 @@ export function AuthProvider({
             userReference,
             {
               ...newProfile,
-              email: user.email,
-              googleName:
-                user.displayName,
-              googlePhoto:
-                user.photoURL,
               updatedAt:
                 serverTimestamp(),
             },
@@ -540,92 +590,6 @@ export function AuthProvider({
     }
   }
 
-  const logOut = async () => {
-    try {
-      await signOut(auth)
-
-      setUser(null)
-      setProfile(null)
-
-      return true
-    } catch (error) {
-      console.error(
-        'Sign-out error:',
-        error,
-      )
-
-      setAuthError(
-        'Ons kon jou nie uitteken nie.',
-      )
-
-      return false
-    }
-  }
-
-  const deleteAccount = async () => {
-    if (!user) return false
-
-    setAuthError('')
-
-    try {
-      await reauthenticateWithPopup(
-        user,
-        googleProvider,
-      )
-
-      const [wordsSnapshot, votesSnapshot, photosSnapshot, postersSnapshot] = await Promise.all([
-        getDocs(query(collection(db, 'words'), where('createdByUid', '==', user.uid))),
-        getDocs(query(collection(db, 'votes'), where('userId', '==', user.uid))),
-        getDocs(query(collection(db, 'photos'), where('createdByUid', '==', user.uid))),
-        getDocs(collection(db, 'users', user.uid, 'posters')),
-      ])
-
-      await Promise.all(
-        photosSnapshot.docs.map(async (photoDocument) => {
-          const storagePath = String(photoDocument.data().storagePath ?? '')
-          if (!storagePath) return
-          try {
-            await deleteObject(ref(storage, storagePath))
-          } catch (storageError) {
-            const errorCode = storageError && typeof storageError === 'object' && 'code' in storageError
-              ? String(storageError.code)
-              : ''
-            if (errorCode !== 'storage/object-not-found') throw storageError
-          }
-        }),
-      )
-
-      const documentsToDelete = [
-        ...wordsSnapshot.docs.map((item) => item.ref),
-        ...votesSnapshot.docs.map((item) => item.ref),
-        ...photosSnapshot.docs.map((item) => item.ref),
-        ...postersSnapshot.docs.map((item) => item.ref),
-      ]
-
-      const username = profile?.username.replace(/^@/, '').toLowerCase()
-      if (username) documentsToDelete.push(doc(db, 'usernames', username))
-
-      for (let index = 0; index < documentsToDelete.length; index += 450) {
-        const batch = writeBatch(db)
-        documentsToDelete.slice(index, index + 450).forEach((reference) => batch.delete(reference))
-        await batch.commit()
-      }
-
-      await deleteDoc(doc(db, 'users', user.uid))
-      await deleteUser(user)
-
-      setUser(null)
-      setProfile(null)
-      return true
-    } catch (error) {
-      console.error('Account deletion error:', error)
-      setAuthError(
-        'Ons kon nie jou rekening uitvee nie. Meld weer aan en probeer asseblief weer.',
-      )
-      return false
-    }
-  }
-
   const clearAuthError = () => {
     setAuthError('')
   }
@@ -636,11 +600,8 @@ export function AuthProvider({
     loading,
     profileLoading,
     authError,
-    signInWithGoogle,
     checkUsernameAvailability,
     saveProfile,
-    logOut,
-    deleteAccount,
     clearAuthError,
   }
 

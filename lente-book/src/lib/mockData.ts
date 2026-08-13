@@ -98,6 +98,6 @@ export const jagkaarte: Jagkaart[] = [
     leidraad: 'Waar die rye lank is en die geduld kort ,  soek die bord langs die tap.' },
   { id: 'j5', naam: 'Toilet-tou', tipe: 'Steel & Verbeter', tipeKleur: 'goud', versamel: false,
     leidraad: 'Die plek van die ewige wag ,  waar die giggel-groepe saamdrom.' },
-  { id: 'j6', naam: 'Verhoog-hoek', tipe: 'Raai die woord', tipeKleur: 'pers', versamel: false,
+  { id: 'j6', naam: 'Verhoog-hoek', tipe: 'Raai die Lingo', tipeKleur: 'pers', versamel: false,
     leidraad: 'By die hoek waar almal die kunstenaar wil sien maar niemand het plek nie.' },
 ]

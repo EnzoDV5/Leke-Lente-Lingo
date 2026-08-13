@@ -7,7 +7,28 @@ import { useChallengeProgress } from '../../../hooks/useChallengeProgress'
 import { useAuth } from '../../auth/AuthContext'
 import { ALL_CHALLENGE_IDS, CHALLENGES, type ChallengeId } from '../../challenges/challengeConfig'
 import { POSTER_COLOURS, POSTER_IMAGES } from '../../collections/posterAssets'
+import cardElement from '../../../assets/elements/poster elements/card.webp'
+import diceOneElement from '../../../assets/elements/poster elements/dice 1.webp'
+import diceTwoElement from '../../../assets/elements/poster elements/dice 2.webp'
+import challengeChommiePoster from '../../../assets/elements/posters/challenge n chommie@2x.webp'
+import merkDitPoster from '../../../assets/elements/posters/merk dit poster@2x.webp'
+import raaiDieWoordPoster from '../../../assets/elements/posters/raai die woord@2x.webp'
+import steelVerbeterPoster from '../../../assets/elements/posters/steel en verbeter poster@2x.webp'
+import wildKaartPoster from '../../../assets/elements/posters/wild kaart poster@2x.webp'
 import styles from './PosterCollection.module.css'
+
+type PosterCollectionVars = CSSProperties & {
+  '--poster-progress-card': string
+}
+
+const HOME_POSTER_IMAGES: Record<ChallengeId, string> = {
+  ...POSTER_IMAGES,
+  doop: merkDitPoster,
+  remix: steelVerbeterPoster,
+  guess: raaiDieWoordPoster,
+  friend: challengeChommiePoster,
+  wildcard: wildKaartPoster,
+}
 
 function PosterThumb({ id }: { id: ChallengeId }) {
   const [imageFailed, setImageFailed] = useState(false)
@@ -23,7 +44,7 @@ function PosterThumb({ id }: { id: ChallengeId }) {
 
   return (
     <img
-      src={POSTER_IMAGES[id]}
+      src={HOME_POSTER_IMAGES[id]}
       alt=""
       loading="lazy"
       decoding="async"
@@ -69,14 +90,21 @@ export default function PosterCollection() {
       wydte="wyd"
       className={styles.section}
       sectionRef={sectionRef}
-      style={{ '--grass-scroll-y': '0px' } as CSSProperties}
+      style={{
+        '--grass-scroll-y': '0px',
+        '--poster-progress-card': `url(${cardElement})`,
+      } as PosterCollectionVars}
     >
-      <strong className={styles.count}>
-        {loading
-          ? <Skeleton width="1.1rem" height="1.15rem" radius={5} className={styles.countSkeleton} />
-          : collectedCount}
-        <span>/6</span>
-      </strong>
+      <div className={styles.progressCluster} aria-label={`${collectedCount} van 6 posters versamel`}>
+        <img className={`${styles.dice} ${styles.diceOne}`} src={diceOneElement} alt="" aria-hidden="true" />
+        <strong className={styles.count}>
+          {loading
+            ? <Skeleton width="1.1rem" height="1.15rem" radius={5} className={styles.countSkeleton} />
+            : collectedCount}
+          <span>/6</span>
+        </strong>
+        <img className={`${styles.dice} ${styles.diceTwo}`} src={diceTwoElement} alt="" aria-hidden="true" />
+      </div>
 
       <Reveal className={styles.headerReveal}>
         <header className={styles.header}>

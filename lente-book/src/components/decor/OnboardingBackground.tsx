@@ -7,6 +7,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import styles from './OnboardingBackground.module.css'
 import skyImg from '../../assets/elements/cloud-background.webp'
+import sunElement from '../../assets/elements/poster elements/sun.webp'
 
 type OrbitVars = CSSProperties & { '--dur': string; '--delay': string; '--r': string }
 type EscapeVars = CSSProperties & { '--cloud-away-x': string; '--cloud-away-y': string }
@@ -72,6 +73,12 @@ export default function OnboardingBackground() {
 
   return (
     <div className={`${styles.wrap} ${isHome ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
+      <img
+        className={styles.sun}
+        src={sunElement}
+        alt=""
+      />
+
       <div className={styles.cloudLayer}>
       {CLOUDS.map((c, i) => {
         const vars = { '--dur': c.dur, '--delay': c.delay, '--r': c.r } as OrbitVars

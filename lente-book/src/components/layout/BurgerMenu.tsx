@@ -2,14 +2,12 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { useAuth } from '../../features/auth/AuthContext'
 import OptionWheel from '../ui/OptionWheel'
 import styles from './BurgerMenu.module.css'
 
 type Props = {
   open: boolean
   onClose: () => void
-  onLogOut: () => Promise<void>
 }
 
 const LINKS = [
@@ -50,9 +48,7 @@ const SOCIALS = [
 export default function BurgerMenu({
   open,
   onClose,
-  onLogOut,
 }: Props) {
-  const { user } = useAuth()
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -85,17 +81,7 @@ export default function BurgerMenu({
     ),
   )
 
-  const handleLogOut = async () => {
-    onClose()
-    await onLogOut()
-  }
-
   const selectWheelItem = (index: number) => {
-    if (index === LINKS.length) {
-      void handleLogOut()
-      return
-    }
-
     const link = LINKS[index]
     if (!link) return
     onClose()
@@ -132,7 +118,6 @@ export default function BurgerMenu({
           key={`${pathname}-${open ? 'open' : 'closed'}`}
           items={[
             ...LINKS.map((link) => link.label),
-            ...(user ? ['__logout__'] : []),
           ]}
           defaultSelected={currentIndex}
           textColor="#f8e42b"

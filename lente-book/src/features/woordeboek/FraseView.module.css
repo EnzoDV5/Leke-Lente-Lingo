@@ -96,7 +96,7 @@
 .remixLeaving { animation: remixPanelOut 360ms cubic-bezier(.55,0,1,.45) both; pointer-events: none; }
 @keyframes remixPanelIn { from { opacity: 0; transform: translateX(-70px) scaleX(.88); filter: blur(5px); } }
 @keyframes remixPanelOut { to { opacity: 0; transform: translateX(80px) scaleX(.86); filter: blur(5px); } }
-.remixCreatorAvatar { width: 46px; height: 46px; flex: 0 0 auto; padding: 2px; border: 3px solid var(--color-oranje); border-radius: 50%; background: white; box-shadow: 2px 2px 0 var(--color-ink); object-fit: cover; }
+.remixCreatorAvatar { width: 46px; height: 46px; flex: 0 0 auto; padding: 2px; border: 3px solid var(--color-oranje); border-radius: 50%; background: white; box-shadow: 2px 2px 0 var(--color-ink); object-fit: contain; }
 .brandRemixAvatar { padding: 6px; object-fit: contain; }
 .steelKnop svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .remixEtiket > span:last-child { display: grid; gap: .15rem; }
@@ -122,7 +122,7 @@
 @keyframes newWordArrives { from { opacity: 0; transform: translateY(70px) scale(.84) rotate(-2deg); filter: blur(7px); } 70% { transform: translateY(-6px) scale(1.025) rotate(.5deg); } }
 @keyframes newWordGlow { 50% { transform: translateY(-5px); box-shadow: 9px 14px 0 var(--color-oranje); } }
 .rang { font-family: var(--font-display); font-weight: 900; width: 2.4rem; text-align: center; flex-shrink: 0; font-size: 1rem; }
-.woordAvatar { width: 58px; height: 58px; flex: 0 0 auto; border: 4px solid var(--color-oranje); border-radius: 50%; background: white; box-shadow: 3px 3px 0 var(--color-geel); object-fit: cover; }
+.woordAvatar { width: 58px; height: 58px; flex: 0 0 auto; border: 4px solid var(--color-oranje); border-radius: 50%; background: white; box-shadow: 3px 3px 0 var(--color-geel); object-fit: contain; }
 .woordAvatar[src*="LENTEDAG-logo2"] { padding: 5px; box-sizing: border-box; object-fit: contain; }
 .woordInfo { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .woordNaam { font-family: var(--font-display); font-weight: 900; font-size: 1.28rem; color: var(--color-ink); }

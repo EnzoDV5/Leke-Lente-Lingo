@@ -1,8 +1,8 @@
 .head { text-align: center; }
 .kicker {
-  font-family: var(--font-body); font-weight: 700;
-  font-size: .84rem; letter-spacing: .05em; text-transform: uppercase;
-  color: var(--color-oranje); margin: 0 0 .5rem;
+  font-family: var(--font-body); font-weight: 800;
+  font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--color-oranje); margin: 0 0 .2rem;
 }
 .title {
   font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal;

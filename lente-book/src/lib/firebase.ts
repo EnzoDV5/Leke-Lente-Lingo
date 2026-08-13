@@ -6,7 +6,6 @@ import {
 import {
   browserLocalPersistence,
   getAuth,
-  GoogleAuthProvider,
   setPersistence,
 } from 'firebase/auth'
 
@@ -53,11 +52,9 @@ const app = getApps().length
 
 export const auth = getAuth(app)
 
-// The default indexedDBLocalPersistence can lose its connection when the
-// tab is backgrounded (e.g. while a Google sign-in popup has focus), which
-// throws "Database is closing/hidden" right after a successful sign-in.
-// browserLocalPersistence (localStorage) doesn't have that failure mode.
-setPersistence(
+// localStorage keeps the hidden anonymous session stable across refreshes and
+// browser closes. Auth consumers wait for this before creating an account.
+export const authReady = setPersistence(
   auth,
   browserLocalPersistence,
 ).catch((error) => {
@@ -70,13 +67,6 @@ setPersistence(
 export const db = getFirestore(app)
 
 export const storage = getStorage(app)
-
-export const googleProvider =
-  new GoogleAuthProvider()
-
-googleProvider.setCustomParameters({
-  prompt: 'select_account',
-})
 
 export let analytics: Analytics | null = null
 

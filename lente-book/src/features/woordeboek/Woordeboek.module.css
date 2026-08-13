@@ -76,10 +76,25 @@
 }
 
 .bordGroep { display: grid; gap: .75rem; }
-.bordOpskrif { display: flex; align-items: center; gap: .6rem; padding: .2rem .15rem; color: var(--color-oranje); }
-.bordOpskrif > span { color: var(--color-geel); font-size: 1.25rem; text-shadow: 1px 1px 0 var(--color-ink); }
+.bordOpskrif { display: flex; align-items: center; gap: .25rem; padding: .2rem .15rem; color: var(--color-oranje); }
+.bordSter { color: var(--color-geel); font-size: 1.25rem; text-shadow: 1px 1px 0 var(--color-ink); }
 .bordOpskrif h2 { margin: 0; font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1; text-transform: uppercase; }
 .bordOpskrif small { margin-left: auto; font-family: var(--font-body); font-size: .82rem; font-weight: 700; text-transform: uppercase; }
+
+/* Poster-element badge shown next to a bord's title (toilet/cup/speaker etc.),
+   echoing the physical location the phrases in that group were collected at.
+   Uses the *-icon.webp crops (trimmed to the character's own bounding box)
+   rather than the full poster art, whose large transparent margins otherwise
+   threw off vertical centering against the title and inflated the visual
+   gap regardless of the flex `gap` value. */
+.bordIkoon {
+  display: block;
+  flex: 0 0 auto;
+  width: 3.4rem;
+  height: 3.4rem;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(22, 21, 15, .35));
+}
 .bordFrases { display: grid; gap: .8rem; }
 .topWoorde { display: grid; gap: 1rem; }
 .topWoordeKop { display: flex; align-items: center; gap: .8rem; padding: .3rem .2rem .6rem; color: var(--color-oranje); }
@@ -106,6 +121,7 @@
 @media (min-width: 768px) {
   .wrap { padding: 3rem 2rem 4rem; }
   .kontroles { flex-direction: row; justify-content: space-between; align-items: center; }
+  .bordIkoon { width: 4.5rem; height: 4.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

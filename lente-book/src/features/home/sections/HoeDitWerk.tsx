@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Section from '../../../components/ui/Section'
 import Reveal from '../../../components/ui/Reveal'
+import mouthElement from '../../../assets/elements/poster elements/Mouth.webp'
+import speakerPhoneElement from '../../../assets/elements/poster elements/Speaker Phone.webp'
 import styles from './HoeDitWerk.module.css'
 
 const MEGANIKA = [
@@ -55,6 +57,24 @@ export default function HoeDitWerk() {
       <div className={styles.layout}>
         <Reveal>
           <div className={styles.story}>
+            <img
+              className={`${styles.mouth} ${styles.mouthOne}`}
+              src={mouthElement}
+              alt=""
+              aria-hidden="true"
+            />
+            <img
+              className={`${styles.mouth} ${styles.mouthTwo}`}
+              src={mouthElement}
+              alt=""
+              aria-hidden="true"
+            />
+            <img
+              className={`${styles.mouth} ${styles.mouthThree}`}
+              src={mouthElement}
+              alt=""
+              aria-hidden="true"
+            />
             <h2>
               <span>WAT IS</span><br />
               <span>LENTE</span><br />
@@ -70,7 +90,10 @@ export default function HoeDitWerk() {
               Die fokus-taal verander elke jaar, maar almal mag altyd deelneem en woorde in hul eie taal uitdink.
             </p>
             <div className={styles.yearNote}>
-              <strong>2026 · AFRIKAANS</strong>
+              <strong>
+                <img src={speakerPhoneElement} alt="" aria-hidden="true" />
+                <span>2026 · AFRIKAANS</span>
+              </strong>
               <span>Die woord met die meeste stemme word die Lente-woord van die jaar.</span>
             </div>
           </div>

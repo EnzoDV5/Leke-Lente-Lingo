@@ -6,6 +6,7 @@
   --festival-ink: #17150f;
   --festival-blue: #2857c9;
   --festival-green: #279e52;
+  --merk-art-step-y: 0px;
 
   position: relative;
   isolation: isolate;
@@ -68,6 +69,7 @@
 
 .merkArea {
   position: relative;
+  isolation: isolate;
   flex: 0 0 auto;
 
   min-height: 300px;
@@ -82,7 +84,20 @@
   box-sizing: border-box;
 }
 
+.mondElement {
+  position: absolute;
+  z-index: 2;
+
+  width: clamp(78px, 13vw, 150px);
+  height: auto;
+
+  pointer-events: none;
+}
+
 .lingoLogo {
+  position: relative;
+  z-index: 1;
+
   display: block;
 
   width: clamp(
@@ -235,6 +250,8 @@
 }
 
 .vorderSirkel {
+  position: relative;
+
   width: 35px;
   height: 35px;
 
@@ -243,14 +260,45 @@
 
   box-sizing: border-box;
 
-  border: 3px solid #ddd8ce;
+  border: none;
   border-radius: 50%;
-
+  /* Solid backing disc, sized to the badge itself (not the larger spark
+     shape below) -- without it the connecting line shows straight through
+     the spark artwork's transparent gaps (the outline's hollow centre, the
+     notches between its points). */
   background: var(--festival-cream);
 
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
+  color: #aaa59e;
+}
+
+/* The spark shape is drawn on a pseudo-element that overhangs the number's
+   own box (starburst points reach further than a plain circle would), and
+   sits behind the number via a negative z-index -- necessary for the solid
+   filled spark, which would otherwise paint over the checkmark. The grey
+   "upcoming" state has no dedicated asset, so it reuses the pink outline's
+   shape as a mask and recolours it instead of drawing a new image. */
+.vorderSirkel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -20%;
+
+  background-color: #c7c1b6;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  -webkit-mask-image: var(--spark-outline-url);
+  mask-image: var(--spark-outline-url);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .vorderStap small {
@@ -267,16 +315,21 @@
 }
 
 .aktief .vorderSirkel {
-  border-color: var(--festival-orange);
-
-  background:
-    var(--festival-yellow);
-
   color: var(--festival-orange);
+}
 
-  box-shadow:
-    0 4px 0
-    rgba(237, 73, 36, 0.2);
+.aktief .vorderSirkel::before {
+  background-color: transparent;
+  background-image: var(--spark-outline-url);
+
+  -webkit-mask-image: none;
+  mask-image: none;
+
+  filter:
+    drop-shadow(
+      0 3px 0
+      rgba(237, 73, 36, 0.25)
+    );
 }
 
 .vorderStap.voltooi {
@@ -284,12 +337,21 @@
 }
 
 .voltooi .vorderSirkel {
-  border-color: var(--festival-orange);
-
-  background:
-    var(--festival-pink);
-
   color: white;
+}
+
+.voltooi .vorderSirkel::before {
+  background-color: transparent;
+  background-image: var(--spark-filled-url);
+
+  -webkit-mask-image: none;
+  mask-image: none;
+
+  filter:
+    drop-shadow(
+      0 3px 0
+      rgba(237, 73, 36, 0.2)
+    );
 }
 
 /* Current step content */
@@ -336,6 +398,102 @@
   padding: 0;
 
   text-align: center;
+}
+
+.terugProfielKaart {
+  width: min(100%, 420px);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+
+  margin: 0 auto 1rem;
+  padding: 0.65rem 0.75rem;
+
+  border: 3px solid
+    var(--festival-orange);
+  border-radius: 16px;
+
+  background: white;
+
+  box-shadow:
+    0 6px 0
+    rgba(237, 73, 36, 0.14);
+
+  text-align: left;
+}
+
+.welkomTerugAvatar {
+  width: 74px;
+  height: 74px;
+
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  margin: 0;
+
+  border: 4px solid
+    var(--festival-orange);
+  border-radius: 50%;
+
+  box-shadow:
+    0 5px 0
+    rgba(237, 73, 36, 0.15);
+}
+
+.terugProfielTekst {
+  min-width: 0;
+
+  display: grid;
+  gap: 0.18rem;
+}
+
+.terugProfielTekst strong,
+.terugProfielTekst span {
+  min-width: 0;
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.terugProfielTekst strong {
+  color: var(--festival-orange);
+
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 3vw, 1.35rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.terugProfielTekst span {
+  color: #7b746c;
+
+  font-family: var(--font-pixel);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.welkomTerugAvatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+.welkomTerugKicker {
+  margin: 0 0 0.35rem;
+
+  color: var(--festival-pink);
+
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .reelsStap,
@@ -397,6 +555,34 @@
   gap: 0.7rem;
 }
 
+.wisselProfielSkakel {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .4rem;
+
+  padding: .45rem;
+  color: var(--festival-orange);
+  background: transparent;
+  border: 0;
+  font-family: var(--font-pixel);
+  font-size: .76rem;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.wisselProfielSkakel svg {
+  flex-shrink: 0;
+  margin-top: 0.15em;
+}
+
+.wisselProfielSkakel:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
 .aanmeldKnop,
 .hoofKnop {
   width: 100%;
@@ -430,28 +616,9 @@
     color 120ms ease;
 }
 
-.googleKnop {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.65rem;
-}
-
-.googleKnop,
 .hoofKnop {
   background:
     var(--festival-yellow);
-}
-
-.googleG {
-  color: #4285f4;
-
-  font-family:
-    Arial,
-    sans-serif;
-  font-size: 1.05rem;
-  font-weight: 800;
-  text-transform: none;
 }
 
 .aanmeldKnop:hover:not(:disabled),
@@ -1377,7 +1544,7 @@
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .avatarSlide {
@@ -1394,12 +1561,6 @@
 
 .avatarSlidePrevious {
   animation: avatarSlidePrevious 520ms cubic-bezier(.16, 1, .3, 1) both;
-}
-
-.avatarCompact img {
-  width: 82%;
-  height: 82%;
-  object-fit: contain;
 }
 
 @keyframes avatarSlideNext {
@@ -3656,40 +3817,6 @@
   }
 }
 
-/* Google/Apple fallback inside avatar */
-
-.providerFallback {
-  width: 100%;
-  height: 100%;
-
-  display: grid;
-  place-items: center;
-}
-
-.providerFallback svg {
-  width: 54px;
-  height: 54px;
-
-  color: #17150f;
-}
-
-.googleAvatarIcon {
-  color: #4285f4;
-
-  font-family:
-    Arial,
-    sans-serif;
-  font-size: 3.8rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-/* Larger sign-in icons */
-
-.googleG {
-  font-size: 1.45rem !important;
-}
-
 /* Larger avatar on mobile too */
 
 @media (max-width: 680px) {
@@ -3727,18 +3854,6 @@
     font-size: 0.76rem;
   }
 
-  .providerFallback svg {
-    width: 50px;
-    height: 50px;
-  }
-
-  .googleAvatarIcon {
-    font-size: 3.5rem;
-  }
-
-  .googleG {
-    font-size: 1.55rem !important;
-  }
 }
 
 
@@ -5169,7 +5284,7 @@
     z-index: -1;
   }
 
-  .mobieleStapEenBlad .vorderStap:first-child {
+  .mobieleEersteBesoek .vorderStap:first-child {
     transform: translateX(100%) !important;
   }
 
@@ -5842,6 +5957,73 @@
   }
 }
 
+/* Final onboarding mouth placement. Keep it travelling with the logo as the
+   step layout changes. */
+.mondElement {
+  transition:
+    top 640ms cubic-bezier(.16, 1, .3, 1),
+    left 640ms cubic-bezier(.16, 1, .3, 1),
+    width 640ms cubic-bezier(.16, 1, .3, 1),
+    transform 640ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.mondElement {
+  top: calc(50% - 178px);
+  left: max(2rem, calc(50% - 410px));
+  transform:
+    translate3d(
+      0,
+      var(--merk-art-step-y),
+      0
+    )
+    rotate(-12deg);
+}
+
+@media (min-width: 681px) {
+  .mobieleStapEenBlad:not(.homeTransition) {
+    --merk-art-step-y: clamp(94px, 12svh, 145px);
+  }
+}
+
+@media (min-width: 681px) and (max-width: 1100px) {
+  .mondElement {
+    top: calc(50% - 150px);
+    left: max(1.5rem, calc(50% - 330px));
+    width: clamp(74px, 12vw, 120px);
+  }
+}
+
+@media (min-width: 681px) and (max-height: 700px) {
+  .mobieleStapEenBlad:not(.homeTransition) {
+    --merk-art-step-y: clamp(48px, 7svh, 70px);
+  }
+}
+
+@media (max-width: 680px) {
+  .mobieleStapEenBlad:not(.homeTransition) {
+    --merk-art-step-y: clamp(42px, 7svh, 66px);
+  }
+
+  .mondElement {
+    top: clamp(28px, 5svh, 42px);
+    left: max(0.75rem, env(safe-area-inset-left));
+    width: clamp(64px, 21vw, 104px);
+    transform:
+      translate3d(
+        0,
+        var(--merk-art-step-y),
+        0
+      )
+      rotate(-12deg);
+  }
+}
+
+@media (max-width: 380px), (max-width: 680px) and (max-height: 680px) {
+  .mondElement {
+    width: clamp(54px, 19vw, 78px);
+  }
+}
+
 /* The compact desktop sign-in sheet springs smoothly into the shared
    full-height sheet used by steps two and three, and reverses the same way. */
 @media (min-width: 681px) {
@@ -6032,11 +6214,11 @@
   }
 }
 
-/* Step 1's Google/Apple buttons sat almost flush against the intro text
-   above them. .paneelBeskrywing's own margin-bottom is overridden many
-   times above, so this adds breathing room on the buttons' side instead --
-   the final word so it always wins. Also ease off the intro text's
-   font-weight and stroke so it reads a touch lighter than the heading. */
+/* Step 1's button sat almost flush against the intro text above it.
+   .paneelBeskrywing's own margin-bottom is overridden many times above,
+   so this adds breathing room on the button's side instead -- the final
+   word so it always wins. Also ease off the intro text's font-weight and
+   stroke so it reads a touch lighter than the heading. */
 .loginStap .loginAksies {
   margin-top: 2.75rem;
 }
@@ -6075,4 +6257,3 @@
     font-size: 1.08rem !important;
   }
 }
-

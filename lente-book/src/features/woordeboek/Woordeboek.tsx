@@ -5,6 +5,10 @@ import PhraseCard from '../../components/ui/PhraseCard'
 import TopWordCard from '../../components/ui/TopWordCard'
 import CompactHero from '../../components/ui/CompactHero'
 import { frases } from '../../lib/mockData'
+import toiletIkoon from '../../assets/elements/poster elements/toilet-icon.webp'
+import bekerIkoon from '../../assets/elements/poster elements/cup-icon.webp'
+import luidsprekerIkoon from '../../assets/elements/poster elements/speaker-icon.webp'
+import wildKaartIkoon from '../../assets/elements/poster titels/WILD CARD 2.webp'
 import styles from './Woordeboek.module.css'
 
 const BORDE = [
@@ -14,6 +18,15 @@ const BORDE = [
   'Die Beats Blok',
   'Wildcard-skeppings',
 ]
+
+// Poster-element badges per bord, matched to the festival area they live in.
+// 'Die Choef-hoek' (smoking area) has no element yet — it falls back to the ✦ marker.
+const BORD_IKONE: Partial<Record<string, string>> = {
+  'Die Poep-Pods': toiletIkoon,
+  'Die Dopstop': bekerIkoon,
+  'Die Beats Blok': luidsprekerIkoon,
+  'Wildcard-skeppings': wildKaartIkoon,
+}
 
 export default function Woordeboek() {
   const [soek, setSoek] = useState('')
@@ -161,7 +174,11 @@ export default function Woordeboek() {
           ) : bordGroepe.map((groep) => (
             <section className={`${styles.bordGroep} ${styles.revealGroup}`} data-reveal-group key={groep.bord}>
               <div className={styles.bordOpskrif}>
-                <span aria-hidden="true">✦</span>
+                {BORD_IKONE[groep.bord] ? (
+                  <img className={styles.bordIkoon} src={BORD_IKONE[groep.bord]} alt="" aria-hidden="true" />
+                ) : (
+                  <span className={styles.bordSter} aria-hidden="true">✦</span>
+                )}
                 <h2>{groep.bord}</h2>
                 <small>{groep.frases.length} frases</small>
               </div>

@@ -11,6 +11,7 @@ import styles from './ProfileModal.module.css'
 type ProfileModalProps = { open: boolean; onClose: () => void }
 type UserWord = { id: string; text: string; phraseId: string; phraseText?: string }
 type Vote = { wordId: string; value: number }
+type PosterProgress = { collected?: boolean }
 
 function SavedWordsSkeleton() {
   return (
@@ -36,9 +37,9 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
   const { user, profile, saveProfile, checkUsernameAvailability, authError, clearAuthError } = useAuth()
   const [username, setUsername] = useState('')
   const [avatar, setAvatar] = useState('')
-  const [useGooglePhoto, setUseGooglePhoto] = useState(false)
   const [words, setWords] = useState<UserWord[]>([])
   const [votes, setVotes] = useState<Vote[]>([])
+  const [posters, setPosters] = useState<PosterProgress[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
@@ -49,7 +50,6 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
     if (!open || !profile) return
     setUsername(profile.username.replace(/^@/, ''))
     setAvatar(profile.character)
-    setUseGooglePhoto(profile.useGooglePhoto)
     setMessage('')
     clearAuthError()
   }, [clearAuthError, open, profile])
@@ -68,7 +68,13 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
     const unsubscribeVotes = onSnapshot(collection(db, 'votes'), (snapshot) => {
       setVotes(snapshot.docs.map((item) => item.data() as Vote))
     })
-    return () => { unsubscribeWords(); unsubscribeVotes() }
+    const unsubscribePosters = onSnapshot(
+      collection(db, 'users', user.uid, 'posters'),
+      (snapshot) => {
+        setPosters(snapshot.docs.map((item) => item.data() as PosterProgress))
+      },
+    )
+    return () => { unsubscribeWords(); unsubscribeVotes(); unsubscribePosters() }
   }, [open, user])
 
   useEffect(() => {
@@ -90,14 +96,10 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
     return totals
   }, [votes])
   const totalLikes = words.reduce((total, word) => total + (likesByWord.get(word.id) ?? 0), 0)
+  const collectedPosters = posters.filter((poster) => poster.collected).length
   const wildcardPhrases = words.filter((word) => word.phraseId.toLowerCase().startsWith('wildcard'))
-  const avatarOptions = useMemo(() => [
-    ...(user?.photoURL ? [{ id: 'provider-photo', name: 'Jou foto', src: user.photoURL, provider: true }] : []),
-    ...PROFILE_AVATARS.map((item) => ({ ...item, provider: false })),
-  ], [user?.photoURL])
-  const selectedAvatarIndex = Math.max(0, avatarOptions.findIndex((item) =>
-    item.provider ? useGooglePhoto : !useGooglePhoto && item.id === avatar,
-  ))
+  const avatarOptions = PROFILE_AVATARS
+  const selectedAvatarIndex = Math.max(0, avatarOptions.findIndex((item) => item.id === avatar))
   const selectedAvatar = avatarOptions[selectedAvatarIndex] ?? avatarOptions[0]
 
   const moveAvatar = (direction: -1 | 1) => {
@@ -106,11 +108,10 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
     const nextAvatar = avatarOptions[nextIndex]
     setAvatarDirection(direction)
     setAvatarAnimation((value) => value + 1)
-    setUseGooglePhoto(nextAvatar.provider)
-    if (!nextAvatar.provider) setAvatar(nextAvatar.id)
+    setAvatar(nextAvatar.id)
   }
 
-  if (!open || !profile) return null
+	  if (!open || !profile) return null
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -118,13 +119,18 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
     if (cleanUsername.length < 3) { setMessage('Gebruik minstens 3 karakters.'); return }
     setSaving(true)
     setMessage('')
-    const available = await checkUsernameAvailability(cleanUsername)
-    if (!available) {
+    const status = await checkUsernameAvailability(cleanUsername)
+    if (status === 'error') {
+      setMessage('Kon nie jou gebruikersnaam nagaan nie. Probeer weer.')
+      setSaving(false)
+      return
+    }
+    if (status === 'taken') {
       setMessage('Daardie gebruikersnaam is reeds geneem.')
       setSaving(false)
       return
     }
-    const saved = await saveProfile({ username: cleanUsername, character: avatar, useGooglePhoto })
+    const saved = await saveProfile({ username: cleanUsername, character: avatar })
     setSaving(false)
     if (saved) setMessage('Jou profiel is opgedateer!')
   }
@@ -164,6 +170,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
         <div className={styles.stats}>
           <div><strong>{words.length}</strong><span>Woorde geplaas</span></div>
           <div><strong>{totalLikes}</strong><span>Hou-van’s ontvang</span></div>
+          <div><strong>{collectedPosters}</strong><span>Posters versamel</span></div>
           <div><strong>{wildcardPhrases.length}</strong><span>Wildcard-frases</span></div>
         </div>
 

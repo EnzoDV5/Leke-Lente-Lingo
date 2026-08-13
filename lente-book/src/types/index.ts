@@ -73,13 +73,8 @@ export type ChallengeType =
 export type UserProfileRecord = {
   uid: string
 
-  email: string
-  googleName: string
-  googlePhoto: string
-
   username: string
   character: string
-  useGooglePhoto: boolean
   onboardingComplete: boolean
 
   wordsCreatedCount: number

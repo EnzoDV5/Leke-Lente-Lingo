@@ -22,8 +22,6 @@ import type {
 type CreatorProfile = {
   username: string
   character: string
-  useGooglePhoto: boolean
-  googlePhoto?: string | null
 }
 
 type ParentWord = {
@@ -69,9 +67,7 @@ export async function addWord({
   }
 
   const avatar =
-    profile.useGooglePhoto
-      ? user.photoURL ?? profile.googlePhoto ?? ''
-      : stableProfileAvatarId(profile.character)
+    stableProfileAvatarId(profile.character)
 
   const wordReference = await addDoc(
     collection(db, 'words'),

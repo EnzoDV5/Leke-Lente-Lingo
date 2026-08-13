@@ -11,9 +11,15 @@ import {
   useLeaderboard,
   type LeaderboardWord,
 } from '../../../hooks/useLeaderboard'
+import sparkPinkFilled from '../../../assets/elements/poster elements/sparkPink filled.webp'
+import winnerCup from '../../../assets/elements/poster elements/winner cup.webp'
 import styles from './Leaderboard.module.css'
 
 type Mode = 'top' | 'worst'
+
+type WordTotalVars = CSSProperties & {
+  '--word-total-spark': string
+}
 
 const FALLBACK_TOP: LeaderboardWord[] = [
   { id: 'skouer-1', phraseId: 'beats-blok-skouers', text: 'Uitsigvreter', createdByUid: '', createdByUsername: '@fees_flits', createdByAvatar: profileAvatar(2), upVotes: 745, downVotes: 12, score: 733, totalVotes: 757 },
@@ -183,32 +189,45 @@ export default function Leaderboard() {
       className={`${styles.section} ${entered ? styles.entered : styles.awaitingEntrance} ${entranceAnimating ? styles.entrance : ''}`}
     >
       <header className={styles.header}>
-        <div>
-          <p className={styles.kicker}>★ Regstreeks ★</p>
-          <h2 className={styles.title}>Die Woord-Podium</h2>
+        <div className={styles.headingBlock}>
+          <p className={styles.kicker}>★ Top woord-picks ★</p>
+          <div className={styles.titleRow}>
+            <h2 className={styles.title}>Die Woord-Podium</h2>
+            <img
+              className={styles.titleCup}
+              src={winnerCup}
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+
+          <div className={styles.toggle} aria-label="Kies ranglys">
+            <button
+              className={selectedMode === 'top' ? styles.active : ''}
+              onClick={() => switchMode('top')}
+            >
+              🏆 Top woorde
+            </button>
+            <button
+              className={selectedMode === 'worst' ? styles.active : ''}
+              onClick={() => switchMode('worst')}
+            >
+              👎 Swakste
+            </button>
+          </div>
         </div>
 
-        <div className={styles.wordTotal} aria-label={`${displayedTotalWords} woorde bygevoeg`}>
-          <span className={styles.liveDot} />
+        <div
+          className={styles.wordTotal}
+          aria-label={`${displayedTotalWords} woorde bygevoeg`}
+          style={{
+            '--word-total-spark': `url(${sparkPinkFilled})`,
+          } as WordTotalVars}
+        >
           <strong><AnimatedNumber value={displayedTotalWords} active={entered} /></strong>
           <span>Woorde gebore</span>
         </div>
       </header>
-
-      <div className={styles.toggle} aria-label="Kies ranglys">
-        <button
-          className={selectedMode === 'top' ? styles.active : ''}
-          onClick={() => switchMode('top')}
-        >
-          🏆 Top woorde
-        </button>
-        <button
-          className={selectedMode === 'worst' ? styles.active : ''}
-          onClick={() => switchMode('worst')}
-        >
-          👎 Swakste
-        </button>
-      </div>
 
       {loading && !usingFallback ? (
         <p className={styles.message}>Die podium word gebou…</p>

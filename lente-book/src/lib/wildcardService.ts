@@ -4,7 +4,7 @@ import { db } from './firebase'
 import { stableProfileAvatarId } from './profileAvatars'
 import type { FestivalArea } from '../types'
 
-type Profile = { username: string; character: string; useGooglePhoto: boolean; googlePhoto?: string | null }
+type Profile = { username: string; character: string }
 
 export async function createWildcardCreation(input: { phraseText: string; wordText: string; area: FestivalArea; user: User; profile: Profile }) {
   const phraseText = input.phraseText.trim()
@@ -14,7 +14,7 @@ export async function createWildcardCreation(input: { phraseText: string; wordTe
   const phraseReference = doc(collection(db, 'customPhrases'))
   const wordReference = doc(collection(db, 'words'))
   const phraseId = `wildcard-${phraseReference.id}`
-  const avatar = input.profile.useGooglePhoto ? input.user.photoURL ?? input.profile.googlePhoto ?? '' : stableProfileAvatarId(input.profile.character)
+  const avatar = stableProfileAvatarId(input.profile.character)
   const batch = writeBatch(db)
   batch.set(doc(db, 'customPhrases', phraseId), { id: phraseId, text: phraseText, area: input.area, colour: 'pers', isActive: true, createdByUid: input.user.uid, createdByUsername: input.profile.username, createdByAvatar: avatar, wordId: wordReference.id, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
   batch.set(wordReference, { text: wordText, normalisedText: wordText.toLowerCase(), phraseId, phraseText, area: input.area, createdByUid: input.user.uid, createdByUsername: input.profile.username, createdByAvatar: avatar, isRemix: false, parentWordId: null, parentWordText: null, rootWordId: null, upVotes: 0, downVotes: 0, score: 0, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
