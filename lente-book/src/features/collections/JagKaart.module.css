@@ -13,6 +13,33 @@
   transform: translateY(-6px);
 }
 
+.collectedShell:hover { transform: none; }
+.collectedShell .card { cursor: pointer; }
+
+.collectedReveal {
+  z-index: 8;
+  animation: collectedPosterReveal 2.5s cubic-bezier(.16,1,.3,1) both;
+}
+
+.collectedReveal .front { animation: collectedPosterGlow 2.5s ease both; }
+.collectedReveal .stamp { animation: collectedStampIn 900ms 650ms cubic-bezier(.18,1.45,.35,1) both; }
+
+@keyframes collectedPosterReveal {
+  0% { opacity: 0; transform: translateY(70px) scale(.72) rotate(-10deg); filter: blur(8px) saturate(.5); }
+  38% { opacity: 1; transform: translateY(-18px) scale(1.09) rotate(3deg); filter: blur(0) saturate(1.35); }
+  62% { transform: translateY(5px) scale(.98) rotate(-1deg); }
+  100% { transform: none; filter: none; }
+}
+
+@keyframes collectedPosterGlow {
+  0%, 100% { box-shadow: 9px 10px 0 var(--poster-colour); }
+  42% { box-shadow: 0 0 0 8px var(--color-geel), 0 0 42px 18px rgb(242 194 48 / 72%), 13px 15px 0 var(--poster-colour); }
+}
+
+@keyframes collectedStampIn {
+  from { opacity: 0; transform: scale(2.2) rotate(-22deg); filter: blur(3px); }
+}
+
 .wildcardShell {
   padding: 0;
   border: 0;
@@ -238,18 +265,113 @@
   letter-spacing: 0.12em;
 }
 
-.question {
+.tapPrompt {
   position: absolute;
   z-index: 6;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%)
-    rotate(-5deg);
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  pointer-events: none;
+}
+
+.savedResult {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: .55rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: .9rem;
+  padding: 1rem;
+  background: #fff;
+  border: 3px solid var(--color-ink);
+  border-radius: 16px;
+  box-shadow: 5px 6px 0 var(--poster-colour);
+}
+
+.savedResult > span:first-child {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #fff;
+  background: var(--color-groen);
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  font-weight: 900;
+}
+
+.savedResult > strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font: 900 clamp(1.15rem, 4vw, 1.65rem)/1.05 var(--font-display);
+  text-transform: uppercase;
+}
+
+.savedResult > small {
+  color: #6f6961;
+  line-height: 1.35;
+}
+
+.resultPhrase {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-weight: 700;
+}
+
+.resultJourney {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+}
+
+.resultJourney i {
+  color: #756f66;
+  font-style: normal;
+  text-decoration: line-through;
+}
+
+.resultJourney b { color: var(--color-oranje); }
+
+.photoResult { padding: .65rem .65rem .85rem; }
+
+.photoResult img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  filter: saturate(.92) contrast(1.03);
+}
+
+.question {
   font-family: var(--font-display);
   font-size: clamp(5rem, 18vw, 9rem);
+  line-height: .85;
   color: var(--color-oranje);
   text-shadow:
     4px 4px 0 var(--color-geel);
+}
+
+.tapPrompt small {
+  margin-top: .4rem;
+  padding: .3rem .62rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-geel);
+  color: var(--color-ink);
+  box-shadow: 3px 3px 0 var(--color-oranje);
+  font: 900 clamp(.7rem, 2vw, .9rem) var(--font-pixel);
+  letter-spacing: .12em;
+  animation: tapPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes tapPulse {
+  50% { transform: scale(1.1) rotate(3deg); }
 }
 
 .lock {
@@ -296,92 +418,14 @@
   font-weight: 700;
 }
 
-.meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-top: 14px;
-  border: 3px solid var(--color-oranje);
-  border-radius: 16px;
-  background: #c8f2c4;
-  padding: 0.75rem;
-  box-shadow: 5px 5px 0 var(--poster-colour);
-  transform: rotate(
-    var(--poster-counter-tilt)
-  );
-}
-
-.meta div {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-}
-
-.meta strong {
-  overflow: hidden;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: .82rem;
-  letter-spacing: .015em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.meta span {
-  font-size: 0.7rem;
-  color: #777066;
-}
-
-.statusDone,
-.statusOpen {
-  display: grid;
-  flex: 0 0 34px;
-  height: 34px;
-  place-items: center;
-  border: 2px solid var(--color-oranje);
-  border-radius: 9px;
-  color: #191714 !important;
-  font-family: var(--font-pixel);
-  font-weight: 900;
-}
-
-.statusDone {
-  background: #279e52;
-}
-
-.statusOpen {
-  background: var(--poster-colour);
-}
-
-.simulatorLink {
-  display: block;
-  width: fit-content;
-  margin: .75rem auto 0;
-  padding: .45rem .7rem;
-  border: 2px solid var(--color-ink);
-  border-radius: 999px;
-  background: var(--color-geel);
-  color: var(--color-ink);
-  font-family: var(--font-pixel);
-  font-size: .85rem;
-  font-weight: 900;
-  text-decoration: none;
-}
-
-
 @media (max-width: 520px) {
   .shell {
     transform: none;
+    transition: none;
   }
 
   .shell:hover {
     transform: translateY(-3px);
-  }
-
-  .meta {
-    transform: none;
   }
 
   .back { padding: 1rem; }
@@ -391,4 +435,24 @@
   .back p { margin-top: .55rem; font-size: .88rem; line-height: 1.35; }
   .backScanButton { width: 100%; margin-top: .7rem; padding: .65rem .7rem; font-size: .75rem; }
   .wildcardShell { padding: 0; border-radius: 0; }
+}
+
+@media (max-width: 700px) {
+  .tapPrompt small { animation: none; }
+  .collectedReveal { animation: collectedPosterRevealMobile 900ms cubic-bezier(.16,1,.3,1) both; }
+  .collectedReveal .front { animation: none; }
+  .collectedReveal .stamp { animation-duration: 520ms; animation-delay: 280ms; }
+}
+
+@keyframes collectedPosterRevealMobile {
+  0% { opacity: 0; transform: translate3d(0, 38px, 0) scale(.9) rotate(-3deg); }
+  55% { opacity: 1; transform: translate3d(0, -7px, 0) scale(1.025) rotate(1deg); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tapPrompt small,
+  .collectedReveal,
+  .collectedReveal .front,
+  .collectedReveal .stamp { animation: none; }
 }

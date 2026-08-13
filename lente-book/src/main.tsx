@@ -1,9 +1,11 @@
-import { lazy, StrictMode } from 'react'
+import { lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter,
+  Navigate,
   Route,
   Routes,
+  useLocation,
 } from 'react-router-dom'
 
 import './styles/index.css'
@@ -29,21 +31,26 @@ import ScanRouter from './features/challenges/ScanRouter'
 const Home = lazy(() => import('./features/home/Home'))
 const Woordeboek = lazy(() => import('./features/woordeboek/Woordeboek'))
 const FraseView = lazy(() => import('./features/woordeboek/FraseView'))
-const Woordjag = lazy(() => import('./features/collections/Woordjag'))
-const VoegFotoBy = lazy(() => import('./features/foto/VoegFotoBy'))
-const DoopDitPage = lazy(() => import('./features/challenges/DoopDitPage'))
-const SteelVerbeterPage = lazy(() => import('./features/challenges/SteelVerbeterPage'))
-const RaaiWoordPage = lazy(() => import('./features/challenges/RaaiWoordPage'))
-const DaagMaatPage = lazy(() => import('./features/challenges/DaagMaatPage'))
-const WildcardPage = lazy(() => import('./features/challenges/WildcardPage'))
+const CollectionsPage = lazy(() => import('./features/collections/CollectionsPage'))
+const FotoDoopPage = lazy(() => import('./features/foto/FotoDoopPage'))
+const MerkDitPage = lazy(() => import('./features/challenges/MerkDitPage'))
+const SteelEnVerbeterPage = lazy(() => import('./features/challenges/SteelEnVerbeterPage'))
+const RaaiDieLingoPage = lazy(() => import('./features/challenges/RaaiDieLingoPage'))
+const StemPage = lazy(() => import('./features/challenges/StemPage'))
+const ChallengeNChommiePage = lazy(() => import('./features/challenges/ChallengeNChommiePage'))
+const DieWildcardPage = lazy(() => import('./features/challenges/DieWildcardPage'))
+
+function LegacyCollectionsRedirect() {
+  const location = useLocation()
+  return <Navigate to={`/collections${location.search}${location.hash}`} replace />
+}
 
 createRoot(
   document.getElementById('root')!,
 ).render(
-  <StrictMode>
-    <AuthProvider>
-      <BrowserRouter>
-        <OnboardingBackground />
+  <AuthProvider>
+    <BrowserRouter>
+      <OnboardingBackground />
 
         <Routes>
           <Route
@@ -76,37 +83,44 @@ createRoot(
 
               <Route
                 path="/foto"
-                element={<VoegFotoBy />}
+                element={<FotoDoopPage />}
               />
 
               <Route
-                path="/woordjag"
-                element={<Woordjag />}
+                path="/collections"
+                element={<CollectionsPage />}
               />
+
+              <Route path="/woordjag" element={<LegacyCollectionsRedirect />} />
 
               <Route
                 path="/challenge/doop/:phraseId"
-                element={<DoopDitPage />}
+                element={<MerkDitPage />}
               />
 
               <Route
                 path="/challenge/remix/:phraseId"
-                element={<SteelVerbeterPage />}
+                element={<SteelEnVerbeterPage />}
               />
 
               <Route
                 path="/challenge/raai"
-                element={<RaaiWoordPage />}
+                element={<RaaiDieLingoPage />}
+              />
+
+              <Route
+                path="/challenge/stem"
+                element={<StemPage />}
               />
 
               <Route
                 path="/challenge/foto"
-                element={<VoegFotoBy challengeMode />}
+                element={<FotoDoopPage challengeMode />}
               />
 
-              <Route path="/challenge/maat" element={<DaagMaatPage />} />
-              <Route path="/challenge/maat/invite/:inviteId" element={<DaagMaatPage />} />
-              <Route path="/challenge/wildcard" element={<WildcardPage />} />
+              <Route path="/challenge/maat" element={<ChallengeNChommiePage />} />
+              <Route path="/challenge/maat/invite/:inviteId" element={<ChallengeNChommiePage />} />
+              <Route path="/challenge/wildcard" element={<DieWildcardPage />} />
 
               <Route
                 path="*"
@@ -119,7 +133,6 @@ createRoot(
             </Route>
           </Route>
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  </StrictMode>,
+    </BrowserRouter>
+  </AuthProvider>,
 )

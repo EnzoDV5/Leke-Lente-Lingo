@@ -16,3 +16,19 @@
 .selectedWord .stealButton { color:var(--color-ink)!important;background:var(--color-geel)!important; }
 .stealButton::before { content:none; }
 @media(max-width:600px){.wordCard{grid-template-columns:28px 46px minmax(0,1fr) 38px;gap:.5rem;padding:.75rem .6rem}.wordCard>img{width:42px;height:42px;border-width:3px}.wordInfo strong{font-size:1rem!important}.wordInfo small{font-size:.7rem}.wordInfo em{font-size:.64rem}.stealButton{width:38px!important;height:38px!important}.score{grid-column:3/-1!important;justify-content:flex-start;font-size:.75rem;gap:1rem}.score b{font-size:.78rem}}
+
+/* Extra sky below the phrase navigation keeps the animated divider clear. */
+.remixHero { min-height: 620px; padding-bottom: 7rem; }
+@media(max-width:600px){.remixHero{min-height:660px;padding-bottom:7rem}}
+
+/* Challenge palette sampled from the Steel & Verbeter poster. */
+.page { --challenge-colour: #82d2da; }
+.page[data-area="bathroom"] { --location-colour: #e2127e; }
+.page[data-area="smoking"] { --location-colour: #279e52; }
+.page[data-area="bar"] { --location-colour: #b77b00; }
+.page[data-area="stages"] { --location-colour: #2857c9; }
+.back { box-shadow-color: var(--challenge-colour); }
+.heroControls > button, .heroControls span .activeDot, .pickSection header > strong { background: var(--challenge-colour); }
+.heroControls > div { border: 2px solid color-mix(in srgb, var(--location-colour) 72%, white); box-shadow: 0 4px 0 color-mix(in srgb, var(--location-colour) 35%, transparent); }
+.editorReady { border-color: #2998a3; box-shadow: 7px 8px 0 var(--challenge-colour); }
+.editor > small, .pickSection header small { color: #187b84; }

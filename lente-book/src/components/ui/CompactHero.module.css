@@ -46,7 +46,7 @@
   margin: 0;
   color: var(--color-paper);
   font-family: var(--font-brush), var(--font-pixel), sans-serif;
-  /* brush-up is a static face shipped only at weight 500 — the global
+  /* brush-up is a static face shipped only at weight 500 ,  the global
      `font-variation-settings: "wght" 900` on body/buttons doesn't apply to
      static fonts, but forcing a heavier font-weight here would make the
      browser synthesize a fake bold, which renders soft/blurry on most
@@ -109,7 +109,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .copy {
+  .copy,
+  .topAction {
     animation: heroCopyIn 620ms var(--route-motion-delay, 760ms) cubic-bezier(.18,1.35,.4,1) both;
   }
 }

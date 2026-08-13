@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 
 import CompactHero from '../../components/ui/CompactHero'
+import DataSkeleton from '../../components/ui/DataSkeleton'
+import LoadingCard from '../../components/ui/LoadingCard'
+import FestivalLocationLabel from '../../components/ui/FestivalLocationLabel'
 import { useLivePhrases, type LivePhrase } from '../../hooks/useLivePhrases'
 import { useLiveWords } from '../../hooks/useLiveWords'
 import { frases } from '../../lib/mockData'
@@ -10,22 +13,25 @@ import { completeChallenge } from '../../lib/challengeProgress'
 import { fallbackProfileAvatar, resolveProfileAvatar } from '../../lib/profileAvatars'
 import { useAuth } from '../auth/AuthContext'
 import type { FestivalArea } from '../../types'
-import styles from './DoopDitPage.module.css'
+import styles from './MerkDitPage.module.css'
 import ChallengeSuccess from './ChallengeSuccess'
+import { useScannedPosterClaim } from '../../hooks/useScannedPosterClaim'
 
 type DisplayPhrase = Pick<LivePhrase, 'id' | 'text' | 'area' | 'boardNumber'>
 
-const AREA_NAMES: Record<FestivalArea, string> = {
-  bathroom: 'Die Poep-Pods', smoking: 'Die Choef-hoek', bar: 'Die Dopstop', stages: 'Die Beats Blok',
-}
-
-export default function DoopDitPage() {
+export default function MerkDitPage() {
   const { phraseId = '' } = useParams()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const { user, profile } = useAuth()
   const { phrases: livePhrases, loading: phrasesLoading } = useLivePhrases()
   const scannedArea = searchParams.get('area') as FestivalArea | null
-  const fromScan = searchParams.get('scan') === '1'
+  const fromScan = searchParams.get('scan') === '1' || Boolean(scannedArea)
+  const { claimed } = useScannedPosterClaim(user?.uid, 'doop', fromScan)
+  const claimedByScanRouter = Boolean(
+    (location.state as { posterJustClaimed?: boolean } | null)
+      ?.posterJustClaimed,
+  )
 
   const availablePhrases = useMemo<DisplayPhrase[]>(() => {
     const fallback = frases.map((phrase, index) => ({ id: phrase.id, text: phrase.beskrywing, area: phrase.area, boardNumber: index + 1 }))
@@ -41,26 +47,27 @@ export default function DoopDitPage() {
 
   useEffect(() => setActiveIndex(initialIndex), [initialIndex])
 
-  if (phrasesLoading && !availablePhrases.length) return <p className={styles.loading}>Frases word gelaai…</p>
+  if (phrasesLoading) return <div className={styles.loading}><LoadingCard label="Frases word reggesit…" /></div>
   if (!activePhrase) return <p className={styles.loading}>Hierdie poster se frases kon nie gevind word nie.</p>
 
   const move = (direction: -1 | 1) => setActiveIndex((index) => (index + direction + availablePhrases.length) % availablePhrases.length)
 
   return (
-    <section className={styles.page}>
+    <section className={styles.page} data-area={activePhrase.area}>
+      {(claimed || claimedByScanRouter) && <ChallengeSuccess challengeId="doop" icon="✏️" unlockOnly title="Merk Dit ontsluit!" text="Jy het hierdie uitdaging reeds voltooi, so die QR-kode het jou poster onmiddellik ontsluit." />}
       <CompactHero
         className={styles.doopHero}
-        kicker={`01 · MERK DIT · ${AREA_NAMES[activePhrase.area]}`}
+        kicker="01 · MERK DIT"
         title={activePhrase.text}
         statement
         detail
-        topAction={<Link to="/woordjag" className={styles.back}><span aria-hidden="true">←</span> My posters</Link>}
+        topAction={<Link to="/collections" className={styles.back}><span aria-hidden="true">←</span> My posters</Link>}
       >
         <div className={styles.heroPhraseControls}>
           <button type="button" onClick={() => move(-1)} aria-label="Vorige frase">‹</button>
           <div>
             <small>FRASE {activeIndex + 1} VAN {availablePhrases.length}</small>
-            <strong>{fromScan ? 'POSTER GESKANDEER · ' : ''}{AREA_NAMES[activePhrase.area]}</strong>
+            <FestivalLocationLabel area={activePhrase.area} />
             <span className={styles.heroDots}>{availablePhrases.map((phrase, index) => <button key={phrase.id} type="button" className={index === activeIndex ? styles.activeHeroDot : ''} onClick={() => setActiveIndex(index)} aria-label={`Wys frase ${index + 1}`} />)}</span>
           </div>
           <button type="button" onClick={() => move(1)} aria-label="Volgende frase">›</button>
@@ -88,13 +95,14 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
     if (newWord.trim().length < 2 || submitting) { setMessage('Jou woord moet minstens 2 karakters hê.'); return }
     setSubmitting(true); setMessage('')
     try {
-      await addWord({ text: newWord, phraseId: phrase.id, phraseText: phrase.text, area: phrase.area, user, profile })
-      await completeChallenge(user.uid, 'doop', true)
+      const cleanWord = newWord.trim()
+      const wordId = await addWord({ text: cleanWord, phraseId: phrase.id, phraseText: phrase.text, area: phrase.area, user, profile })
+      await completeChallenge(user.uid, 'doop', fromScan, { kind: 'word', word: cleanWord, phrase: phrase.text, area: phrase.area, itemId: wordId })
       setNewWord('')
-      setMessage(fromScan ? 'Mooi! Jou woord is geplaas en die poster is versamel.' : 'Mooi! Jou nuwe woord is geplaas.')
-      setCompleted(true)
+      setMessage(fromScan ? 'Mooi! Jou woord is ingesit en die poster is versamel.' : 'Mooi! Jou nuwe woord is ingesit.')
+      setCompleted(fromScan)
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Ons kon nie jou woord plaas nie.')
+      setMessage(error instanceof Error ? error.message : 'Ons kon nie jou woord insit nie.')
     } finally { setSubmitting(false) }
   }
 
@@ -103,14 +111,14 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
       {completed && <ChallengeSuccess challengeId="doop" icon="✏️" title="Jou woord is gebore!" text="Jy het ’n splinternuwe woord vir die frase geskep. Jou Merk Dit-poster is gereed." />}
       <div className={styles.creator}>
         <label htmlFor="doop-word">Merk dit met jou eie woord</label>
-        <div><input ref={inputRef} id="doop-word" value={newWord} maxLength={40} placeholder="Tik jou nuwe woord…" onChange={(event) => setNewWord(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={submitting || newWord.trim().length < 2} onClick={() => void submit()}>{submitting ? 'Plaas…' : 'Plaas my woord'}</button></div>
-        <small>Geplaas as {profile.username}</small>
+        <div><input ref={inputRef} id="doop-word" value={newWord} maxLength={40} placeholder="Skryf jou nuwe woord…" onChange={(event) => setNewWord(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && void submit()} /><button type="button" disabled={submitting || newWord.trim().length < 2} onClick={() => void submit()}>{submitting ? 'Sit in…' : 'Sit my woord in'}</button></div>
+        <small>Ingesit as {profile.username}</small>
         {message && <p role="status">{message}</p>}
       </div>
 
       <section className={styles.words}>
         <div className={styles.wordsHeading}><div><small>WOORDE VIR HIERDIE FRASE</small><h2>Wat ander mense dit noem</h2></div><strong>{displayWords.length}</strong></div>
-        {loading && !displayWords.length ? <p className={styles.empty}>Woorde groei…</p> : <ul>{displayWords.sort((a, b) => b.likes - a.likes).map((word, index) => <li key={word.id}><span className={styles.rank}>{index === 0 ? '★' : `#${index + 1}`}</span><img src={word.avatar} alt="" /><div><strong>{word.text}</strong><small>{word.username}</small></div><b>♥ {word.likes}</b></li>)}</ul>}
+        {loading ? <DataSkeleton count={4} label="Woorde vir hierdie frase word gelaai" /> : <ul>{displayWords.sort((a, b) => b.likes - a.likes).map((word, index) => <li key={word.id}><span className={styles.rank}>{index === 0 ? '★' : `#${index + 1}`}</span><img src={word.avatar} alt="" /><div><strong>{word.text}</strong><small>{word.username}</small></div><b>♥ {word.likes}</b></li>)}</ul>}
       </section>
     </article>
   )

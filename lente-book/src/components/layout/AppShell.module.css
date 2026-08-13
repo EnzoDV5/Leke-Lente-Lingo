@@ -65,11 +65,13 @@
 }
 
 .dividerCompact { top: 388px; }
-.dividerDetail { top: 448px; }
+.dividerDetail { top: var(--detail-hero-bottom, 448px); }
 .dividerChallenge { top: 558px; }
-.dividerWoordjag { top: 538px; }
+.dividerLocationChallenge { top: 678px; }
+.dividerCollections { top: 538px; }
 .dividerHome { top: 112svh; }
 .dividerHidden { top: 100svh; }
+.dividerBoot { top: 100svh; }
 .heroDivider.dividerHome,
 .heroDivider.dividerHidden { opacity: 0; }
 
@@ -77,6 +79,11 @@
   transition:
     top 760ms cubic-bezier(.76, 0, .24, 1),
     opacity 180ms 580ms ease-out;
+}
+
+:global(html.lente-modal-open) .heroDivider {
+  opacity: 0 !important;
+  transition: opacity 140ms ease;
 }
 
 @keyframes routeContentIn {
@@ -208,14 +215,16 @@
 @media (max-width: 900px) {
   .dividerHome { top: 108svh; }
   .dividerCompact { top: 358px; }
-  .dividerDetail { top: 418px; }
+  .dividerDetail { top: var(--detail-hero-bottom, 418px); }
   .dividerChallenge { top: 558px; }
-  .dividerWoordjag { top: 508px; }
+  .dividerLocationChallenge { top: 678px; }
+  .dividerCollections { top: 508px; }
 }
 
 @media (max-width: 600px) {
   .dividerCompact { top: 323px; }
   .dividerDetail { top: 488px; }
   .dividerChallenge { top: 598px; }
-  .dividerWoordjag { top: 528px; }
+  .dividerLocationChallenge { top: 718px; }
+  .dividerCollections { top: 528px; }
 }

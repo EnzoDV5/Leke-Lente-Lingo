@@ -35,7 +35,7 @@ export default function Footer() {
         <nav className={styles.links} aria-label="Voetskrif-kieslys">
           <Link to="/woordeboek" viewTransition>Woordeboek</Link>
           <Link to="/foto" viewTransition>Voeg Foto</Link>
-          <Link to="/woordjag" viewTransition>Lente Bingo</Link>
+          <Link to="/collections" viewTransition>Lente Bingo</Link>
         </nav>
 
         <p className={styles.copy}>

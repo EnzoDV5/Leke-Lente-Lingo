@@ -12,6 +12,7 @@ export function useBodyScrollLock(locked = true) {
     activeLocks += 1
     if (activeLocks === 1) {
       lockedScrollY = window.scrollY
+      document.documentElement.classList.add('lente-modal-open')
       previousHtmlOverflow = document.documentElement.style.overflow
       previousBodyStyles = {
         overflow: document.body.style.overflow,
@@ -29,6 +30,7 @@ export function useBodyScrollLock(locked = true) {
     return () => {
       activeLocks = Math.max(0, activeLocks - 1)
       if (activeLocks !== 0) return
+      document.documentElement.classList.remove('lente-modal-open')
       document.documentElement.style.overflow = previousHtmlOverflow
       document.body.style.overflow = previousBodyStyles.overflow ?? ''
       document.body.style.position = previousBodyStyles.position ?? ''

@@ -26,6 +26,7 @@ export type LivePhoto = {
   approved: boolean
 
   createdAt: Timestamp | null
+  updatedAt?: Timestamp | null
 }
 
 export function useLivePhotos() {
@@ -53,15 +54,31 @@ export function useLivePhotos() {
 
         nextPhotos.sort((first, second) => {
           const firstTime =
-            first.createdAt?.toMillis() ?? 0
+            first.updatedAt?.toMillis() ??
+            first.createdAt?.toMillis() ??
+            0
 
           const secondTime =
-            second.createdAt?.toMillis() ?? 0
+            second.updatedAt?.toMillis() ??
+            second.createdAt?.toMillis() ??
+            0
 
           return secondTime - firstTime
         })
 
-        setPhotos(nextPhotos.slice(0, 40))
+        const seenUsers = new Set<string>()
+        const onePhotoPerUser = nextPhotos.filter(
+          (photo) => {
+            if (seenUsers.has(photo.createdByUid)) {
+              return false
+            }
+
+            seenUsers.add(photo.createdByUid)
+            return true
+          },
+        )
+
+        setPhotos(onePhotoPerUser.slice(0, 40))
         setLoading(false)
         setError('')
       },
@@ -73,7 +90,7 @@ export function useLivePhotos() {
         )
 
         setError(
-          'Die fotomuur kon nie gelaai word nie.',
+          'Die oomblikmuur kon nie gelaai word nie.',
         )
 
         setLoading(false)

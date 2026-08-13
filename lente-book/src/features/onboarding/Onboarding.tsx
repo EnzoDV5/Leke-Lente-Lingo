@@ -49,9 +49,9 @@ const REELS = [
   },
   {
     n: 3,
-    titel: 'Stem & versamel',
+    titel: 'stem & versamel',
     beskrywing:
-      'Stem vir jou gunstelinge en bou jou versameling.',
+      'Gee jou gunstelinge ’n stem en bou jou versameling.',
   },
 ]
 
@@ -64,7 +64,7 @@ const STAPPE = [
   {
     n: 2,
     titel: 'Die reëls',
-    beskrywing: 'Vind, skep, stem en versamel jou feeswoorde.',
+    beskrywing: 'Vind, skep, gee stemme en versamel jou feeswoorde.',
   },
   {
     n: 3,
@@ -138,6 +138,14 @@ export default function Onboarding() {
 
   const navigate = useNavigate()
   const location = useLocation()
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.add('lente-onboarding')
+
+    return () => {
+      document.documentElement.classList.remove('lente-onboarding')
+    }
+  }, [])
 
   const state =
     location.state as LocationState | null
@@ -888,6 +896,22 @@ export default function Onboarding() {
                         <div
                           className={styles.loginStap}
                         >
+                          <h1
+                            className={styles.paneelTitel}
+                          >
+                            Welkom terug.
+                          </h1>
+
+                          <p
+                            className={
+                              styles.paneelBeskrywing
+                            }
+                          >
+                            Gaan voort met jou
+                            profiel, of begin oor
+                            met nuwe besonderhede.
+                          </p>
+
                           <div className={styles.terugProfielKaart}>
                             <div
                               className={styles.welkomTerugAvatar}
@@ -914,30 +938,10 @@ export default function Onboarding() {
                                 Hierdie toestel onthou jou
                               </span>
                             </div>
-                          </div>
 
-                          <h1
-                            className={styles.paneelTitel}
-                          >
-                            Welkom terug.
-                          </h1>
-
-                          <p
-                            className={
-                              styles.paneelBeskrywing
-                            }
-                          >
-                            Gaan voort met jou
-                            profiel, of begin oor
-                            met nuwe besonderhede.
-                          </p>
-
-                          <div
-                            className={styles.loginAksies}
-                          >
                             <button
                               type="button"
-                              className={`${styles.aanmeldKnop} ${styles.hoofKnop}`}
+                              className={`${styles.aanmeldKnop} ${styles.hoofKnop} ${styles.terugProfielAksie}`}
                               onClick={() =>
                                 void animeerNaTuis()
                               }
@@ -945,22 +949,10 @@ export default function Onboarding() {
                                 isTransitioning
                               }
                             >
-                              Gaan voort met profiel
-                            </button>
-
-                            <button
-                              type="button"
-                              className={styles.aanmeldKnop}
-                              onClick={() =>
-                                void wisselStap(2)
-                              }
-                              disabled={
-                                isTransitioning
-                              }
-                            >
-                              Verander my profiel
+                              Gaan voort
                             </button>
                           </div>
+
                         </div>
                       ) : (
                         <div
@@ -977,8 +969,8 @@ export default function Onboarding() {
                               styles.paneelBeskrywing
                             }
                           >
-                            Skep woorde, stem vir
-                            jou gunstelinge en
+                            Skep woorde, gee jou
+                            gunstelinge ’n stem en
                             versamel jou posters,
                             kies net ’n
                             gebruikersnaam om te
@@ -1023,7 +1015,7 @@ export default function Onboarding() {
                         </h1>
 
                         <p className={`${styles.paneelBeskrywing} ${styles.desktopStapBeskrywing}`}>
-                          Vind, skep, stem en versamel jou feeswoorde.
+                          Vind, skep, gee stemme en versamel jou feeswoorde.
                         </p>
 
                         <ol
@@ -1185,9 +1177,7 @@ export default function Onboarding() {
                               />
                             </div>
 
-                            {usernameStatus !==
-                              'idle' && (
-                              <div
+                            <div
                                 className={[
                                   styles.usernameStatus,
                                   usernameStatus ===
@@ -1222,8 +1212,7 @@ export default function Onboarding() {
                                 {usernameStatus ===
                                   'error' &&
                                   'Kon nie jou gebruikersnaam nagaan nie. Probeer weer.'}
-                              </div>
-                            )}
+                            </div>
                           </div>
                         </div>
 

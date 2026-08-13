@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 
 import Section from '../../../components/ui/Section'
+import DataSkeleton from '../../../components/ui/DataSkeleton'
 import {
   fallbackProfileAvatar,
   profileAvatar,
@@ -229,8 +230,8 @@ export default function Leaderboard() {
         </div>
       </header>
 
-      {loading && !usingFallback ? (
-        <p className={styles.message}>Die podium word gebou…</p>
+      {loading ? (
+        <DataSkeleton variant="podium" label="Die woordpodium word gebou" />
       ) : (
           <div className={`${styles.podium} ${mode === 'worst' ? styles.worst : ''} ${switching ? styles.switching : ''}`}>
             {podium.map(({ rank, word }) => {
@@ -245,7 +246,7 @@ export default function Leaderboard() {
                   to={`/woordeboek/${word.phraseId}?word=${word.id}`}
                   viewTransition
                   style={{ '--entrance-delay': `${220 + rank * 105}ms` } as CSSProperties}
-                  aria-label={`Nommer ${rank}: ${word.text} deur ${word.createdByUsername}, ${votes} ${mode === 'top' ? 'opstemme' : 'afstemme'}`}
+                  aria-label={`Nommer ${rank}: ${word.text} deur ${word.createdByUsername}, ${votes} ${mode === 'top' ? 'stemme' : 'afstemme'}`}
                 >
                   <div className={styles.person}>
                     {rank === 1 && <span className={styles.crown} aria-hidden="true">👑</span>}

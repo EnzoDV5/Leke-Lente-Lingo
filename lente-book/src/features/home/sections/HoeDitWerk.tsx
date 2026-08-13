@@ -11,8 +11,8 @@ const MEGANIKA = [
     id: 'woordeboek',
     nommer: '01',
     titel: 'Die Woordeboek',
-    kort: 'Skep en stem vir nuwe woorde.',
-    beskrywing: 'Kies ’n fees-scenario, dink die woord wat nog nie bestaan nie en plaas dit in die boek. Lees ander mense se voorstelle, steel en verbeter ’n idee, of stem die raakste woord boontoe.',
+    kort: 'Skep nuwe woorde en gee stemme.',
+    beskrywing: 'Kies ’n fees-scenario, dink die woord wat nog nie bestaan nie en sit dit in die boek. Lees ander mense se voorstelle, steel en verbeter ’n idee, of gee die raakste woord ’n stem.',
     to: '/woordeboek',
     aksie: 'Woordeboek',
     kleur: 'oranje',
@@ -20,7 +20,7 @@ const MEGANIKA = [
   {
     id: 'foto',
     nommer: '02',
-    titel: 'Die Fotomuur',
+    titel: 'Die Oomblikmuur',
     kort: 'Gee ’n feesoomblik sy eie naam.',
     beskrywing: 'Vang iets wat net by Lentedag kan gebeur, doop die foto met jou nuwe woord en voeg dit by die lewendige muur. Die foto gee konteks; die woord laat die oomblik voortleef.',
     to: '/foto',
@@ -28,12 +28,12 @@ const MEGANIKA = [
     kleur: 'pienk',
   },
   {
-    id: 'woordjag',
+    id: 'collections',
     nommer: '03',
     titel: 'Lente Bingo',
     kort: 'Soek posters en ontsluit uitdagings.',
     beskrywing: 'Beweeg deur die fees, vind die versteekte posters en skandeer hul QR-kodes. Elke poster maak ’n nuwe taal-uitdaging oop; voltooi die stel om die Wildcard te ontsluit.',
-    to: '/woordjag',
+    to: '/collections',
     aksie: 'Bingo',
     kleur: 'groen',
   },
@@ -44,7 +44,7 @@ const MEGANIKA = [
     kort: 'Die gemeenskap kies die jaar se wenner.',
     beskrywing: 'Elke stem help die sterkste nuwe woord groei. Aan die einde word die voorstel met die meeste steun daardie jaar se Lente-woord, ’n klein stukkie taalgeskiedenis wat by die fees gebore is.',
     to: '/woordeboek',
-    aksie: 'Stem',
+    aksie: 'stem',
     kleur: 'geel',
   },
 ]
@@ -84,7 +84,7 @@ export default function HoeDitWerk() {
               Elke lente maak Lente Book oop vir woorde wat nog nie bestaan nie.
             </p>
             <p>
-              Feesgangers kry snaakse scenario’s en skep nuwe woorde daarvoor, taal wat soos lenteblomme by Lentedag ontstaan.
+              Julle kry snaakse scenario’s en skep nuwe woorde daarvoor, taal wat soos lenteblomme by Lentedag ontstaan.
             </p>
             <p>
               Die fokus-taal verander elke jaar, maar almal mag altyd deelneem en woorde in hul eie taal uitdink.

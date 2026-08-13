@@ -11,6 +11,9 @@ import {
 
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
 } from 'firebase/firestore'
 
 import {
@@ -57,14 +60,37 @@ export const auth = getAuth(app)
 export const authReady = setPersistence(
   auth,
   browserLocalPersistence,
-).catch((error) => {
-  console.error(
-    'Could not set auth persistence:',
-    error,
-  )
-})
+)
+  .then(() => auth.authStateReady())
+  .catch((error) => {
+    console.error(
+      'Could not set auth persistence:',
+      error,
+    )
 
-export const db = getFirestore(app)
+    // Never fall back to an in-memory anonymous UID: it would disappear when
+    // the tab closes and strand all profile data created under that identity.
+    throw error
+  })
+
+// Keep pending festival activity on the device when reception drops. Live
+// listeners render cached writes immediately and Firestore synchronises them
+// with the backend as soon as the connection returns.
+function initialiseDatabase() {
+  try {
+    return initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    })
+  } catch {
+    // Vite can re-evaluate this module during development after Firestore was
+    // already initialised. Reuse that instance instead of replacing it.
+    return getFirestore(app)
+  }
+}
+
+export const db = initialiseDatabase()
 
 export const storage = getStorage(app)
 

@@ -21,3 +21,35 @@
   .choice:hover{transform:none}
   .choice.wrong{animation:shake 320ms ease}
 }
+
+/* Challenge palette sampled from the Raai die Lingo poster. */
+.page { --challenge-colour: #ffca18; }
+
+/* Desktop follows the same left-to-right carousel interaction as mobile. */
+.carouselHint { display:flex;align-items:center;justify-content:flex-end;margin:0 0 .75rem; }
+.carouselHint > span { display:none; }
+.carouselHint > div { display:flex;gap:.5rem; }
+.carouselHint button { display:grid;width:46px;height:42px;place-items:center;padding:0;color:var(--color-ink);background:var(--color-geel);border:3px solid var(--color-ink);border-radius:12px;box-shadow:3px 4px 0 #a27700;font:900 1.8rem/1 var(--font-pixel);cursor:pointer; }
+
+@media(min-width:601px){
+  .wrap { width:min(1440px,calc(100% - 5rem)); }
+  .choices { display:flex;grid-template-columns:none;gap:1rem;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;padding:.25rem .2rem 1.25rem;scroll-padding-inline:.2rem;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--color-geel) transparent; }
+  .choice { flex:0 0 min(620px,calc(48vw - 3rem));min-height:210px;padding:1.5rem 1.65rem;scroll-snap-align:start;scroll-snap-stop:always; }
+  .choice strong { font-size:clamp(1.25rem,1.75vw,1.65rem); }
+}
+
+@media(max-width:600px){
+  .instructions small { display:none; }
+  .mobileHint { display:none; }
+  .carouselHint { justify-content:flex-start;margin-bottom:.65rem;padding-inline:.9rem; }
+  .carouselHint > span { display:block;color:#8a6800;font:700 .62rem var(--font-body); }
+  .carouselHint > div { display:none; }
+  .choices { padding-bottom:1.4rem; }
+  .choice { min-height:290px;border:3px solid var(--color-ink);border-radius:26px;background:linear-gradient(155deg,#fff 0 72%,#fff7d6 100%);box-shadow:7px 9px 0 color-mix(in srgb,var(--color-geel) 55%,#d9d1c5); }
+  .choice::before { content:"";position:absolute;inset:9px;border:2px dashed rgb(22 21 15 / 14%);border-radius:18px;pointer-events:none; }
+  .choice > span { z-index:1;box-shadow:3px 4px 0 #a27700; }
+  .choice > div { position:relative;z-index:1;max-width:26ch; }
+  .choice small { padding:.28rem .55rem;border-radius:999px;background:#fff3b5;color:#7c5b00; }
+  .choice strong { font-size:1.3rem;line-height:1.4; }
+  .choice i { z-index:1;min-width:80px;border:2px solid var(--color-ink);box-shadow:3px 4px 0 #a27700; }
+}

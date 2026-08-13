@@ -3,6 +3,7 @@ import challengeChommiePoster from '../../assets/elements/posters/challenge n ch
 import merkDitPoster from '../../assets/elements/posters/merk dit poster@2x.webp'
 import raaiDieWoordPoster from '../../assets/elements/posters/raai die woord@2x.webp'
 import steelVerbeterPoster from '../../assets/elements/posters/steel en verbeter poster@2x.webp'
+import stemPoster from '../../assets/elements/posters/stem poster.webp'
 import wildKaartPoster from '../../assets/elements/posters/wild kaart poster@2x.webp'
 
 export const POSTER_IMAGES: Record<ChallengeId, string> = {
@@ -11,6 +12,7 @@ export const POSTER_IMAGES: Record<ChallengeId, string> = {
   guess: raaiDieWoordPoster,
   photo: '/posters/foto-doop.webp',
   friend: challengeChommiePoster,
+  vote: stemPoster,
   wildcard: wildKaartPoster,
 }
 
@@ -23,5 +25,6 @@ export const POSTER_COLOURS: Record<ChallengeId, string> = {
   guess: '#ffca18',
   photo: '#2858df',
   friend: '#ff1977',
+  vote: '#19ad62',
   wildcard: '#f03a2e',
 }

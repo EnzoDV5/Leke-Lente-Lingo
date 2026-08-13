@@ -6,12 +6,15 @@ import {
   useState,
   type CSSProperties,
 } from 'react'
+import { useLocation } from 'react-router-dom'
 import Leaderboard from './sections/Leaderboard'
 import PosterCollection from './sections/PosterCollection'
 import HoeDitWerk from './sections/HoeDitWerk'
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
 import binocularsElement from '../../assets/elements/poster elements/binuculars.webp'
 import mouthElement from '../../assets/elements/poster elements/Mouth.webp'
+import { useLivePhotos } from '../../hooks/useLivePhotos'
+import { fallbackProfileAvatar, resolveProfileAvatar } from '../../lib/profileAvatars'
 import styles from './Home.module.css'
 
 const FESTIVAL_PHOTOS = [
@@ -64,7 +67,33 @@ type PhotoPositionStyle = CSSProperties & {
   '--mobile-photo-y': string
 }
 
+type HomeRouteState = {
+  photoUploaded?: boolean
+  photoId?: string
+}
+
 export default function Home() {
+  const location = useLocation()
+  const routeState = location.state as HomeRouteState | null
+  const highlightedPhotoId = routeState?.photoUploaded ? routeState.photoId : undefined
+  const { photos: livePhotos } = useLivePhotos()
+  const hasLivePhotos = livePhotos.length > 0
+  const heroPhotos = hasLivePhotos
+    ? livePhotos.slice(0, MOBILE_PHOTO_POSITIONS.length).map((photo) => ({
+        id: photo.id,
+        word: photo.word,
+        name: photo.createdByUsername,
+        image: photo.downloadUrl,
+        avatar: resolveProfileAvatar(photo.createdByAvatar) ?? fallbackProfileAvatar(photo.createdByUid),
+      }))
+    : FESTIVAL_PHOTOS.map(([word, name, image], index) => ({
+        id: `demo-${index}`,
+        word,
+        name,
+        image: `https://images.unsplash.com/${image}?auto=format&fit=crop&w=600&q=82`,
+        avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(name)}`,
+      }))
+  const photoTarget = hasLivePhotos ? livePhotos.length : PHOTO_TOTAL
   const wallRef = useRef<HTMLDivElement>(null)
   const heroLogoRef = useRef<HTMLImageElement>(null)
   const heroMouthRef = useRef<HTMLImageElement>(null)
@@ -82,10 +111,11 @@ export default function Home() {
     ).matches
 
     if (reduceMotion) {
-      setPhotoCount(PHOTO_TOTAL)
+      setPhotoCount(photoTarget)
       return
     }
 
+    setPhotoCount(0)
     let animationFrame = 0
     let startTime: number | null = null
     const delay = 700
@@ -102,14 +132,14 @@ export default function Home() {
 
       const progress = Math.min((elapsed - delay) / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 4)
-      setPhotoCount(Math.round(PHOTO_TOTAL * eased))
+      setPhotoCount(Math.round(photoTarget * eased))
 
       if (progress < 1) animationFrame = window.requestAnimationFrame(countUp)
     }
 
     animationFrame = window.requestAnimationFrame(countUp)
     return () => window.cancelAnimationFrame(animationFrame)
-  }, [])
+  }, [photoTarget])
 
   useLayoutEffect(() => {
     const targets = {
@@ -296,6 +326,11 @@ export default function Home() {
       }
       previousScrollPosition.current =
         currentScroll
+
+      // Once the wall has fallen and been reset, scrolling farther down has
+      // no visual work left to do. Wait until the user returns to the top
+      // instead of measuring and clearing every card on every scroll frame.
+      if (fallSequenceComplete.current && currentScroll > 8) return
       if (animationFrame) return
       animationFrame = window.requestAnimationFrame(updatePhotoFall)
     }
@@ -318,10 +353,11 @@ export default function Home() {
         aria-label="Leke Lente Lingo"
       >
         <div ref={wallRef} className={styles.festivalWall}>
-          {FESTIVAL_PHOTOS.map(([word, name, image], index) => (
+          {heroPhotos.map((photo, index) => (
             <figure
-              className={styles.festivalPhoto}
-              key={`${image}-${index}`}
+              className={`${styles.festivalPhoto} ${photo.id === highlightedPhotoId ? styles.newFestivalPhoto : ''}`}
+              key={photo.id}
+              data-photo-id={photo.id}
               style={{
                 '--photo-index': index,
                 '--mobile-photo-x':
@@ -331,20 +367,21 @@ export default function Home() {
               } as PhotoPositionStyle}
             >
               <img
-                src={`https://images.unsplash.com/${image}?auto=format&fit=crop&w=600&q=82`}
-                alt={`${word} deur ${name}`}
+                src={photo.image}
+                alt={`${photo.word} deur ${photo.name}`}
+                fetchPriority={index < 8 ? 'auto' : 'low'}
                 decoding="async"
               />
               <figcaption>
-                <strong>{word}</strong>
+                <strong>{photo.word}</strong>
                 <span className={styles.photoUser}>
                   <img
-                    src={`https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(name)}`}
+                    src={photo.avatar}
                     alt=""
                     loading="lazy"
                     decoding="async"
                   />
-                  <span>{name}</span>
+                  <span>{photo.name}</span>
                 </span>
               </figcaption>
             </figure>
@@ -377,7 +414,7 @@ export default function Home() {
             aria-hidden="true"
           />
 
-          <div className={styles.photoTotal} aria-label="1 284 foto's gedeel">
+          <div className={styles.photoTotal} aria-label={`${photoTarget.toLocaleString('af-ZA')} foto's gedeel`}>
             <span className={styles.cameraIcon} aria-hidden="true">
               <i />
             </span>

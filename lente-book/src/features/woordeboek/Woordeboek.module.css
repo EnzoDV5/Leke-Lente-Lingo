@@ -42,7 +42,7 @@
    entrance so the search bar settles in the same moment as the hero copy;
    filter-switch re-renders never carry this class. */
 .kontrolesFirstReveal {
-  animation: kontrolesIn 620ms var(--route-motion-delay, 760ms) cubic-bezier(.18, 1.35, .4, 1) both;
+  animation: kontrolesIn 560ms var(--route-motion-delay, 820ms) cubic-bezier(.18, 1.35, .4, 1) both;
 }
 
 @keyframes kontrolesIn {
@@ -58,13 +58,10 @@
 .topLys { --filter-x: 28px; }
 .allesLys { --filter-x: -28px; }
 
-/* Each phrase group (category section / Top Woorde block) starts hidden and
-   is revealed by an IntersectionObserver in Woordeboek.tsx as it scrolls
-   into view, rather than every group animating together on mount. The
-   observer itself is delayed by --route-motion-delay on the very first
-   reveal so groups already on screen don't settle before the hero-divider
-   finishes moving; scroll-triggered reveals further down the list (and
-   filter-switch remounts) fire immediately once in view. */
+/* Each phrase group starts hidden and is revealed as it enters the screen.
+   Groups already visible on first paint, plus the single tall Top Woorde
+   block, are revealed immediately so a large section can never leave the
+   viewport looking empty while it waits to cross an intersection ratio. */
 .revealGroup {
   opacity: 0;
   transform: translateY(26px) scale(.985);

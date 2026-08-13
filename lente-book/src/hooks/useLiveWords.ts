@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore'
 
 import { db } from '../lib/firebase'
+import { officialPhraseText } from '../lib/officialPhraseCopy'
 import type {
   FestivalArea,
   VoteValue,
@@ -107,12 +108,15 @@ export function useLiveWords(
       wordsQuery,
       (snapshot) => {
         const nextWords =
-          snapshot.docs.map(
-            (documentSnapshot) => ({
+          snapshot.docs.map((documentSnapshot) => {
+            const data = documentSnapshot.data()
+            const storedPhraseId = String(data.phraseId ?? phraseId)
+            return {
               id: documentSnapshot.id,
-              ...documentSnapshot.data(),
-            }),
-          ) as StoredWord[]
+              ...data,
+              phraseText: officialPhraseText(storedPhraseId, String(data.phraseText ?? '')),
+            }
+          }) as StoredWord[]
 
         setStoredWords(nextWords)
         setWordsLoading(false)
@@ -169,7 +173,7 @@ export function useLiveWords(
         )
 
         setError(
-          'Ons kon nie die votes laai nie.',
+          'Ons kon nie die stemme laai nie.',
         )
 
         setVotesLoading(false)

@@ -6,7 +6,11 @@ import {
 import {
   Suspense,
   useEffect,
+  useLayoutEffect,
   useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
   type MouseEvent,
   type CSSProperties,
 } from 'react'
@@ -22,7 +26,7 @@ type RouteState = {
 const ROUTE_ORDER: Record<string, number> = {
   '/woordeboek': 0,
   '/foto': 1,
-  '/woordjag': 2,
+  '/collections': 2,
 }
 
 const routeOrder = (path: string) =>
@@ -32,8 +36,9 @@ const routeOrder = (path: string) =>
 
 const heroKind = (path: string) => {
   if (path === '/') return 'home'
-  if (path === '/woordjag') return 'woordjag'
+  if (path === '/collections') return 'collections'
   if (path === '/challenge/foto') return 'compact'
+  if (path.startsWith('/challenge/doop/') || path.startsWith('/challenge/remix/')) return 'locationChallenge'
   if (path.startsWith('/woordeboek/')) return 'detail'
   if (path.startsWith('/challenge/')) return 'challenge'
   if (path === '/woordeboek' || path === '/foto') return 'compact'
@@ -45,9 +50,28 @@ type RouteStyle = CSSProperties & {
   '--route-motion-delay': string
 }
 
+function RouteReady({ markReady }: { markReady: Dispatch<SetStateAction<boolean>> }) {
+  useEffect(() => {
+    let secondFrame = 0
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => markReady(true))
+    })
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame)
+      window.cancelAnimationFrame(secondFrame)
+    }
+  }, [markReady])
+
+  return <Outlet />
+}
+
 export default function AppShell() {
   const pageRef = useRef<HTMLElement | null>(null)
+  const shellContentRef = useRef<HTMLDivElement | null>(null)
   const location = useLocation()
+  const initialRouteKeyRef = useRef(location.key)
+  const [initialRouteReady, setInitialRouteReady] = useState(false)
   const navigate = useNavigate()
   const previousPathRef = useRef(location.pathname)
   const previousPath = previousPathRef.current
@@ -61,12 +85,14 @@ export default function AppShell() {
   const heroDividerClass =
     currentHeroKind === 'home'
       ? styles.dividerHome
-      : currentHeroKind === 'woordjag'
-        ? styles.dividerWoordjag
+      : currentHeroKind === 'collections'
+        ? styles.dividerCollections
         : currentHeroKind === 'detail'
           ? styles.dividerDetail
           : currentHeroKind === 'challenge'
             ? styles.dividerChallenge
+          : currentHeroKind === 'locationChallenge'
+            ? styles.dividerLocationChallenge
           : currentHeroKind === 'compact'
           ? styles.dividerCompact
           : styles.dividerHidden
@@ -80,17 +106,62 @@ export default function AppShell() {
         ? '84px'
         : '-84px'
   const sameHeroHeight = heroKind(previousPath) === currentHeroKind
-  const routeMotionDelay = sameHeroHeight ? '0ms' : '760ms'
+  const isInitialRoute = location.key === initialRouteKeyRef.current
+  const routeMotionDelay = isInitialRoute || !initialRouteReady
+    ? '820ms'
+    : sameHeroHeight ? '0ms' : '760ms'
 
   useEffect(() => {
     previousPathRef.current = location.pathname
     document.documentElement.classList.remove('lente-home-leaving')
   }, [location.pathname])
 
+  useLayoutEffect(() => {
+    const shellContent = shellContentRef.current
+    const page = pageRef.current
+
+    if (!shellContent || !page || currentHeroKind !== 'detail') {
+      shellContent?.style.removeProperty('--detail-hero-bottom')
+      return
+    }
+
+    const desktopQuery = window.matchMedia('(min-width: 601px)')
+    const hero = page.querySelector<HTMLElement>(':scope > section > header')
+
+    if (!hero) return
+
+    const updateHeroBottom = () => {
+      if (!desktopQuery.matches) {
+        shellContent.style.removeProperty('--detail-hero-bottom')
+        return
+      }
+
+      const shellTop = shellContent.getBoundingClientRect().top
+      const heroBottom = hero.getBoundingClientRect().bottom
+      shellContent.style.setProperty(
+        '--detail-hero-bottom',
+        `${Math.ceil(heroBottom - shellTop)}px`,
+      )
+    }
+
+    updateHeroBottom()
+
+    const heroObserver = new ResizeObserver(updateHeroBottom)
+    heroObserver.observe(hero)
+    desktopQuery.addEventListener('change', updateHeroBottom)
+    window.addEventListener('resize', updateHeroBottom)
+
+    return () => {
+      heroObserver.disconnect()
+      desktopQuery.removeEventListener('change', updateHeroBottom)
+      window.removeEventListener('resize', updateHeroBottom)
+    }
+  }, [currentHeroKind, initialRouteReady, location.key])
+
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const isPosterDeepLink =
-      location.pathname === '/woordjag' &&
+      location.pathname === '/collections' &&
       params.has('poster')
 
     if (!isPosterDeepLink) {
@@ -147,6 +218,12 @@ export default function AppShell() {
         htmlElement.dataset.revealMotion = motion
         htmlElement.style.setProperty('--scroll-reveal-delay', `${Math.min(revealIndex % 4, 3) * 65}ms`)
         htmlElement.classList.add('lente-scroll-reveal')
+        const releaseCompositorLayer = (event: Event) => {
+          if ((event as TransitionEvent).propertyName !== 'transform') return
+          htmlElement.style.willChange = 'auto'
+          htmlElement.removeEventListener('transitionend', releaseCompositorLayer)
+        }
+        htmlElement.addEventListener('transitionend', releaseCompositorLayer)
         revealIndex += 1
 
         if (reduceMotion) {
@@ -210,16 +287,16 @@ export default function AppShell() {
         .filter(Boolean)
         .join(' ')}
     >
-      <div className={styles.shellContent} onClickCapture={handleNavigationCapture}>
+      <div ref={shellContentRef} className={styles.shellContent} onClickCapture={handleNavigationCapture}>
         <TopBar />
 
         <span
-          className={`${styles.contentSurface} ${heroDividerClass}`}
+          className={`${styles.contentSurface} ${initialRouteReady ? heroDividerClass : styles.dividerBoot}`}
           aria-hidden="true"
         />
 
         <span
-          className={`${styles.heroDivider} ${heroDividerClass}`}
+          className={`${styles.heroDivider} ${initialRouteReady ? heroDividerClass : styles.dividerBoot}`}
           aria-hidden="true"
         />
 
@@ -233,11 +310,11 @@ export default function AppShell() {
               '--route-motion-delay': routeMotionDelay,
             } as RouteStyle}
           >
-            <Outlet />
+            <RouteReady markReady={setInitialRouteReady} />
           </main>
         </Suspense>
 
-        <div className={`${styles.footer} ${location.pathname === '/woordjag' ? styles.footerFlush : ''}`}>
+        <div className={`${styles.footer} ${location.pathname === '/collections' ? styles.footerFlush : ''}`}>
           <Footer />
         </div>
       </div>

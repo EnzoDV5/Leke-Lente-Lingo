@@ -13,8 +13,8 @@ type Props = {
 const LINKS = [
   { to: '/', label: 'Tuis' },
   { to: '/woordeboek', label: 'Woordeboek' },
+  { to: '/collections', label: 'Lente Bingo' },
   { to: '/foto', label: 'Voeg Foto' },
-  { to: '/woordjag', label: 'Lente Bingo' },
 ]
 
 const SOCIALS = [

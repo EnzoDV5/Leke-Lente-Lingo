@@ -42,28 +42,24 @@ service cloud.firestore {
         allow create: if (isOwner(userId)
           && request.resource.data.posterId == posterId)
           || (signedIn()
-            && (posterId == 'friend' || posterId == 'doop')
+            && posterId == 'friend'
             && request.resource.data.inviteId is string
             && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.status == 'completed'
             && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviteeUid == request.auth.uid
-            && ((posterId == 'friend'
-                && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId)
-              || (posterId == 'doop' && userId == request.auth.uid)));
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId);
 
         allow update: if (isOwner(userId)
           && request.resource.data.posterId == resource.data.posterId
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'collected', 'challengeCompleted', 'collectedAt', 'challengeCompletedAt'
+            'collected', 'challengeCompleted', 'collectedAt', 'challengeCompletedAt', 'result'
           ]))
           || (signedIn()
-            && (posterId == 'friend' || posterId == 'doop')
+            && posterId == 'friend'
             && request.resource.data.posterId == posterId
             && request.resource.data.inviteId is string
             && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.status == 'completed'
             && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviteeUid == request.auth.uid
-            && ((posterId == 'friend'
-                && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId)
-              || (posterId == 'doop' && userId == request.auth.uid)));
+            && getAfter(/databases/$(database)/documents/friendInvites/$(request.resource.data.inviteId)).data.inviterUid == userId);
 
         allow delete: if isOwner(userId);
       }
@@ -190,10 +186,16 @@ service cloud.firestore {
       allow create: if signedIn()
         && request.resource.data.userId
           == request.auth.uid
+        && request.resource.data.wordId is string
+        && request.resource.data.phraseId is string
+        && request.resource.data.username is string
         && voteId
           == request.auth.uid
             + "_"
             + request.resource.data.wordId
+        && exists(/databases/$(database)/documents/words/$(request.resource.data.wordId))
+        && get(/databases/$(database)/documents/words/$(request.resource.data.wordId)).data.phraseId
+          == request.resource.data.phraseId
         && validVote(
           request.resource.data.value
         );
@@ -244,7 +246,13 @@ service cloud.firestore {
           .affectedKeys()
           .hasOnly([
             'word',
-            'frameColour'
+            'storagePath',
+            'downloadUrl',
+            'createdByUsername',
+            'createdByAvatar',
+            'frameColour',
+            'approved',
+            'updatedAt'
           ]);
 
       allow delete: if signedIn()

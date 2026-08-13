@@ -50,6 +50,10 @@
   transform: translateY(-14px) rotate(0deg) scale(1.13);
 }
 
+.newFestivalPhoto {
+  animation: newFestivalPhotoReveal 1.45s .3s cubic-bezier(.22,1,.36,1) both;
+}
+
 :global(html.lente-logging-out) .festivalPhoto {
   pointer-events: none;
   animation: festivalPhotoPopOut 760ms calc((15 - var(--photo-index)) * 24ms) cubic-bezier(.55,0,.85,.25) forwards;
@@ -119,6 +123,12 @@
 
 @keyframes festivalPhotoPopOut {
   to { opacity: 0; transform: translateY(90px) rotate(var(--angle)) scale(.2); }
+}
+
+@keyframes newFestivalPhotoReveal {
+  0% { opacity: 0; transform: translateY(30px) rotate(var(--angle)) scale(.94); }
+  62% { opacity: 1; transform: translateY(-5px) rotate(var(--angle)) scale(1.025); }
+  100% { opacity: 1; transform: translateY(0) rotate(var(--angle)) scale(1); }
 }
 
 .heroBrand {
@@ -499,7 +509,8 @@
     animation-delay: 0ms;
   }
 
-  .festivalPhoto { animation-duration: 1ms; animation-delay: 0ms; }
+  .festivalPhoto,
+  .newFestivalPhoto { animation-duration: 1ms; animation-delay: 0ms; }
   .photoTotal,
   .heroMouth,
   .heroBinoculars,

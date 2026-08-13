@@ -11,6 +11,20 @@
     <meta name="format-detection" content="telephone=no" />
     <title>lente-book</title>
 
+    <script>
+      // Firebase's two default hosting domains are separate browser origins.
+      // Keep every phone on one canonical origin so its anonymous UID cannot
+      // split into two profiles when a QR/link uses the other domain.
+      if (window.location.hostname === 'lentebook-a7c82.firebaseapp.com') {
+        window.location.replace(
+          'https://lentebook-a7c82.web.app' +
+          window.location.pathname +
+          window.location.search +
+          window.location.hash
+        )
+      }
+    </script>
+
     <link rel="stylesheet" href="https://use.typekit.net/ipt8mli.css">
   </head>
   <body>

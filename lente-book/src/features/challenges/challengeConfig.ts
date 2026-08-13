@@ -4,6 +4,7 @@ export type ChallengeId =
   | 'guess'
   | 'photo'
   | 'friend'
+  | 'vote'
   | 'wildcard'
 
 export type ChallengeColour =
@@ -32,6 +33,7 @@ export const CORE_CHALLENGE_IDS: ChallengeId[] = [
   'guess',
   'photo',
   'friend',
+  'vote',
 ]
 
 export const ALL_CHALLENGE_IDS: ChallengeId[] = [
@@ -91,7 +93,7 @@ export const CHALLENGES: Record<
     name: 'Foto-doop',
     shortName: 'Foto-doop',
     description:
-      'Neem ’n foto, gee die oomblik ’n woord en plaas dit op die Fotomuur.',
+      'Neem ’n foto, gee die oomblik ’n woord en sit dit op die oomblikmuur.',
     clue:
       'Hierdie poster wag by een van die Lentedag-fotoareas.',
     colour: 'blue',
@@ -113,15 +115,29 @@ export const CHALLENGES: Record<
     lockedUntilComplete: false,
   },
 
+  vote: {
+    id: 'vote',
+    number: 6,
+    name: 'Stem',
+    shortName: 'Stem',
+    description:
+      'Gee ’n woord ’n stem of afstem en help die fees se gunsteling kies.',
+    clue:
+      'Soek die Stem-poster en laat jou stem op die regstreekse woordelys tel.',
+    colour: 'green',
+    icon: '👍',
+    lockedUntilComplete: false,
+  },
+
   wildcard: {
     id: 'wildcard',
-    number: 6,
+    number: 7,
     name: 'Die Wildcard',
     shortName: 'Wildcard',
     description:
       'Skep jou eie scenario en dink jou eie woord daarvoor uit.',
     clue:
-      'Jy kan die Wildcard-poster sien, maar dit ontsluit eers wanneer die ander vyf versamel is.',
+      'Jy kan die Wildcard-poster sien, maar dit ontsluit eers wanneer die ander ses versamel is.',
     colour: 'purple',
     icon: '⚡',
     lockedUntilComplete: true,

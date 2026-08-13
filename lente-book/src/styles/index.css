@@ -10,6 +10,24 @@ html {
   overflow-x: clip;
 }
 
+/* Onboarding is a locked, full-viewport screen. Remove both its document
+   overflow and the browser scrollbar track so the sky reaches the edge. */
+html.lente-onboarding,
+html.lente-onboarding body {
+  scrollbar-gutter: auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+html.lente-onboarding {
+  scrollbar-width: none;
+}
+
+html.lente-onboarding::-webkit-scrollbar {
+  display: none;
+  width: 0;
+}
+
 :root {
   /* Shared paper-grain overlay for component backgrounds (cards, panels,
      podium blocks, ...). Layer it on top of a solid background-color via
@@ -36,11 +54,11 @@ html {
   --color-blou:    #2857C9;
   --color-pers:    #7828B8;
 
-  /* type — Leke Lente Lingo campaign fonts (Adobe/Typekit kit ipt8mli) */
+  /* type ,  Leke Lente Lingo campaign fonts (Adobe/Typekit kit ipt8mli) */
   --font-display:  "itc-american-typewriter", Georgia, serif;
   --font-body:     "itc-american-typewriter", Georgia, serif;
   --font-pixel:    "ltr-ncnd-variable", system-ui, sans-serif;
-  /* brush-up only ships a single static weight (500) — force that weight
+  /* brush-up only ships a single static weight (500) ,  force that weight
      wherever this is used instead of inheriting body's variable "wght" 900,
      which caused synthetic-bold blur on hero titles */
   --font-brush:    "brush-up", sans-serif;

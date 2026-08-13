@@ -408,7 +408,7 @@
   gap: 0.85rem;
   align-items: center;
 
-  margin: 0 auto 1rem;
+  margin: 1.15rem auto 0;
   padding: 0.65rem 0.75rem;
 
   border: 3px solid
@@ -422,6 +422,27 @@
     rgba(237, 73, 36, 0.14);
 
   text-align: left;
+}
+
+.terugProfielAksie {
+  grid-column: 1 / -1;
+  min-height: 44px;
+  margin-top: 0.1rem;
+}
+
+@media (min-width: 681px) {
+  .terugProfielKaart {
+    width: min(100%, 520px);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 0.8rem;
+  }
+
+  .terugProfielAksie {
+    width: auto;
+    min-width: 142px;
+    grid-column: auto;
+    margin-top: 0;
+  }
 }
 
 .welkomTerugAvatar {
@@ -3867,7 +3888,7 @@
 }
 
 /* The logout/delete confirm popup is a compact dialog, not a full onboarding
-   step — keep its description modest instead of the step-sized treatment. */
+   step ,  keep its description modest instead of the step-sized treatment. */
 .logoutConfirm .paneelBeskrywing {
   font-size: 0.88rem !important;
   font-weight: 700 !important;
@@ -6069,7 +6090,7 @@
 }
 
 /* Rule number now sits inline next to its rule title instead of as a
-   separate left-hand column badge — mobile only. On desktop, the number
+   separate left-hand column badge ,  mobile only. On desktop, the number
    goes back to floating outside the title as its own corner badge, since
    the wide two-column card layout there needs the title's own column free
    for text only. */
@@ -6202,7 +6223,7 @@
 /* The bottom button row stays anchored to the bottom of the step card itself
    (not the whole screen), so it never floats outside the rounded panel. It
    still won't drift with the content above it within that card. No added
-   background — stays transparent, just the buttons themselves. */
+   background ,  stays transparent, just the buttons themselves. */
 @media (max-width: 680px) {
   .vasteNavigasie {
     position: sticky !important;
@@ -6255,5 +6276,53 @@
     margin-top: 0.5rem;
 
     font-size: 1.08rem !important;
+  }
+}
+
+/* Keep the profile editor stable while the asynchronous username message
+   changes. The message always owns a line, and Step 3 is allowed to grow from
+   its content on smaller screens instead of pulling the avatar above the
+   rounded sheet. */
+.profielVelde .usernameStatus {
+  min-height: 1.4em;
+}
+
+@media (max-width: 680px) {
+  .mobieleStapDrieBlad {
+    height: auto;
+    min-height: 100svh;
+    overflow-y: auto;
+  }
+
+  .mobieleStapDrieBlad .uitleg {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+  }
+
+  .mobieleStapDrieBlad .bladPaneel {
+    height: auto;
+    min-height: min(
+      var(--mobiele-paneel-hoogte),
+      calc(100svh - 68px)
+    );
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .mobieleStapDrieBlad .paneelBinne {
+    height: auto;
+    min-height: min(
+      calc(var(--mobiele-paneel-hoogte) - 20px),
+      calc(100svh - 88px)
+    );
+  }
+
+  .paneelBinne.mobieleProfielStap .stapVenster {
+    height: auto;
+  }
+
+  .paneelBinne.mobieleProfielStap .stapInhoud {
+    min-height: max-content !important;
   }
 }

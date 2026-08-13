@@ -36,6 +36,7 @@ import {
   fallbackProfileAvatar,
   resolveProfileAvatar,
 } from '../../lib/profileAvatars'
+import { completeChallenge } from '../../lib/challengeProgress'
 
 type DisplayWord = LiveWord & { isDummy?: boolean }
 
@@ -102,6 +103,7 @@ export default function FraseView() {
   const [newlyCreatedWordId, setNewlyCreatedWordId] = useState<string | null>(null)
   const inputSectionRef = useRef<HTMLDivElement>(null)
   const wordInputRef = useRef<HTMLInputElement>(null)
+  const focusedWordScrolledRef = useRef<string | null>(null)
 
   const allWords = useMemo<DisplayWord[]>(() => {
     if (!phrase) return words
@@ -164,16 +166,27 @@ export default function FraseView() {
   }, [newlyCreatedWordId])
 
   useEffect(() => {
-    if (loading || !focusedWordId) return
+    if (!focusedWordId) {
+      focusedWordScrolledRef.current = null
+      return
+    }
+
+    if (
+      loading ||
+      focusedWordScrolledRef.current === focusedWordId
+    ) return
+
+    const focusedWord = document.getElementById(`word-${focusedWordId}`)
+    if (!focusedWord) return
+
+    focusedWordScrolledRef.current = focusedWordId
 
     const frame = window.requestAnimationFrame(() => {
-      document
-        .getElementById(`word-${focusedWordId}`)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      focusedWord.scrollIntoView({ behavior: 'smooth', block: 'center' })
     })
 
     return () => window.cancelAnimationFrame(frame)
-  }, [allWords, focusedWordId, loading])
+  }, [focusedWordId, loading])
 
   if (!phrase) {
     return (
@@ -210,7 +223,7 @@ export default function FraseView() {
       newWord.trim().toLocaleLowerCase('af-ZA') ===
         remixWord.text.trim().toLocaleLowerCase('af-ZA')
     ) {
-      setActionError('Verander eers die woord om jou verbetering te plaas.')
+      setActionError('Verander eers die woord om jou verbetering in te sit.')
       return
     }
 
@@ -239,6 +252,28 @@ export default function FraseView() {
           : null,
       })
 
+      await completeChallenge(
+        user.uid,
+        remixWord ? 'remix' : 'doop',
+        false,
+        remixWord
+          ? {
+              kind: 'remix',
+              word: newWord.trim(),
+              originalWord: remixWord.text,
+              phrase: phrase.beskrywing,
+              area,
+              itemId: createdWordId,
+            }
+          : {
+              kind: 'word',
+              word: newWord.trim(),
+              phrase: phrase.beskrywing,
+              area,
+              itemId: createdWordId,
+            },
+      )
+
       setNewWord('')
       setRemixWord(null)
       setPendingNewWordId(createdWordId)
@@ -251,7 +286,7 @@ export default function FraseView() {
       setActionError(
         error instanceof Error
           ? error.message
-          : 'Ons kon nie jou woord plaas nie.',
+          : 'Ons kon nie jou woord insit nie.',
       )
     } finally {
       setSubmitting(false)
@@ -287,6 +322,22 @@ export default function FraseView() {
         currentVote:
           word.currentUserVote,
       })
+
+      if (word.currentUserVote !== value) {
+        await completeChallenge(
+          user.uid,
+          'vote',
+          false,
+          {
+            kind: 'vote',
+            word: word.text,
+            phrase: phrase.beskrywing,
+            area,
+            itemId: word.id,
+            voteValue: value,
+          },
+        )
+      }
     } catch (error) {
       console.error(
         'Vote error:',
@@ -294,7 +345,7 @@ export default function FraseView() {
       )
 
       setActionError(
-        'Ons kon nie jou vote stoor nie.',
+        'Ons kon nie jou stem stoor nie.',
       )
     }
   }
@@ -436,8 +487,8 @@ export default function FraseView() {
             }
           >
             {submitting
-              ? 'Plaas...'
-              : 'Plaas!'}
+              ? 'Sit in...'
+              : 'Sit in!'}
           </button>
         </div>
 
@@ -486,18 +537,23 @@ export default function FraseView() {
                   : `#${index + 1}`}
               </div>
 
-              <img
-                className={styles.woordAvatar}
-                src={
-                  word.createdByUsername === '@lentedag'
-                    ? lentedagSecondaryLogo
-                    : resolveProfileAvatar(word.createdByAvatar) ??
-                      fallbackProfileAvatar(word.createdByUid || word.createdByUsername)
-                }
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
+              <div className={styles.woordAvatarGroep}>
+                <img
+                  className={styles.woordAvatar}
+                  src={
+                    word.createdByUsername === '@lentedag'
+                      ? lentedagSecondaryLogo
+                      : resolveProfileAvatar(word.createdByAvatar) ??
+                        fallbackProfileAvatar(word.createdByUid || word.createdByUsername)
+                  }
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className={styles.mobieleWoordMeta}>
+                  {word.createdByUsername}
+                </span>
+              </div>
 
               <div
                 className={
@@ -537,55 +593,61 @@ export default function FraseView() {
                   )}
               </div>
 
-              <button
-                className={
-                  styles.steelKnop
-                }
-                aria-label={`Steel en verbeter ${word.text}`}
-                title="Steel & Verbeter"
-                onClick={() =>
-                  startRemix(word)
-                }
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 7h3.2c4.8 0 4.8 10 9.6 10H20M17 14l3 3-3 3M4 17h3.2c2.2 0 3.4-2.1 4.6-4.4M15.6 7c.4 0 .8 0 1.2 0H20M17 4l3 3-3 3" />
-                </svg>
-              </button>
-
               <div
                 className={
-                  styles.voteActions
+                  styles.woordAksies
                 }
               >
                 <button
-                  aria-label="Upvote"
-                  className={`${styles.voteButton} ${
-                    word.currentUserVote ===
-                    1
-                      ? styles.activeUp
-                      : ''
-                  }`}
+                  className={
+                    styles.steelKnop
+                  }
+                  aria-label={`Steel en verbeter ${word.text}`}
+                  title="Steel & Verbeter"
                   onClick={() =>
-                    void vote(word, 1)
+                    startRemix(word)
                   }
                 >
-                  👍 {word.upVotes}
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 7h3.2c4.8 0 4.8 10 9.6 10H20M17 14l3 3-3 3M4 17h3.2c2.2 0 3.4-2.1 4.6-4.4M15.6 7c.4 0 .8 0 1.2 0H20M17 4l3 3-3 3" />
+                  </svg>
                 </button>
 
-                <button
-                  aria-label="Downvote"
-                  className={`${styles.voteButton} ${
-                    word.currentUserVote ===
-                    -1
-                      ? styles.activeDown
-                      : ''
-                  }`}
-                  onClick={() =>
-                    void vote(word, -1)
+                <div
+                  className={
+                    styles.voteActions
                   }
                 >
-                  👎 {word.downVotes}
-                </button>
+                  <button
+                    aria-label={`Gee ${word.text} ’n stem`}
+                    className={`${styles.voteButton} ${
+                      word.currentUserVote ===
+                      1
+                        ? styles.activeUp
+                        : ''
+                    }`}
+                    onClick={() =>
+                      void vote(word, 1)
+                    }
+                  >
+                    👍 {word.upVotes}
+                  </button>
+
+                  <button
+                    aria-label={`Gee ${word.text} ’n afstem`}
+                    className={`${styles.voteButton} ${
+                      word.currentUserVote ===
+                      -1
+                        ? styles.activeDown
+                        : ''
+                    }`}
+                    onClick={() =>
+                      void vote(word, -1)
+                    }
+                  >
+                    👎 {word.downVotes}
+                  </button>
+                </div>
               </div>
             </li>
           ))}

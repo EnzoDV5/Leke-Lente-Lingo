@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import Section from '../../../components/ui/Section'
 import Reveal from '../../../components/ui/Reveal'
 import Skeleton from '../../../components/ui/Skeleton'
 import { useChallengeProgress } from '../../../hooks/useChallengeProgress'
+import { useScrollSyncedBackground } from '../../../hooks/useScrollSyncedBackground'
 import { useAuth } from '../../auth/AuthContext'
 import { ALL_CHALLENGE_IDS, CHALLENGES, type ChallengeId } from '../../challenges/challengeConfig'
 import { POSTER_COLOURS, POSTER_IMAGES } from '../../collections/posterAssets'
@@ -58,31 +59,7 @@ export default function PosterCollection() {
   const [posterStripScrolled, setPosterStripScrolled] = useState(false)
   const { user } = useAuth()
   const { progress, collectedCount, loading } = useChallengeProgress(user?.uid)
-
-  useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
-
-    let frame = 0
-    const syncGrass = () => {
-      frame = 0
-      const bounds = section.getBoundingClientRect()
-      if (bounds.bottom < 0 || bounds.top > window.innerHeight) return
-      section.style.setProperty('--grass-scroll-y', `${-bounds.top}px`)
-    }
-    const requestSync = () => {
-      if (!frame) frame = window.requestAnimationFrame(syncGrass)
-    }
-
-    syncGrass()
-    window.addEventListener('scroll', requestSync, { passive: true })
-    window.addEventListener('resize', requestSync)
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', requestSync)
-      window.removeEventListener('resize', requestSync)
-    }
-  }, [])
+  useScrollSyncedBackground(true, sectionRef)
 
   return (
     <Section
@@ -95,13 +72,13 @@ export default function PosterCollection() {
         '--poster-progress-card': `url(${cardElement})`,
       } as PosterCollectionVars}
     >
-      <div className={styles.progressCluster} aria-label={`${collectedCount} van 6 posters versamel`}>
+      <div className={styles.progressCluster} aria-label={`${collectedCount} van ${ALL_CHALLENGE_IDS.length} posters versamel`}>
         <img className={`${styles.dice} ${styles.diceOne}`} src={diceOneElement} alt="" aria-hidden="true" />
         <strong className={styles.count}>
           {loading
             ? <Skeleton width="1.1rem" height="1.15rem" radius={5} className={styles.countSkeleton} />
             : collectedCount}
-          <span>/6</span>
+          <span>/{ALL_CHALLENGE_IDS.length}</span>
         </strong>
         <img className={`${styles.dice} ${styles.diceTwo}`} src={diceTwoElement} alt="" aria-hidden="true" />
       </div>
@@ -130,7 +107,7 @@ export default function PosterCollection() {
             <Reveal key={id} delay={index * 70}>
               <Link className={`${styles.poster} ${wildcard ? styles.wildcard : ''} ${collected ? styles.collected : styles.locked}`}
                 style={{ '--poster-colour': POSTER_COLOURS[id] } as CSSProperties}
-                to={`/woordjag?poster=${id}&reveal=1`} viewTransition
+                to={`/collections?poster=${id}&reveal=1`} viewTransition
                 aria-label={`${challenge.name}: ${collected ? 'versamel' : 'nog nie gevind nie'}. Wys leidraad.`}>
                 <span className={styles.number}>0{challenge.number}</span>
                 <PosterThumb id={id} />
@@ -142,7 +119,7 @@ export default function PosterCollection() {
         })}
       </div>
 
-      <p className={styles.intro}>Tik &rsquo;n poster om direk na sy leidraad te gaan.</p>
+      <p className={styles.intro}>Kliek &rsquo;n poster om direk na sy leidraad te gaan.</p>
 
       <p className={`${styles.scrollHint} ${posterStripScrolled ? styles.hintHidden : ''}`}>
         <span aria-hidden="true">&larr;</span>

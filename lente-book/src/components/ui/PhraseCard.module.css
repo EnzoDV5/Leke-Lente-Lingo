@@ -62,19 +62,75 @@
 }
 .knoppie { display: inline-flex; align-items: center; gap: .4rem; flex-shrink: 0; padding: .55rem .95rem; border: 2px solid var(--color-ink); border-radius: 10px; background: var(--color-geel); color: var(--color-ink); box-shadow: 3px 3px 0 var(--color-oranje); font-family: var(--font-pixel); font-weight: 800; font-size: 1rem; text-decoration: none; transition: transform 150ms ease, box-shadow 150ms ease; }
 .knoppie:hover { transform: translateY(-2px); box-shadow: 3px 5px 0 var(--color-oranje); }
+.buttonArrow {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 4px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 1px 0 rgba(255,255,255,.35);
+  transform: rotate(-4deg);
+}
+.buttonArrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 4px solid currentColor;
+  border-right: 4px solid currentColor;
+  border-radius: 2px;
+  transform: translateY(-50%) rotate(45deg);
+}
+.mobileKnoppie { display: none; }
 
 @media (max-width: 520px) {
   .card { padding: .85rem; }
+  .card > .balk {
+    position: static;
+    isolation: isolate;
+    z-index: 1;
+  }
+  .balk > * { position: relative; z-index: 1; }
+  .author { max-width: calc(100% - 102px); }
+  .author > span { overflow: hidden; }
+  .author strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .balk { gap: .45rem; padding: .55rem; }
   .top { gap: .45rem; flex: 1; overflow: hidden; }
   .wordAvatar { width: 40px; height: 40px; }
   .wordCopy > small { font-size: .52rem; }
   .woord { font-size: .9rem; }
   .meta { gap: .25rem; font-size: .62rem; }
-  .actions { gap: .3rem; }
+  .actions { gap: 0; }
   .cardVotes { width: 76px; min-height: 54px; margin-block: -.75rem; padding: .52rem .48rem; font-size: .72rem; }
   .cardVotes::before { inset: -18px -22px; }
   .cardVotes span { font-size: 1.12rem; }
   .cardVotes b { font-size: .82rem; }
-  .knoppie { justify-content: center; padding: .52rem .65rem; }
+  .knoppie { display: none; }
+  .mobileKnoppie {
+    position: absolute;
+    top: .85rem;
+    right: .85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .42rem;
+    justify-content: center;
+    min-height: 42px;
+    padding: .62rem .82rem;
+    box-sizing: border-box;
+    border: 2px solid var(--color-ink);
+    border-radius: 10px;
+    background: var(--color-geel);
+    color: var(--color-ink);
+    box-shadow: 3px 3px 0 var(--color-oranje);
+    font-family: var(--font-pixel);
+    font-size: .9rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .mobileKnoppie .buttonArrow { width: 18px; height: 4px; }
+  .mobileKnoppie .buttonArrow::after { width: 8px; height: 8px; border-width: 4px; }
 }

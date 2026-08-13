@@ -41,6 +41,7 @@ type AddWordInput = {
   profile: CreatorProfile
 
   parentWord?: ParentWord | null
+  sourceChallenge?: 'friend' | null
 }
 
 export async function addWord({
@@ -51,6 +52,7 @@ export async function addWord({
   user,
   profile,
   parentWord = null,
+  sourceChallenge = null,
 }: AddWordInput) {
   const cleanText = text.trim()
 
@@ -85,6 +87,8 @@ export async function addWord({
       createdByUid: user.uid,
       createdByUsername: profile.username,
       createdByAvatar: avatar,
+
+      sourceChallenge,
 
       isRemix: Boolean(parentWord),
 

@@ -32,7 +32,6 @@
   background-position: center, center var(--grass-scroll-y, 0px);
   background-size: 800px, cover;
   background-repeat: repeat, repeat-y;
-  will-change: background-position;
 }
 
 .editorFrame {
@@ -63,7 +62,9 @@
   aspect-ratio: 1;
   overflow: hidden;
   background: #dfddd7;
+  border: 0;
   border-radius: 4px;
+  box-shadow: inset 0 0 0 2px rgb(22 21 15 / 8%);
   cursor: pointer;
 }
 
@@ -97,6 +98,21 @@
   line-height: 1;
 }
 
+.dropzone:has(.voorskou)::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--texture-grain);
+  background-repeat: repeat;
+  background-size: 800px;
+  mix-blend-mode: multiply;
+  opacity: .2;
+}
+
+.dropTeks { position:relative;z-index:1; }
+
 .dropTeks strong {
   font-size: clamp(1rem, 2.5vw, 1.3rem);
 }
@@ -111,7 +127,8 @@
 .voorskou {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #d5d2cb;
 }
 
 .versteek {
@@ -318,6 +335,8 @@
   font-size: .75rem;
 }
 
+.actions { display:grid;grid-template-columns:58px minmax(0,1fr);gap:.75rem; }
+
 .deel {
   width: 100%;
   padding: .88rem 1.1rem;
@@ -333,13 +352,17 @@
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
+.deel svg { width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round; }
+.shareLoading { width:20px;height:20px;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:shareSpin .7s linear infinite; }
+@keyframes shareSpin { to { transform:rotate(360deg); } }
+
 .deel:not(:disabled):hover {
   box-shadow: 5px 9px 0 var(--color-sagpienk);
   transform: translateY(-3px);
 }
 
 .deel:disabled {
-  cursor: wait;
+  cursor: not-allowed;
   filter: grayscale(.25);
   opacity: .55;
 }
@@ -358,6 +381,10 @@
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
+
+.actions .deel,.actions .plaas { height:100%;min-height:56px; }
+.actions .deel { display:grid;width:58px;padding:0;place-items:center;border-color:var(--color-ink);border-radius:16px;box-shadow:4px 5px 0 var(--color-sagpienk); }
+.actions .plaas { border-radius:16px; }
 
 .plaas:not(:disabled):hover {
   box-shadow: 5px 9px 0 var(--color-geel);
@@ -379,6 +406,57 @@
   font-size: .82rem;
   font-weight: 700;
 }
+
+.shareBackdrop {
+  position: fixed;
+  z-index: 10060;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  overflow: hidden;
+  background: rgb(16 15 12 / 74%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: shareBackdropIn 220ms ease both;
+}
+
+.sharePicker {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: calc(100dvh - clamp(2rem, 6vw, 4rem));
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: clamp(1.4rem, 4vw, 2rem);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 3px solid var(--color-oranje);
+  border-radius: 28px;
+  box-shadow: 9px 11px 0 var(--color-sagpienk);
+  text-align: center;
+  animation: sharePickerIn 380ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.shareClose { position: absolute; top: .75rem; right: .75rem; display: grid; width: 40px; height: 40px; place-items: center; padding: 0; color: var(--color-ink); background: #fff; border: 2px solid var(--color-ink); border-radius: 50%; font: 900 1.5rem/1 var(--font-pixel); cursor: pointer; }
+.sharePicker > small { display: block; margin-bottom: .35rem; color: var(--color-oranje); font-size: .7rem; font-weight: 900; letter-spacing: .12em; }
+.sharePicker h2 { max-width: 85%; margin: 0 auto; font: 900 clamp(1.65rem, 5vw, 2.4rem)/1 var(--font-pixel); }
+.sharePicker > p { margin: .7rem auto 1.25rem; color: #686158; font-size: .86rem; }
+.shareChoices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.shareChoices > button { display: flex; min-width: 0; align-items: center; gap: .85rem; padding: .9rem; color: var(--color-ink); background: #fff; border: 3px solid var(--color-ink); border-radius: 17px; box-shadow: 4px 5px 0 var(--color-geel); text-align: left; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease; }
+.shareChoices > button:last-child { box-shadow: 4px 5px 0 var(--color-sagpienk); }
+.shareChoices > button:hover { transform: translateY(-3px); box-shadow: 4px 8px 0 var(--color-oranje); }
+.shareChoices > button > span:last-child { display: grid; min-width: 0; gap: .18rem; }
+.shareChoices strong { font-family: var(--font-pixel); font-size: .76rem; line-height: 1.15; }
+.shareChoices small { color: #777067; font-size: .64rem; font-weight: 800; }
+.squareFormat, .storyFormat { position: relative; display: grid; flex: 0 0 auto; place-items: center; overflow: hidden; background: var(--color-pienk); border: 2px solid var(--color-ink); box-shadow: 2px 3px 0 var(--color-oranje); }
+.squareFormat { width: 56px; height: 56px; border-radius: 9px; }
+.storyFormat { width: 34px; height: 60px; margin-inline: 11px; border-radius: 8px; }
+.squareFormat i, .storyFormat i { display: block; width: 62%; height: 57%; background: #fff; border: 2px solid var(--color-ink); border-radius: 5px; }
+
+@keyframes shareBackdropIn { from { opacity: 0; } }
+@keyframes sharePickerIn { from { opacity: 0; transform: translateY(20px) scale(.95); } }
+@keyframes shareSheetIn { from { opacity: .35; transform: translateY(calc(100% + 2rem)); } to { opacity: 1; transform: translateY(0); } }
 
 @keyframes errorIn {
   from { opacity: 0; transform: translateY(-5px) scale(.98); }
@@ -410,6 +488,11 @@
   .controls {
     padding: 0 .35rem .6rem;
   }
+
+  .shareBackdrop { align-items: end; padding: max(.6rem, env(safe-area-inset-top)) .45rem 0; }
+  .sharePicker { width: 100%; max-height: calc(100dvh - max(.6rem, env(safe-area-inset-top))); padding: 1.5rem .9rem calc(1rem + env(safe-area-inset-bottom)); border-radius: 25px 25px 0 0; box-shadow: 5px -2px 0 var(--color-sagpienk); animation: shareSheetIn 480ms cubic-bezier(.16, 1, .3, 1) both; }
+  .shareChoices { grid-template-columns: 1fr; }
+  .shareChoices > button { min-height: 78px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -418,7 +501,14 @@
   .changePhoto,
   .veld,
   .deel,
-  .plaas {
+  .plaas,
+  .shareChoices > button {
     transition: none;
   }
+
+  .shareBackdrop,
+  .sharePicker { animation: none; }
 }
+
+/* Challenge palette sampled from the Foto-doop poster. */
+.page { --challenge-colour: #2858df; }

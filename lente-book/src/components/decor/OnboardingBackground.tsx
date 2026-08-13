@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -38,6 +39,7 @@ export default function OnboardingBackground() {
   const isHome = location.pathname === '/'
   const cloudRefs = useRef<(HTMLImageElement | null)[]>([])
   const [cloudsAway, setCloudsAway] = useState(false)
+  const [cloudMotionPaused, setCloudMotionPaused] = useState(false)
   const [escapeVars, setEscapeVars] = useState<EscapeVars[]>(
     CLOUDS.map(() => ({ '--cloud-away-x': '0px', '--cloud-away-y': '0px' })),
   )
@@ -45,6 +47,7 @@ export default function OnboardingBackground() {
   useLayoutEffect(() => {
     if (!isHome) {
       setCloudsAway(false)
+      setCloudMotionPaused(false)
       return
     }
 
@@ -71,8 +74,17 @@ export default function OnboardingBackground() {
     return () => window.cancelAnimationFrame(frame)
   }, [isHome])
 
+  useEffect(() => {
+    if (!cloudsAway) return
+    // The clouds have a 1.45s flight off screen. Once that visible animation
+    // is complete, pause their hidden orbit/twinkle loops so they no longer
+    // consume frames while the user scrolls the home page.
+    const timer = window.setTimeout(() => setCloudMotionPaused(true), 1500)
+    return () => window.clearTimeout(timer)
+  }, [cloudsAway])
+
   return (
-    <div className={`${styles.wrap} ${isHome ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
+    <div className={`${styles.wrap} ${isHome ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''} ${cloudMotionPaused ? styles.cloudMotionPaused : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
       <img
         className={styles.sun}
         src={sunElement}

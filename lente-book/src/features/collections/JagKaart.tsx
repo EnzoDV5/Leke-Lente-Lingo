@@ -1,11 +1,13 @@
 import {
+  useEffect,
   useState,
   type CSSProperties,
 } from 'react'
 import { Link } from 'react-router-dom'
 
-import type {
-  ChallengeDefinition,
+import {
+  CORE_CHALLENGE_IDS,
+  type ChallengeDefinition,
 } from '../challenges/challengeConfig'
 
 import type {
@@ -26,6 +28,7 @@ type JagKaartProps = {
   wildcardProgress?: number
   onScan: () => void
   revealClue?: boolean
+  celebrate?: boolean
 }
 
 export default function JagKaart({
@@ -35,9 +38,14 @@ export default function JagKaart({
   wildcardProgress = 0,
   onScan,
   revealClue = false,
+  celebrate = false,
 }: JagKaartProps) {
   const [flipped, setFlipped] =
-    useState(revealClue)
+    useState(revealClue && !progress.collected)
+
+  useEffect(() => {
+    if (progress.collected) setFlipped(false)
+  }, [progress.collected])
 
   const [imageFailed, setImageFailed] =
     useState(false)
@@ -45,6 +53,7 @@ export default function JagKaart({
   const locked =
     challenge.id === 'wildcard' &&
     wildcardLocked
+  const canFlip = !locked || progress.collected
 
   const rotation =
     ((challenge.number * 5) % 7) - 3
@@ -63,19 +72,21 @@ export default function JagKaart({
   return (
     <article
       id={`poster-${challenge.id}`}
-      className={`${styles.shell} ${challenge.id === 'wildcard' ? styles.wildcardShell : ''}`}
+      className={`${styles.shell} ${challenge.id === 'wildcard' ? styles.wildcardShell : ''} ${progress.collected ? styles.collectedShell : ''} ${celebrate ? styles.collectedReveal : ''}`}
       style={cardStyle}
     >
       <div
         className={`${styles.card} ${
           flipped ? styles.flipped : ''
         }`}
-        role="button"
-        tabIndex={0}
-        aria-label={`${challenge.name}. ${flipped ? 'Wys poster' : 'Wys leidraad'}`}
-        onClick={() => setFlipped((current) => !current)}
+        role={canFlip ? 'button' : undefined}
+        tabIndex={canFlip ? 0 : -1}
+        aria-label={progress.collected ? `${challenge.name}. ${flipped ? 'Wys poster' : 'Wys jou resultaat'}` : `${challenge.name}. ${flipped ? 'Wys poster' : 'Wys leidraad'}`}
+        onClick={() => {
+          if (canFlip) setFlipped((current) => !current)
+        }}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
+          if (canFlip && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault()
             setFlipped((current) => !current)
           }
@@ -136,17 +147,16 @@ export default function JagKaart({
           </span>
 
           {!progress.collected && !locked && (
-            <span
-              className={styles.question}
-            >
-              ?
+            <span className={styles.tapPrompt}>
+              <span className={styles.question}>?</span>
+              <small>TAP</small>
             </span>
           )}
 
           {locked && (
             <span
               className={styles.lock}
-              data-progress={`${Math.min(wildcardProgress, 5)}/5 versamel`}
+              data-progress={`${Math.min(wildcardProgress, CORE_CHALLENGE_IDS.length)}/${CORE_CHALLENGE_IDS.length} versamel`}
             >
               🔒
             </span>
@@ -168,12 +178,16 @@ export default function JagKaart({
           </span>
 
           <p className={styles.eyebrow}>
-            LEIDRAAD 0{challenge.number}
+            {progress.collected ? 'JOU RESULTAAT' : `LEIDRAAD 0${challenge.number}`}
           </p>
 
-          <h2>{challenge.name}</h2>
+          <h2>{progress.collected ? 'So het jy dit verdien' : challenge.name}</h2>
 
-          <p>{challenge.clue}</p>
+          {progress.collected ? (
+            <SavedResult challenge={challenge} progress={progress} />
+          ) : (
+            <p>{challenge.clue}</p>
+          )}
 
           {locked && (
             <strong
@@ -181,11 +195,11 @@ export default function JagKaart({
                 styles.lockMessage
               }
             >
-              Versamel eers die ander vyf.
+              Versamel eers die ander ses.
             </strong>
           )}
 
-          {!locked && challenge.id !== 'wildcard' && (
+          {!progress.collected && !locked && challenge.id !== 'wildcard' && (
             <button
               type="button"
               className={styles.backScanButton}
@@ -212,65 +226,55 @@ export default function JagKaart({
         </div>
       </div>
 
-      <div className={styles.meta}>
-        <div>
-          <strong>
-            {challenge.name}
-          </strong>
-
-          <span>
-            {progress.collected
-              ? 'In jou versameling'
-              : locked
-                ? 'Nog gesluit'
-                : 'Nog nie versamel nie'}
-          </span>
-        </div>
-
-        <span
-          className={
-            progress.collected
-              ? styles.statusDone
-              : styles.statusOpen
-          }
-        >
-          {progress.collected
-            ? '✓'
-            : locked
-              ? '🔒'
-              : `0${challenge.number}`}
-        </span>
-      </div>
-
-      {challenge.id === 'doop' && (
-        <Link
-          className={styles.simulatorLink}
-          to="/challenge/doop/poep-pods-warm-seat?area=bathroom&simulator=1"
-          onClick={(event) => event.stopPropagation()}
-        >
-          Bekyk simulator
-        </Link>
-      )}
-      {challenge.id === 'remix' && (
-        <Link className={styles.simulatorLink} to="/challenge/remix/poep-pods-warm-seat?area=bathroom&simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator
-        </Link>
-      )}
-      {challenge.id === 'guess' && (
-        <Link className={styles.simulatorLink} to="/challenge/raai?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator
-        </Link>
-      )}
-      {challenge.id === 'photo' && (
-        <Link className={styles.simulatorLink} to="/challenge/foto?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator
-        </Link>
-      )}
-      {challenge.id === 'friend' && (
-        <Link className={styles.simulatorLink} to="/challenge/maat?simulator=1" onClick={(event) => event.stopPropagation()}>
-          Bekyk simulator
-        </Link>
-      )}
     </article>
+  )
+}
+
+function SavedResult({
+  challenge,
+  progress,
+}: {
+  challenge: ChallengeDefinition
+  progress: ChallengeProgress
+}) {
+  const result = progress.result
+
+  if (!result) {
+    return (
+      <div className={styles.savedResult}>
+        <span aria-hidden="true">✓</span>
+        <strong>{challenge.name} voltooi</strong>
+        <small>Jou oorspronklike resultaat is nie vir hierdie ouer inskrywing gestoor nie.</small>
+      </div>
+    )
+  }
+
+  if (result.kind === 'photo' && result.photoUrl) {
+    return (
+      <div className={`${styles.savedResult} ${styles.photoResult}`}>
+        <img src={result.photoUrl} alt={result.word ? `Jou foto: ${result.word}` : 'Jou uitdagingfoto'} />
+        <strong>{result.word}</strong>
+      </div>
+    )
+  }
+
+  if (result.kind === 'vote') {
+    return (
+      <div className={styles.savedResult}>
+        <span aria-hidden="true">{result.voteValue === -1 ? '👎' : '👍'}</span>
+        {result.phrase && <small className={styles.resultPhrase}>{result.phrase}</small>}
+        <strong>{result.word}</strong>
+        <small>{result.voteValue === -1 ? 'Jou afstem' : 'Jou stem'}</small>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.savedResult}>
+      {result.phrase && <small className={styles.resultPhrase}>{result.phrase}</small>}
+      {result.originalWord && <span className={styles.resultJourney}><i>{result.originalWord}</i><b>→</b></span>}
+      <strong>{result.word ?? 'Uitdaging voltooi'}</strong>
+      {result.partnerUsername && <small>Saam met {result.partnerUsername}</small>}
+    </div>
   )
 }

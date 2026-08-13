@@ -20,12 +20,12 @@ const NAV = [
     label: 'Woordeboek',
   },
   {
-    to: '/foto',
-    label: 'Voeg Foto',
+    to: '/collections',
+    label: 'Lente Bingo',
   },
   {
-    to: '/woordjag',
-    label: 'Lente Bingo',
+    to: '/foto',
+    label: 'Voeg Foto',
   },
 ]
 

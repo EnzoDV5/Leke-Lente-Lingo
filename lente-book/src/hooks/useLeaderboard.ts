@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore'
 
 import { db } from '../lib/firebase'
+import { officialPhraseText } from '../lib/officialPhraseCopy'
 import { useAuth } from '../features/auth/AuthContext'
 import type {
   VoteValue,
@@ -23,6 +24,8 @@ type StoredWord = {
   createdByUid: string
   createdByUsername: string
   createdByAvatar: string
+  phraseText?: string
+  area?: string
 }
 
 type StoredVote = {
@@ -38,6 +41,7 @@ export type LeaderboardWord =
     downVotes: number
     score: number
     totalVotes: number
+    currentUserVote?: VoteValue | null
   }
 
 export function useLeaderboard() {
@@ -72,12 +76,15 @@ export function useLeaderboard() {
 
       (snapshot) => {
         const words =
-          snapshot.docs.map(
-            (snapshotDocument) => ({
+          snapshot.docs.map((snapshotDocument) => {
+            const data = snapshotDocument.data()
+            const phraseId = String(data.phraseId ?? '')
+            return {
               id: snapshotDocument.id,
-              ...snapshotDocument.data(),
-            }),
-          ) as StoredWord[]
+              ...data,
+              phraseText: officialPhraseText(phraseId, String(data.phraseText ?? '')),
+            }
+          }) as StoredWord[]
 
         setStoredWords(words)
         setWordsLoading(false)
@@ -134,7 +141,7 @@ export function useLeaderboard() {
         )
 
         setError(
-          'Die votes kon nie gelaai word nie.',
+          'Die stemme kon nie gelaai word nie.',
         )
 
         setVotesLoading(false)
@@ -173,12 +180,12 @@ export function useLeaderboard() {
 
         totalVotes:
           wordVotes.length,
+
+        currentUserVote:
+          wordVotes.find((vote) => vote.userId === user?.uid)?.value ?? null,
       }
     })
-  }, [
-    storedWords,
-    storedVotes,
-  ])
+  }, [storedWords, storedVotes, user?.uid])
 
   const topWords = useMemo(() => {
     return [...rankedWords]

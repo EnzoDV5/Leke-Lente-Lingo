@@ -123,15 +123,24 @@
 @keyframes newWordGlow { 50% { transform: translateY(-5px); box-shadow: 9px 14px 0 var(--color-oranje); } }
 .rang { font-family: var(--font-display); font-weight: 900; width: 2.4rem; text-align: center; flex-shrink: 0; font-size: 1rem; }
 .woordAvatar { width: 58px; height: 58px; flex: 0 0 auto; border: 4px solid var(--color-oranje); border-radius: 50%; background: white; box-shadow: 3px 3px 0 var(--color-geel); object-fit: contain; }
+.woordAvatarGroep { display: contents; }
+.mobieleWoordMeta { display: none; }
 .woordAvatar[src*="LENTEDAG-logo2"] { padding: 5px; box-sizing: border-box; object-fit: contain; }
 .woordInfo { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .woordNaam { font-family: var(--font-display); font-weight: 900; font-size: 1.28rem; color: var(--color-ink); }
-.woordMeta { margin-top: .1rem; font-size: .84rem; color: #67625b; }
+.woordMeta { margin-top: .1rem; max-width: 100%; font-size: .84rem; color: #67625b; overflow-wrap: anywhere; white-space: normal; }
 .verbeter { font-size: .76rem; font-weight: 700; color: var(--color-oranje); margin-top: .15rem; }
 .steelKnop { display: grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border: 2px solid var(--color-ink); border-radius: 50%; background: var(--color-ink); color: var(--color-paper); box-shadow: 2px 2px 0 var(--color-oranje); font-size: 1.05rem; cursor: pointer; transition: transform 180ms ease, box-shadow 180ms ease; }
 .steelKnop:hover { transform: translateY(-2px) rotate(-5deg); box-shadow: 3px 4px 0 var(--color-oranje); }
 .stemKnop { flex-shrink: 0; font-family: var(--font-pixel); font-weight: 700; font-size: .85rem; background: var(--color-goud); color: var(--color-ink); border: 2px solid var(--color-ink); padding: .35rem .7rem; border-radius: var(--radius-pill); cursor: pointer; }
 @media (min-width: 768px) { .wrap { padding: 2rem 2rem 4rem; } }
+
+.woordAksies {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  flex-shrink: 0;
+}
 
 .voteActions {
   display: flex;
@@ -167,22 +176,34 @@
 @media (max-width: 650px) {
   .heroTerug { min-height: 46px; max-width: calc(100vw - 1.4rem); padding: .55rem .82rem .55rem .55rem; gap: .52rem; font-size: clamp(.76rem, 3.5vw, .9rem); box-shadow: 4px 5px 0 var(--color-oranje); }
   .heroTerug > span { width: 28px; height: 28px; font-size: 0; }
-  .woordItem { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: .4rem; min-height: 68px; padding: .72rem .5rem; }
-  .rang { width: 1.55rem; font-size: .8rem; }
-  .woordAvatar { width: 42px; height: 42px; border-width: 3px; }
-  .woordNaam { overflow: hidden; font-size: .94rem; text-overflow: ellipsis; white-space: nowrap; }
-  .woordMeta { overflow: hidden; font-size: .65rem; text-overflow: ellipsis; white-space: nowrap; }
+  .woordItem {
+    display: grid;
+    grid-template-columns: auto 96px minmax(0, 1fr);
+    align-items: center;
+    column-gap: .4rem;
+    min-height: 126px;
+    padding: .8rem .45rem;
+    box-sizing: border-box;
+  }
+  .rang { width: 1.25rem; align-self: center; font-size: .8rem; }
+  .woordAvatarGroep { display: flex; width: 96px; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: .38rem; align-self: center; transform: translateX(-.35rem); }
+  .woordAvatar { width: 62px; height: 62px; align-self: center; border-width: 3px; }
+  .mobieleWoordMeta { display: block; width: 100%; color: #67625b; font-size: .76rem; font-weight: 900; line-height: 1.1; text-align: center; overflow-wrap: anywhere; white-space: normal; }
+  .woordInfo { min-height: 98px; align-self: stretch; margin-left: .2rem; padding-top: 1.65rem; box-sizing: border-box; }
+  .woordNaam { overflow: visible; font-size: 1.04rem; line-height: 1.08; overflow-wrap: anywhere; text-overflow: clip; white-space: normal; }
+  .woordMeta { display: none; }
   .verbeter { display: none; }
-  .steelKnop { width: 32px; height: 32px; font-size: .82rem; }
+  .woordAksies { position: absolute; right: .6rem; bottom: .65rem; gap: .65rem; }
+  .steelKnop { width: 34px; height: 34px; font-size: .82rem; }
   .wordCount { margin-bottom: 0; }
   .voteActions {
     width: auto;
-    gap: .25rem;
+    gap: .45rem;
   }
 
   .voteButton {
-    min-width: 44px;
-    padding: .45rem .35rem;
+    min-width: 47px;
+    padding: .45rem .4rem;
     font-size: .73rem;
   }
 }

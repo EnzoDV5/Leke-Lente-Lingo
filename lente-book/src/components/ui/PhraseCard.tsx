@@ -22,6 +22,9 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
           <strong>{phraseAuthor}</strong>
         </span>
       </div>
+      <Link to={`/woordeboek/${frase.id}`} className={styles.mobileKnoppie}>
+        Meer <span className={styles.buttonArrow} aria-hidden="true" />
+      </Link>
       <p className={styles.frase}>{frase.beskrywing}</p>
       <div className={styles.balk}>
         <div className={styles.top}>
@@ -38,12 +41,14 @@ export default function PhraseCard({ frase }: { frase: Frase }) {
         </div>
         <div className={styles.actions}>
           {top && (
-            <span className={styles.cardVotes} aria-label={`${top.stemme} hou-van stemme`}>
+            <span className={styles.cardVotes} aria-label={`${top.stemme} stemme`}>
               <span aria-hidden="true">👍</span>
               <b>{top.stemme}</b>
             </span>
           )}
-          <Link to={`/woordeboek/${frase.id}`} className={styles.knoppie}>Meer</Link>
+          <Link to={`/woordeboek/${frase.id}`} className={styles.knoppie}>
+            Meer <span className={styles.buttonArrow} aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </article>

@@ -10,7 +10,6 @@ import {
 import {
   onAuthStateChanged,
   signInAnonymously,
-  signOut,
   type User,
 } from 'firebase/auth'
 
@@ -70,6 +69,14 @@ let anonymousSignInPromise:
   | Promise<User>
   | null = null
 
+function requestPersistentDeviceStorage() {
+  if (!navigator.storage?.persist) return
+
+  void navigator.storage.persist().catch(() => {
+    // The Firebase session still uses local persistence when unsupported.
+  })
+}
+
 function normaliseUsername(
   value: string,
 ) {
@@ -124,33 +131,6 @@ function isRecoverableAuthSessionError(
   ].some((code) => error.message.includes(code))
 }
 
-function clearRemovedAuthFlags() {
-  try {
-    window.localStorage.removeItem(
-      'lente-last-profile',
-    )
-    window.localStorage.removeItem(
-      'lente-post-google-link-logout',
-    )
-    window.localStorage.removeItem(
-      'lente-pending-google-link',
-    )
-  } catch {
-    // Ignore blocked storage.
-  }
-
-  try {
-    window.sessionStorage.removeItem(
-      'lente-post-google-link-logout',
-    )
-    window.sessionStorage.removeItem(
-      'lente-pending-google-link',
-    )
-  } catch {
-    // Ignore blocked storage.
-  }
-}
-
 async function getOrCreateAnonymousUser() {
   await authReady
 
@@ -158,10 +138,23 @@ async function getOrCreateAnonymousUser() {
     return auth.currentUser
   }
 
-  anonymousSignInPromise ??= signInAnonymously(
-    auth,
+  const createOnce = async () => {
+    if (auth.currentUser) {
+      return auth.currentUser
+    }
+
+    const credential = await signInAnonymously(auth)
+    return credential.user
+  }
+
+  anonymousSignInPromise ??= (
+    navigator.locks
+      ? navigator.locks.request(
+          'lente-anonymous-auth-bootstrap',
+          createOnce,
+        )
+      : createOnce()
   )
-    .then((credential) => credential.user)
     .finally(() => {
       anonymousSignInPromise = null
     })
@@ -180,6 +173,9 @@ export function AuthProvider({
 
   const profileRef =
     useRef<LenteProfile | null>(null)
+
+  const profileSaveInProgressRef =
+    useRef(false)
 
   const [loading, setLoading] =
     useState(true)
@@ -201,6 +197,14 @@ export function AuthProvider({
   ): Promise<LenteProfile | null> => {
     setProfileLoading(true)
 
+    // The first anonymous auth event can arrive just before the onboarding
+    // profile transaction finishes. Do not let that temporary empty read
+    // overwrite the profile that is currently being created.
+    if (profileSaveInProgressRef.current) {
+      setProfileLoading(false)
+      return profileRef.current
+    }
+
     try {
       const profileReference = doc(
         db,
@@ -216,6 +220,7 @@ export function AuthProvider({
           snapshot.data() as LenteProfile
 
         setProfile(loadedProfile)
+        requestPersistentDeviceStorage()
         return loadedProfile
       } else {
         setProfile(null)
@@ -241,41 +246,21 @@ export function AuthProvider({
 
     let cancelled = false
 
-    authReady.then(() => {
-      if (cancelled) return
-      clearRemovedAuthFlags()
+    authReady
+      .then(() => {
+        if (cancelled) return
 
-      unsubscribe = onAuthStateChanged(
-        auth,
-        async (firebaseUser) => {
+        unsubscribe = onAuthStateChanged(
+          auth,
+          async (firebaseUser) => {
           if (!firebaseUser) {
-            // Every visitor gets a stable, invisible identity right away —
-            // there's no separate "sign in" step, they just pick a username.
-            try {
-              const anonymousUser =
-                await getOrCreateAnonymousUser()
-
-              if (cancelled) return
-
-              setUser(anonymousUser)
-              setLoading(false)
-              await loadProfile(anonymousUser)
-            } catch (error) {
-              console.error(
-                'Anonymous sign-in error:',
-                error,
-              )
-
-              setAuthError(
-                friendlyError(error),
-              )
-
-              setUser(null)
-              setLoading(false)
-              setProfile(null)
-              setProfileLoading(false)
-            }
-
+            // Opening or refreshing onboarding must not create an account.
+            // The anonymous UID is created when Finished saves the profile.
+            setUser(null)
+            setProfile(null)
+            setLoading(false)
+            setProfileLoading(false)
+            setAuthError('')
             return
           }
 
@@ -283,47 +268,23 @@ export function AuthProvider({
           setLoading(false)
 
           await loadProfile(firebaseUser)
-        },
-        async (error) => {
+          },
+          async (error) => {
           console.error(
             'Authentication error:',
             error,
           )
 
           if (isRecoverableAuthSessionError(error)) {
-            try {
-              if (profileRef.current) {
-                setLoading(false)
-                setProfileLoading(false)
-                setAuthError(
-                  'Jou profiel is nog veilig op hierdie toestel.',
-                )
-
-                if (
-                  window.location.pathname !== '/'
-                ) {
-                  window.location.assign('/')
-                }
-
-                return
-              }
-
-              await signOut(auth).catch(() => undefined)
-              const freshUser =
-                (await signInAnonymously(auth)).user
-
-              setUser(freshUser)
-              setLoading(false)
-              await loadProfile(freshUser)
-              setAuthError('')
-
-              return
-            } catch (recoveryError) {
-              console.error(
-                'Authentication recovery failed:',
-                recoveryError,
-              )
-            }
+            setUser(auth.currentUser)
+            setLoading(false)
+            setProfileLoading(false)
+            setAuthError(
+              profileRef.current
+                ? 'Jou profieldata is nog veilig. Ons sal nie outomaties ’n nuwe rekening skep en jou UID vervang nie.'
+                : 'Jou vorige sessie kon nie herstel word nie. Ons sal nie stilweg ’n nuwe UID skep nie.',
+            )
+            return
           }
 
           setAuthError(
@@ -334,9 +295,17 @@ export function AuthProvider({
           setProfile(null)
           setLoading(false)
           setProfileLoading(false)
-        },
-      )
-    })
+          },
+        )
+      })
+      .catch((error) => {
+        if (cancelled) return
+        setAuthError(friendlyError(error))
+        setUser(null)
+        setProfile(null)
+        setLoading(false)
+        setProfileLoading(false)
+      })
 
     return () => {
       cancelled = true
@@ -350,26 +319,17 @@ export function AuthProvider({
     ): Promise<'available' | 'taken' | 'error'> => {
       let activeUser = user
 
-      if (!activeUser) {
-        try {
-          activeUser =
-            await getOrCreateAnonymousUser()
-          setUser(activeUser)
-        } catch (error) {
-          console.error(
-            'Anonymous sign-in retry failed:',
-            error,
-          )
-
-          return 'error'
-        }
-      }
-
       const cleanUsername =
         normaliseUsername(username)
 
       if (cleanUsername.length < 3) {
         return 'taken'
+      }
+
+      if (!activeUser) {
+        // The transaction in saveProfile performs the authoritative check
+        // after Finished creates the anonymous account.
+        return 'available'
       }
 
       try {
@@ -414,6 +374,7 @@ export function AuthProvider({
       // transient network hiccup). Give it one more try right here instead
       // of leaving people stuck with no way forward but a page refresh.
       try {
+        profileSaveInProgressRef.current = true
         activeUser =
           await getOrCreateAnonymousUser()
         setUser(activeUser)
@@ -426,6 +387,7 @@ export function AuthProvider({
         setAuthError(
           friendlyError(error),
         )
+        profileSaveInProgressRef.current = false
 
         return false
       }
@@ -440,6 +402,7 @@ export function AuthProvider({
       setAuthError(
         'Jou gebruikersnaam moet minstens 3 karakters hê.',
       )
+      profileSaveInProgressRef.current = false
 
       return false
     }
@@ -562,8 +525,11 @@ export function AuthProvider({
         },
       )
 
+      profileRef.current = newProfile
       setProfile(newProfile)
+      requestPersistentDeviceStorage()
       setAuthError('')
+      profileSaveInProgressRef.current = false
 
       return true
     } catch (error) {
@@ -571,6 +537,7 @@ export function AuthProvider({
         'Could not save profile:',
         error,
       )
+      profileSaveInProgressRef.current = false
 
       if (
         error instanceof Error &&

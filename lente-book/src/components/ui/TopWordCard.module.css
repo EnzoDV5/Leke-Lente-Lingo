@@ -17,4 +17,65 @@
 .rank3 .rank { background: #e7a062; }
 .rank1 img { width: 60px; height: 60px; border-width: 4px; }
 .rank1 .copy strong { font-size: 1.35rem; }
-@media (max-width: 520px) { .card { grid-template-columns: auto auto minmax(0,1fr) auto; gap: .55rem; padding: .7rem; } .rank { width: 29px; height: 29px; } .card img { width: 42px; height: 42px; } .copy strong { font-size: .95rem; } .votes { padding: .35rem .5rem; font-size: .75rem; } .arrow { display: none; } }
+@media (max-width: 520px) {
+  .card {
+    position: relative;
+    grid-template-columns: 30px 48px minmax(0, 1fr);
+    align-items: start;
+    gap: .6rem;
+    min-height: 86px;
+    box-sizing: border-box;
+    padding: .58rem .65rem 2rem;
+  }
+
+  .rank {
+    width: 29px;
+    height: 29px;
+    margin-top: .12rem;
+  }
+
+  .card img,
+  .rank1 img {
+    width: 42px;
+    height: 42px;
+    border-width: 3px;
+  }
+
+  .copy {
+    align-self: start;
+    gap: .12rem;
+    padding-top: 0;
+  }
+
+  .copy strong,
+  .rank1 .copy strong {
+    overflow: visible;
+    font-size: 1.05rem;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  .copy small {
+    display: block;
+    max-width: 100%;
+    font-size: .78rem;
+    font-weight: 700;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .votes {
+    position: absolute;
+    right: .62rem;
+    bottom: .42rem;
+    min-width: 54px;
+    justify-content: center;
+    padding: .3rem .5rem;
+    font-size: .76rem;
+  }
+
+  .arrow { display: none; }
+}

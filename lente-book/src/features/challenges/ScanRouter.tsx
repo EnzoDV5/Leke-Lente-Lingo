@@ -21,11 +21,15 @@ import {
 
 import {
   collectChallenge,
+  completeChallenge,
+  findExistingChallengeResult,
 } from '../../lib/challengeProgress'
 
 import {
   useChallengeProgress,
 } from '../../hooks/useChallengeProgress'
+import ChallengeSuccess from './ChallengeSuccess'
+import LoadingCard from '../../components/ui/LoadingCard'
 
 function challengeDestination(
   challengeId: ChallengeId,
@@ -52,6 +56,9 @@ function challengeDestination(
     case 'guess':
       return `/challenge/raai?${queryString}`
 
+    case 'vote':
+      return `/challenge/stem?${queryString}`
+
     case 'photo':
       return `/challenge/foto?${queryString}`
 
@@ -61,6 +68,13 @@ function challengeDestination(
     case 'wildcard':
       return `/challenge/wildcard?${queryString}`
   }
+}
+
+function isLocationChallenge(
+  challengeId: ChallengeId,
+) {
+  return challengeId === 'doop' ||
+    challengeId === 'remix'
 }
 
 export default function ScanRouter() {
@@ -83,6 +97,9 @@ export default function ScanRouter() {
 
   const [error, setError] =
     useState('')
+
+  const [unlockedChallenge, setUnlockedChallenge] =
+    useState<ChallengeId | null>(null)
 
   const handled = useRef(false)
 
@@ -124,6 +141,23 @@ export default function ScanRouter() {
     }
 
     const openChallenge = async () => {
+      const destination = challengeDestination(
+        challengeId,
+        phraseId,
+        area,
+      )
+
+      const openScannedLocation = (
+        posterJustClaimed = false,
+      ) => {
+        navigate(destination, {
+          replace: true,
+          state: posterJustClaimed
+            ? { posterJustClaimed: true }
+            : undefined,
+        })
+      }
+
       /*
        * If the user completed this challenge
        * earlier, scanning collects it immediately.
@@ -132,18 +166,41 @@ export default function ScanRouter() {
         progress[challengeId]
           .challengeCompleted
       ) {
+        if (progress[challengeId].collected) {
+          if (isLocationChallenge(challengeId)) {
+            openScannedLocation()
+            return
+          }
+
+          navigate(`/collections?poster=${challengeId}`, { replace: true })
+          return
+        }
+
         await collectChallenge(
           user.uid,
           challengeId,
         )
 
-        navigate(
-          `/woordjag?collected=${challengeId}`,
-          {
-            replace: true,
-          },
-        )
+        if (isLocationChallenge(challengeId)) {
+          openScannedLocation(true)
+          return
+        }
 
+        setUnlockedChallenge(challengeId)
+
+        return
+      }
+
+      const existingResult = await findExistingChallengeResult(user.uid, challengeId)
+      if (existingResult) {
+        await completeChallenge(user.uid, challengeId, true, existingResult)
+
+        if (isLocationChallenge(challengeId)) {
+          openScannedLocation(true)
+          return
+        }
+
+        setUnlockedChallenge(challengeId)
         return
       }
 
@@ -164,16 +221,7 @@ export default function ScanRouter() {
         return
       }
 
-      navigate(
-        challengeDestination(
-          challengeId,
-          phraseId,
-          area,
-        ),
-        {
-          replace: true,
-        },
-      )
+      openScannedLocation()
     }
 
     void openChallenge().catch(
@@ -215,7 +263,7 @@ export default function ScanRouter() {
           </p>
 
           <Link
-            to="/woordjag"
+            to="/collections"
             className="mt-6 inline-block border-3 border-black bg-[#ffcf18] px-6 py-3 font-display font-black text-black shadow-[4px_4px_0_#000]"
           >
             Gaan na my versameling
@@ -225,27 +273,24 @@ export default function ScanRouter() {
     )
   }
 
-  const challenge =
-    isChallengeId(challengeId)
-      ? CHALLENGES[challengeId]
-      : null
+  if (unlockedChallenge) {
+    const unlocked = CHALLENGES[unlockedChallenge]
+    return (
+      <main className="grid min-h-[70vh] place-items-center">
+        <ChallengeSuccess
+          challengeId={unlockedChallenge}
+          icon={unlocked.icon}
+          unlockOnly
+          title={`${unlocked.name} ontsluit!`}
+          text="Jy het hierdie uitdaging reeds voltooi. Die QR-kode het nou jou poster ontsluit."
+        />
+      </main>
+    )
+  }
 
   return (
     <main className="grid min-h-[70vh] place-items-center px-5 text-center">
-      <div>
-        <span className="text-6xl">
-          {challenge?.icon ?? '⚡'}
-        </span>
-
-        <h1 className="mt-4 font-display text-3xl text-white">
-          {challenge?.name ??
-            'Poster word oopgemaak'}
-        </h1>
-
-        <p className="mt-2 text-white/75">
-          Jou QR-kode word nagegaan...
-        </p>
-      </div>
+      <LoadingCard label={isChallengeId(challengeId) ? `${CHALLENGES[challengeId].name} word oopgemaak…` : 'Jou QR-kode word nagegaan…'} />
     </main>
   )
 }

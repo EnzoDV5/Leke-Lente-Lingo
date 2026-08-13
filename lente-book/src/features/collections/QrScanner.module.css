@@ -1,10 +1,68 @@
-.backdrop { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 1rem; overflow: hidden; touch-action: none; background: rgba(10,62,110,.82); }
-.scanner { position: relative; width: min(440px, 100%); max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; box-sizing: border-box; padding: 1.25rem; border: 3px solid var(--color-oranje); border-radius: 24px; background: #fbf7ef; box-shadow: 9px 10px 0 var(--color-geel); text-align: center; }
+.backdrop {
+  position: fixed;
+  z-index: 10050;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  overflow: hidden;
+  touch-action: none;
+  background: rgb(16 15 12 / 76%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: backdropIn 220ms ease both;
+}
+
+.scanner {
+  position: relative;
+  width: min(460px, 100%);
+  min-width: 0;
+  max-height: calc(100dvh - clamp(2rem, 6vw, 4rem));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-gutter: stable;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 3px solid var(--color-oranje);
+  border-radius: 24px;
+  background: #fbf7ef;
+  box-shadow: 9px 10px 0 var(--color-geel);
+  text-align: center;
+  animation: scannerIn 380ms cubic-bezier(.22,1,.36,1) both;
+}
+
 .close { position: absolute; z-index: 2; top: .7rem; right: .7rem; display: grid; width: 38px; height: 38px; place-items: center; border: 2px solid var(--color-oranje); border-radius: 50%; background: #fff; color: var(--color-oranje); font-size: 1.5rem; cursor: pointer; }
 .kicker { margin: 0; color: var(--color-oranje); font-family: var(--font-body); font-weight: 700; font-size: .82rem; letter-spacing: .06em; }
 .scanner h2 { margin: .35rem 2rem 1rem; color: var(--color-oranje); font-family: var(--font-pixel); font-size: clamp(1.8rem, 7vw, 2.7rem); line-height: .9; text-transform: uppercase; }
-.viewport { position: relative; overflow: hidden; aspect-ratio: 1; border: 3px solid var(--color-oranje); border-radius: 18px; background: #151515; }
+.viewport { position: relative; width: min(100%, 52dvh); margin-inline: auto; overflow: hidden; aspect-ratio: 1; border: 3px solid var(--color-oranje); border-radius: 18px; background: #151515; }
 .viewport video { width: 100%; height: 100%; display: block; object-fit: cover; }
-.viewport span { position: absolute; inset: 13%; border: 4px solid var(--color-geel); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,.2); }
+.scanFrame { position: absolute; inset: 13%; border: 4px solid var(--color-geel); border-radius: 16px; box-shadow: 0 0 0 999px rgba(0,0,0,.2); }
+.scanFeedback { position: absolute; z-index: 3; top: 50%; left: 50%; display: grid; width: min(78%, 300px); gap: .35rem; box-sizing: border-box; padding: .9rem .75rem; color: #fff; border: 3px solid #fff; border-radius: 16px; box-shadow: 5px 6px 0 var(--color-ink); transform: translate(-50%, -50%); animation: scanFeedbackIn 320ms cubic-bezier(.18,1.35,.4,1) both; }
+.wrongPoster { background: rgb(210 45 27 / 94%); }
+.successPoster { background: rgb(22 131 58 / 96%); box-shadow: 5px 6px 0 var(--color-geel); }
+.scanFeedback strong { font-family: var(--font-pixel); font-size: clamp(.9rem, 4vw, 1.15rem); line-height: 1.1; text-transform: uppercase; }
+.scanFeedback small { font-size: .72rem; font-weight: 800; line-height: 1.3; }
 .message { min-height: 2.6em; margin: 1rem .5rem 0; color: #4f4a43; font-size: .85rem; font-weight: 800; line-height: 1.4; }
-@media (max-width: 520px), (max-height: 700px) { .backdrop { padding: .55rem; } .scanner { padding: .9rem; border-radius: 18px; box-shadow: 5px 6px 0 var(--color-geel); } .scanner h2 { margin-bottom: .7rem; font-size: 1.75rem; } .viewport { width: min(100%, 54dvh); margin-inline: auto; } .message { margin-top: .7rem; font-size: .78rem; } }
+
+@keyframes backdropIn { from { opacity: 0; } }
+@keyframes scannerIn { from { opacity: 0; transform: translateY(20px) scale(.96); } }
+@keyframes scanFeedbackIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.72) rotate(-3deg); } 70% { transform: translate(-50%, -50%) scale(1.04) rotate(1deg); } }
+
+@media (max-height: 700px) and (min-width: 601px) {
+  .scanner { padding: .9rem; }
+  .scanner h2 { margin-bottom: .7rem; font-size: 1.75rem; }
+  .viewport { width: min(100%, 48dvh); }
+  .message { margin-top: .7rem; font-size: .78rem; }
+}
+
+@media (max-width: 600px) {
+  .backdrop { place-items: center; padding: max(.55rem, env(safe-area-inset-top)) .45rem max(.55rem, env(safe-area-inset-bottom)); }
+  .scanner { width: min(440px, 100%); max-height: calc(100dvh - 1.1rem); padding: 1.1rem .9rem calc(.9rem + env(safe-area-inset-bottom)); border-radius: 24px; box-shadow: 5px 6px 0 var(--color-geel); scrollbar-gutter: auto; animation: scannerIn 380ms cubic-bezier(.22,1,.36,1) both; }
+  .scanner h2 { margin-bottom: .7rem; font-size: 1.75rem; }
+  .viewport { width: min(100%, 52dvh); }
+  .message { margin-top: .7rem; font-size: .78rem; }
+}
+
+@media (prefers-reduced-motion: reduce) { .backdrop, .scanner, .scanFeedback { animation: none; } }

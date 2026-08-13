@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
 
 import { useAuth } from '../../features/auth/AuthContext'
@@ -14,7 +15,7 @@ type Vote = { wordId: string; value: number }
 type PosterProgress = { collected?: boolean }
 
 function SavedWordsSkeleton() {
-  return (
+  return createPortal((
     <div className={styles.wordList} aria-hidden="true">
       {Array.from({ length: 3 }).map((_, index) => {
         const delay = index * 70
@@ -29,7 +30,7 @@ function SavedWordsSkeleton() {
         )
       })}
     </div>
-  )
+  ), document.body)
 }
 
 export default function ProfileModal({ open, onClose }: ProfileModalProps) {
@@ -168,7 +169,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
         </form>
 
         <div className={styles.stats}>
-          <div><strong>{words.length}</strong><span>Woorde geplaas</span></div>
+          <div><strong>{words.length}</strong><span>Woorde ingesit</span></div>
           <div><strong>{totalLikes}</strong><span>Hou-van’s ontvang</span></div>
           <div><strong>{collectedPosters}</strong><span>Posters versamel</span></div>
           <div><strong>{wildcardPhrases.length}</strong><span>Wildcard-frases</span></div>
@@ -176,7 +177,7 @@ export default function ProfileModal({ open, onClose }: ProfileModalProps) {
 
         <section className={styles.saved}>
           <h3>Jou woorde</h3>
-          {loading ? <SavedWordsSkeleton /> : words.length ? <div className={styles.wordList}>{words.map((word) => <article key={word.id}><div><strong>{word.text}</strong><span>{word.phraseText || 'Jou Lente-woord'}</span></div><b>♥ {likesByWord.get(word.id) ?? 0}</b></article>)}</div> : <p className={styles.empty}>Jy het nog nie ’n woord geplaas nie.</p>}
+          {loading ? <SavedWordsSkeleton /> : words.length ? <div className={styles.wordList}>{words.map((word) => <article key={word.id}><div><strong>{word.text}</strong><span>{word.phraseText || 'Jou Lente-woord'}</span></div><b>♥ {likesByWord.get(word.id) ?? 0}</b></article>)}</div> : <p className={styles.empty}>Jy het nog nie ’n woord ingesit nie.</p>}
         </section>
 
         {wildcardPhrases.length > 0 && <section className={styles.phrases}><h3>Jou Wildcard-frases</h3>{wildcardPhrases.map((word) => <p key={word.id}>{word.phraseText || word.text}</p>)}</section>}

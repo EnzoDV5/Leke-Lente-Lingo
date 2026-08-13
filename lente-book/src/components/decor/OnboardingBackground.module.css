@@ -112,6 +112,13 @@
 
 .home .star { opacity: 0; transition: opacity 700ms ease; }
 
+/* These elements are already fully outside the viewport at this point. */
+.cloudMotionPaused .spin,
+.cloudMotionPaused .counter,
+.cloudMotionPaused .star {
+  animation-play-state: paused;
+}
+
 @media (max-width: 680px) {
   .sun {
     top: clamp(18px, 4svh, 34px);

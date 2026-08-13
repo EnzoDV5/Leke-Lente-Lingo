@@ -8,6 +8,7 @@ import { frases } from '../../lib/mockData'
 import toiletIkoon from '../../assets/elements/poster elements/toilet-icon.webp'
 import bekerIkoon from '../../assets/elements/poster elements/cup-icon.webp'
 import luidsprekerIkoon from '../../assets/elements/poster elements/speaker-icon.webp'
+import vapeIkoon from '../../assets/elements/poster elements/vape.webp'
 import wildKaartIkoon from '../../assets/elements/poster titels/WILD CARD 2.webp'
 import styles from './Woordeboek.module.css'
 
@@ -20,9 +21,9 @@ const BORDE = [
 ]
 
 // Poster-element badges per bord, matched to the festival area they live in.
-// 'Die Choef-hoek' (smoking area) has no element yet — it falls back to the ✦ marker.
 const BORD_IKONE: Partial<Record<string, string>> = {
   'Die Poep-Pods': toiletIkoon,
+  'Die Choef-hoek': vapeIkoon,
   'Die Dopstop': bekerIkoon,
   'Die Beats Blok': luidsprekerIkoon,
   'Wildcard-skeppings': wildKaartIkoon,
@@ -73,9 +74,19 @@ export default function Woordeboek() {
             observer?.unobserve(entry.target)
           })
         },
-        { threshold: 0.1, rootMargin: '0px 0px -8% 0px' },
+        { threshold: 0.01, rootMargin: '0px 0px -4% 0px' },
       )
-      groups.forEach((el) => observer!.observe(el))
+      groups.forEach((el) => {
+        const isTopWordsGroup = visibleFilter === 'top'
+        const isAlreadyOnScreen = el.getBoundingClientRect().top < window.innerHeight * .96
+
+        if (isTopWordsGroup || isAlreadyOnScreen) {
+          el.classList.add(styles.groepRevealed)
+          return
+        }
+
+        observer!.observe(el)
+      })
     }
 
     const delay = isFirstReveal
@@ -144,7 +155,7 @@ export default function Woordeboek() {
       <CompactHero
         kicker="★ Lente Book ★"
         title="Die Woordeboek"
-        subtitle="Kies ’n frase ,  dink ’n woord ,  stem vir die beste"
+        subtitle="Kies ’n frase, dink ’n woord en gee die beste een ’n stem"
       />
 
       <div className={styles.wrap} data-no-auto-reveal ref={wrapRef}>

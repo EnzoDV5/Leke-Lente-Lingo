@@ -5,7 +5,7 @@ export default function Marquee() {
   return (
     <TextLoop
       className={styles.loop}
-      text="Lentedag 2026 · 16 September · Lente Book · Stem vir jou woord · Pretoria"
+      text="Lentedag 2026 · 16 September · Lente Book · Gee jou woord ’n opstem · Pretoria"
       shape="wave"
       speed={58}
       direction="forward"

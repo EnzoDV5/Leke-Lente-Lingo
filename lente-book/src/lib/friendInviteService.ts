@@ -14,6 +14,7 @@ export type FriendInvite = {
   inviteeUsername: string | null
   wordId: string | null
   wordText: string | null
+  collectPoster?: boolean
   expiresAt: Timestamp
   createdAt?: Timestamp
 }
@@ -45,8 +46,25 @@ export function watchFriendInvite(inviteId: string, callback: (invite: FriendInv
 export async function completeFriendInvite(invite: FriendInvite, inviteeUid: string, inviteeUsername: string, wordId: string, wordText: string) {
   const batch = writeBatch(db)
   batch.update(doc(db, 'friendInvites', invite.id), { status: 'completed', inviteeUid, inviteeUsername, wordId, wordText, completedAt: serverTimestamp(), updatedAt: serverTimestamp() })
-  const sharedProgress = { collected: true, challengeCompleted: true, collectedAt: serverTimestamp(), challengeCompletedAt: serverTimestamp(), inviteId: invite.id }
-  batch.set(doc(db, 'users', invite.inviterUid, 'posters', 'friend'), { ...sharedProgress, posterId: 'friend' }, { merge: true })
-  batch.set(doc(db, 'users', inviteeUid, 'posters', 'doop'), { ...sharedProgress, posterId: 'doop' }, { merge: true })
+  const inviterProgress: Record<string, unknown> = {
+    posterId: 'friend',
+    challengeCompleted: true,
+    challengeCompletedAt: serverTimestamp(),
+    inviteId: invite.id,
+    result: { kind: 'friend', word: wordText, phrase: invite.phraseText, partnerUsername: inviteeUsername, itemId: wordId, area: invite.area },
+  }
+  if (invite.collectPoster) {
+    inviterProgress.collected = true
+    inviterProgress.collectedAt = serverTimestamp()
+  }
+  batch.set(doc(db, 'users', invite.inviterUid, 'posters', 'friend'), inviterProgress, { merge: true })
+  batch.set(doc(db, 'users', inviteeUid, 'posters', 'friend'), {
+    posterId: 'friend',
+    collected: true,
+    challengeCompleted: true,
+    collectedAt: serverTimestamp(),
+    challengeCompletedAt: serverTimestamp(),
+    result: { kind: 'friend', word: wordText, phrase: invite.phraseText, partnerUsername: invite.inviterUsername, itemId: wordId, area: invite.area },
+  }, { merge: true })
   await batch.commit()
 }

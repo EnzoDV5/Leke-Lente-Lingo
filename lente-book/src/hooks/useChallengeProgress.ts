@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore'
 
 import { db } from '../lib/firebase'
+import type { ChallengeResult } from '../lib/challengeProgress'
 
 import {
   ALL_CHALLENGE_IDS,
@@ -24,6 +25,7 @@ export type ChallengeProgress = {
   challengeCompleted: boolean
   collectedAt: Timestamp | null
   challengeCompletedAt: Timestamp | null
+  result: ChallengeResult | null
 }
 
 function emptyProgress(
@@ -35,6 +37,7 @@ function emptyProgress(
     challengeCompleted: false,
     collectedAt: null,
     challengeCompletedAt: null,
+    result: null,
   }
 }
 
@@ -104,6 +107,7 @@ export function useChallengeProgress(
                 challengeCompletedAt:
                   data.challengeCompletedAt ??
                   null,
+                result: data.result ?? null,
               }
             }
           },
