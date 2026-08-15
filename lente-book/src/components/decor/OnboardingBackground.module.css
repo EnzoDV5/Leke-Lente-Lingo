@@ -115,7 +115,8 @@
 /* These elements are already fully outside the viewport at this point. */
 .cloudMotionPaused .spin,
 .cloudMotionPaused .counter,
-.cloudMotionPaused .star {
+.cloudMotionPaused .star,
+.cloudMotionPaused .sun {
   animation-play-state: paused;
 }
 

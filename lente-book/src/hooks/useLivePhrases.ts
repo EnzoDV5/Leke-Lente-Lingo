@@ -63,6 +63,7 @@ export function useLivePhrases() {
     let wildcardReady = false
     let standardFailed = false
     let wildcardFailed = false
+    let cancelled = false
 
     const publish = () => {
       const nextPhrases = [...standardPhrases, ...wildcardPhrases]
@@ -72,68 +73,100 @@ export function useLivePhrases() {
       setError(standardFailed || wildcardFailed ? 'Van die regstreekse frases kon nie gelaai word nie. Die ingeboude frases word intussen gewys.' : '')
     }
 
-    const unsubscribe = onSnapshot(
-      phrasesQuery,
-      (snapshot) => {
-        const liveById = new Map(
-          snapshot.docs.map((documentSnapshot) => [
-            documentSnapshot.id,
-            documentSnapshot.data(),
-          ]),
-        )
+    // A fresh anonymous sign-in can briefly race Firestore's own internal
+    // auth-token attachment, producing a one-off permission-denied on the
+    // very first onSnapshot call that never self-heals on its own. One
+    // short retry per listener covers that window.
+    let retriedStandard = false
+    let unsubscribe = () => {}
+    const subscribeStandard = () => {
+      unsubscribe = onSnapshot(
+        phrasesQuery,
+        (snapshot) => {
+          const liveById = new Map(
+            snapshot.docs.map((documentSnapshot) => [
+              documentSnapshot.id,
+              documentSnapshot.data(),
+            ]),
+          )
 
-        standardPhrases = OFFICIAL_FALLBACK_PHRASES.map((fallbackPhrase) => {
-          const livePhrase = liveById.get(fallbackPhrase.id)
-          return {
-            ...fallbackPhrase,
-            ...(livePhrase ?? {}),
-            id: fallbackPhrase.id,
-            text: officialPhraseText(
-              fallbackPhrase.id,
-              String(livePhrase?.text ?? fallbackPhrase.text),
-            ),
-          } as LivePhrase
-        })
+          standardPhrases = OFFICIAL_FALLBACK_PHRASES.map((fallbackPhrase) => {
+            const livePhrase = liveById.get(fallbackPhrase.id)
+            return {
+              ...fallbackPhrase,
+              ...(livePhrase ?? {}),
+              id: fallbackPhrase.id,
+              text: officialPhraseText(
+                fallbackPhrase.id,
+                String(livePhrase?.text ?? fallbackPhrase.text),
+              ),
+            } as LivePhrase
+          })
 
-        standardFailed = false
-        standardReady = true
-        publish()
-      },
-      (snapshotError) => {
-        console.error(
-          'Live phrases error:',
-          snapshotError,
-        )
+          standardFailed = false
+          standardReady = true
+          publish()
+        },
+        (snapshotError) => {
+          console.error(
+            'Live phrases error:',
+            snapshotError,
+          )
 
-        standardFailed = true
-        standardReady = true
-        publish()
-      },
-    )
+          if (!retriedStandard && snapshotError.code === 'permission-denied') {
+            retriedStandard = true
+            window.setTimeout(() => {
+              if (!cancelled) subscribeStandard()
+            }, 1200)
+            return
+          }
 
-    const unsubscribeCustom = onSnapshot(
-      customPhrasesQuery,
-      (snapshot) => {
-        wildcardPhrases = snapshot.docs.map((documentSnapshot, index) => ({
-          id: documentSnapshot.id,
-          text: String(documentSnapshot.data().text ?? ''),
-          area: documentSnapshot.data().area as FestivalArea,
-          boardNumber: 1000 + index,
-          colour: String(documentSnapshot.data().colour ?? 'pers'),
-          isWildcard: true,
-        }))
-        wildcardFailed = false
-        wildcardReady = true
-        publish()
-      },
-      () => {
-        wildcardFailed = true
-        wildcardReady = true
-        publish()
-      },
-    )
+          standardFailed = true
+          standardReady = true
+          publish()
+        },
+      )
+    }
+
+    let retriedCustom = false
+    let unsubscribeCustom = () => {}
+    const subscribeCustom = () => {
+      unsubscribeCustom = onSnapshot(
+        customPhrasesQuery,
+        (snapshot) => {
+          wildcardPhrases = snapshot.docs.map((documentSnapshot, index) => ({
+            id: documentSnapshot.id,
+            text: String(documentSnapshot.data().text ?? ''),
+            area: documentSnapshot.data().area as FestivalArea,
+            boardNumber: 1000 + index,
+            colour: String(documentSnapshot.data().colour ?? 'pers'),
+            isWildcard: true,
+          }))
+          wildcardFailed = false
+          wildcardReady = true
+          publish()
+        },
+        (snapshotError) => {
+          if (!retriedCustom && (snapshotError as { code?: string }).code === 'permission-denied') {
+            retriedCustom = true
+            window.setTimeout(() => {
+              if (!cancelled) subscribeCustom()
+            }, 1200)
+            return
+          }
+
+          wildcardFailed = true
+          wildcardReady = true
+          publish()
+        },
+      )
+    }
+
+    subscribeStandard()
+    subscribeCustom()
 
     return () => {
+      cancelled = true
       unsubscribe()
       unsubscribeCustom()
     }

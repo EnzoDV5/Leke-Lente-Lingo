@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom'
 import styles from './OnboardingBackground.module.css'
 import skyImg from '../../assets/elements/cloud-background.webp'
 import sunElement from '../../assets/elements/poster elements/sun.webp'
+import { useCampaign } from '../../features/campaign/CampaignProvider'
 
 type OrbitVars = CSSProperties & { '--dur': string; '--delay': string; '--r': string }
 type EscapeVars = CSSProperties & { '--cloud-away-x': string; '--cloud-away-y': string }
@@ -36,7 +37,9 @@ const hide = (e: React.SyntheticEvent<HTMLImageElement>) => {
 
 export default function OnboardingBackground() {
   const location = useLocation()
+  const { phase } = useCampaign()
   const isHome = location.pathname === '/'
+  const clearHomeClouds = isHome && phase !== 'pre'
   const cloudRefs = useRef<(HTMLImageElement | null)[]>([])
   const [cloudsAway, setCloudsAway] = useState(false)
   const [cloudMotionPaused, setCloudMotionPaused] = useState(false)
@@ -45,7 +48,7 @@ export default function OnboardingBackground() {
   )
 
   useLayoutEffect(() => {
-    if (!isHome) {
+    if (!clearHomeClouds) {
       setCloudsAway(false)
       setCloudMotionPaused(false)
       return
@@ -72,7 +75,7 @@ export default function OnboardingBackground() {
     setEscapeVars(nextEscapeVars)
     const frame = window.requestAnimationFrame(() => setCloudsAway(true))
     return () => window.cancelAnimationFrame(frame)
-  }, [isHome])
+  }, [clearHomeClouds])
 
   useEffect(() => {
     if (!cloudsAway) return
@@ -83,8 +86,29 @@ export default function OnboardingBackground() {
     return () => window.clearTimeout(timer)
   }, [cloudsAway])
 
+  useEffect(() => {
+    if (!isHome || phase !== 'pre') return
+
+    let animationFrame = 0
+    const updateCloudMotion = () => {
+      animationFrame = 0
+      setCloudMotionPaused(window.scrollY > window.innerHeight * .72)
+    }
+    const handleScroll = () => {
+      if (animationFrame) return
+      animationFrame = window.requestAnimationFrame(updateCloudMotion)
+    }
+
+    updateCloudMotion()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (animationFrame) window.cancelAnimationFrame(animationFrame)
+    }
+  }, [isHome, phase])
+
   return (
-    <div className={`${styles.wrap} ${isHome ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''} ${cloudMotionPaused ? styles.cloudMotionPaused : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
+    <div className={`${styles.wrap} ${clearHomeClouds ? styles.home : ''} ${cloudsAway ? styles.cloudsAway : ''} ${cloudMotionPaused ? styles.cloudMotionPaused : ''}`} aria-hidden="true" style={{ backgroundImage: `url(${skyImg})` }}>
       <img
         className={styles.sun}
         src={sunElement}

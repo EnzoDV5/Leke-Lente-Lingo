@@ -4,6 +4,7 @@ import styles from './CompactHero.module.css'
 type CompactHeroProps = {
   kicker: string
   title: string
+  titleImage?: string
   className?: string
   subtitle?: string
   children?: ReactNode
@@ -17,6 +18,7 @@ type CompactHeroProps = {
 export default function CompactHero({
   kicker,
   title,
+  titleImage,
   className = '',
   subtitle,
   children,
@@ -32,7 +34,9 @@ export default function CompactHero({
       <div className={styles.copy}>
         {aboveKicker}
         <p className={styles.kicker}>{kicker}</p>
-        <h1 className={statement ? styles.statement : ''}>{title}</h1>
+        <h1 className={statement ? styles.statement : ''}>
+          {titleImage ? <img className={styles.titleImage} src={titleImage} alt={title} /> : title}
+        </h1>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         {children}
       </div>

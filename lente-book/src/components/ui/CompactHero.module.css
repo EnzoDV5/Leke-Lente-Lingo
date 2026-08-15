@@ -65,6 +65,19 @@
   transform: rotate(-1deg);
 }
 
+/* Sized off the h1's own computed font-size (1em == the h1's font-size,
+   since an unset font-size on the img inherits it), so it automatically
+   matches whatever the text would have rendered at — including the
+   compact/statement variants and every breakpoint — with no values to
+   duplicate or keep in sync. */
+.titleImage {
+  display: block;
+  height: 1em;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .subtitle {
   max-width: 620px;
   margin: 1rem auto 0;

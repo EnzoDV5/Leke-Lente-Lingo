@@ -40,64 +40,92 @@ export function useLivePhotos() {
     useState('')
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, 'photos'),
+    let unsubscribe = () => {}
+    let cancelled = false
+    // A fresh anonymous sign-in (e.g. right after finishing onboarding) can
+    // briefly race Firestore's own internal auth-token attachment: React
+    // already sees the signed-in user, but the very first onSnapshot call
+    // can still land a split second too early and get a one-off
+    // permission-denied that never self-heals on its own. One short retry
+    // covers that window without masking a genuine, persistent failure.
+    let retriedAfterAuthRace = false
 
-      (snapshot) => {
-        const nextPhotos =
-          snapshot.docs.map((snapshotDocument) => {
-            return {
-              id: snapshotDocument.id,
-              ...snapshotDocument.data(),
-            } as LivePhoto
+    const subscribe = () => {
+      unsubscribe = onSnapshot(
+        collection(db, 'photos'),
+
+        (snapshot) => {
+          const nextPhotos =
+            snapshot.docs.map((snapshotDocument) => {
+              return {
+                id: snapshotDocument.id,
+                ...snapshotDocument.data(),
+              } as LivePhoto
+            })
+
+          nextPhotos.sort((first, second) => {
+            const firstTime =
+              first.updatedAt?.toMillis() ??
+              first.createdAt?.toMillis() ??
+              0
+
+            const secondTime =
+              second.updatedAt?.toMillis() ??
+              second.createdAt?.toMillis() ??
+              0
+
+            return secondTime - firstTime
           })
 
-        nextPhotos.sort((first, second) => {
-          const firstTime =
-            first.updatedAt?.toMillis() ??
-            first.createdAt?.toMillis() ??
-            0
+          const seenUsers = new Set<string>()
+          const onePhotoPerUser = nextPhotos.filter(
+            (photo) => {
+              if (seenUsers.has(photo.createdByUid)) {
+                return false
+              }
 
-          const secondTime =
-            second.updatedAt?.toMillis() ??
-            second.createdAt?.toMillis() ??
-            0
+              seenUsers.add(photo.createdByUid)
+              return true
+            },
+          )
 
-          return secondTime - firstTime
-        })
+          setPhotos(onePhotoPerUser.slice(0, 40))
+          setLoading(false)
+          setError('')
+        },
 
-        const seenUsers = new Set<string>()
-        const onePhotoPerUser = nextPhotos.filter(
-          (photo) => {
-            if (seenUsers.has(photo.createdByUid)) {
-              return false
-            }
+        (snapshotError) => {
+          console.error(
+            'Live photos error:',
+            snapshotError,
+          )
 
-            seenUsers.add(photo.createdByUid)
-            return true
-          },
-        )
+          if (
+            !retriedAfterAuthRace &&
+            snapshotError.code === 'permission-denied'
+          ) {
+            retriedAfterAuthRace = true
+            window.setTimeout(() => {
+              if (!cancelled) subscribe()
+            }, 1200)
+            return
+          }
 
-        setPhotos(onePhotoPerUser.slice(0, 40))
-        setLoading(false)
-        setError('')
-      },
+          setError(
+            'Die oomblikmuur kon nie gelaai word nie.',
+          )
 
-      (snapshotError) => {
-        console.error(
-          'Live photos error:',
-          snapshotError,
-        )
+          setLoading(false)
+        },
+      )
+    }
 
-        setError(
-          'Die oomblikmuur kon nie gelaai word nie.',
-        )
+    subscribe()
 
-        setLoading(false)
-      },
-    )
-
-    return unsubscribe
+    return () => {
+      cancelled = true
+      unsubscribe()
+    }
   }, [])
 
   return {

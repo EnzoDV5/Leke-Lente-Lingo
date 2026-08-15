@@ -67,7 +67,7 @@ function InviteCreator() {
           text: shareMessage,
           ...(canShareImage ? { files: [inviteImage] } : { url: inviteUrl }),
         })
-        setMessage('Jou mooi uitnodiging is gedeel!')
+        setMessage('Jou awesomeness uitnodiging is gedeel!')
       } else {
         await navigator.clipboard.writeText(shareMessage)
         setMessage('Die volledige uitnodiging en skakel is gekopieer!')

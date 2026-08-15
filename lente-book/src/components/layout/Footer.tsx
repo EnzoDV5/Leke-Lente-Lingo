@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
+import { useCampaign } from '../../features/campaign/CampaignProvider'
 
 const SOCIALS = [
   { label: 'Instagram', icon: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" /></> },
@@ -10,8 +11,10 @@ const SOCIALS = [
 ]
 
 export default function Footer() {
+  const { phase } = useCampaign()
+
   return (
-    <footer className={styles.foot}>
+    <footer className={`${styles.foot} ${phase === 'pre' ? styles.preFoot : ''}`}>
       <img className={`${styles.cloud} ${styles.cloudLeft}`} src="/elements/cloud3.webp" alt="" />
       <img className={`${styles.cloud} ${styles.cloudRight}`} src="/elements/cloud2.webp" alt="" />
       <img className={`${styles.star} ${styles.starOne}`} src="/elements/star1.webp" alt="" />

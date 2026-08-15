@@ -5,7 +5,7 @@ import {
   useState,
   type CSSProperties,
 } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 
 import lekeLenteLingoLogo from '../../assets/elements/Leke-lente-lingo.webp'
 import sparkPinkFilled from '../../assets/elements/poster elements/sparkPink filled.webp'
@@ -15,6 +15,7 @@ import TopBar from '../../components/layout/TopBar'
 import PageLoader from '../../components/ui/PageLoader'
 import { PROFILE_AVATARS } from '../../lib/profileAvatars'
 import { useAuth } from '../auth/AuthContext'
+import { useCampaign } from '../campaign/CampaignProvider'
 import styles from './Onboarding.module.css'
 
 const PROFIEL_KLEURE = [
@@ -126,6 +127,7 @@ function wag(milliseconds: number) {
 }
 
 export default function Onboarding() {
+  const { phase } = useCampaign()
   const {
     user,
     profile,
@@ -145,6 +147,18 @@ export default function Onboarding() {
     return () => {
       document.documentElement.classList.remove('lente-onboarding')
     }
+  }, [])
+
+  // Warm the lazy-loaded home chunk while the user is still onboarding.
+  // animeerNaTuis() waits on this promise before navigating — if it doesn't,
+  // the Suspense fallback (PageLoader, which renders its own copy of this
+  // same logo) can still win the race on a slow connection and flash its
+  // logo in and out right as the flying clone lands, breaking the illusion
+  // of a single continuous logo.
+  const homeChunkPromiseRef = useRef<Promise<unknown> | null>(null)
+
+  useEffect(() => {
+    homeChunkPromiseRef.current = import('../campaign/CampaignHome')
   }, [])
 
   const state =
@@ -621,7 +635,10 @@ export default function Onboarding() {
     setIsTransitioning(true)
     setHomeTransition(true)
 
-    await wag(360)
+    await Promise.all([
+      wag(360),
+      homeChunkPromiseRef.current?.catch(() => undefined),
+    ])
 
     navigate(
       '/',
@@ -670,6 +687,10 @@ export default function Onboarding() {
     }
 
     void klaar()
+  }
+
+  if (phase === 'post') {
+    return <Navigate to="/" replace />
   }
 
   if (

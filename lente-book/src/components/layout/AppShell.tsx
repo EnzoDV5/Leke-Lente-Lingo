@@ -37,9 +37,14 @@ const routeOrder = (path: string) =>
 const heroKind = (path: string) => {
   if (path === '/') return 'home'
   if (path === '/collections') return 'collections'
-  if (path === '/challenge/foto') return 'compact'
   if (path.startsWith('/challenge/doop/') || path.startsWith('/challenge/remix/')) return 'locationChallenge'
   if (path.startsWith('/woordeboek/')) return 'detail'
+  // /challenge/foto carries the same back-button + extra top padding as the
+  // other challenge pages, but its hero content (short fixed title) is
+  // shorter than theirs (long dynamic phrases) — the shared 'challenge'
+  // divider sits low enough to cut into the card below on this page, so it
+  // gets its own shorter divider tuned to its actual content height.
+  if (path === '/challenge/foto') return 'photoChallenge'
   if (path.startsWith('/challenge/')) return 'challenge'
   if (path === '/woordeboek' || path === '/foto') return 'compact'
   return 'hidden'
@@ -91,6 +96,8 @@ export default function AppShell() {
           ? styles.dividerDetail
           : currentHeroKind === 'challenge'
             ? styles.dividerChallenge
+          : currentHeroKind === 'photoChallenge'
+            ? styles.dividerPhotoChallenge
           : currentHeroKind === 'locationChallenge'
             ? styles.dividerLocationChallenge
           : currentHeroKind === 'compact'
@@ -300,7 +307,17 @@ export default function AppShell() {
           aria-hidden="true"
         />
 
-        <Suspense fallback={<PageLoader />}>
+        <Suspense
+          fallback={
+            revealHome
+              // The onboarding handoff already has the flying logo clone on
+              // screen for this beat. PageLoader renders its own copy of the
+              // same logo, which would flash in and out here if the lazy
+              // chunk's render work is still slow even after prefetching.
+              ? <div className={styles.silentLoader} aria-hidden="true" />
+              : <PageLoader />
+          }
+        >
           <main
             ref={pageRef}
             className={`${styles.page} ${location.pathname === '/' ? styles.homeRoute : styles.innerRoute}`}

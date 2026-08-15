@@ -90,8 +90,8 @@ export const CHALLENGES: Record<
   photo: {
     id: 'photo',
     number: 4,
-    name: 'Foto-doop',
-    shortName: 'Foto-doop',
+    name: 'Kiekie die Oomblik',
+    shortName: 'Kiekie',
     description:
       'Neem ’n foto, gee die oomblik ’n woord en sit dit op die oomblikmuur.',
     clue:

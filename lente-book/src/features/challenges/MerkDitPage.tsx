@@ -99,7 +99,7 @@ function PhraseChallenge({ phrase, fromScan, user, profile }: { phrase: DisplayP
       const wordId = await addWord({ text: cleanWord, phraseId: phrase.id, phraseText: phrase.text, area: phrase.area, user, profile })
       await completeChallenge(user.uid, 'doop', fromScan, { kind: 'word', word: cleanWord, phrase: phrase.text, area: phrase.area, itemId: wordId })
       setNewWord('')
-      setMessage(fromScan ? 'Mooi! Jou woord is ingesit en die poster is versamel.' : 'Mooi! Jou nuwe woord is ingesit.')
+      setMessage(fromScan ? 'Lekkerness! Jou woord is ingesit en die poster is versamel.' : 'Awe! Jou nuwe woord is ingesit.')
       setCompleted(fromScan)
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Ons kon nie jou woord insit nie.')

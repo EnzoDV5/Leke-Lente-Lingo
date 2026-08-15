@@ -46,6 +46,25 @@ function wrappedLines(context: CanvasRenderingContext2D, text: string, maximumWi
   return lines
 }
 
+function roundedRectangle(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {
+  const r = Math.min(radius, width / 2, height / 2)
+  context.beginPath()
+
+  // roundRect() is unsupported on older Safari/Firefox/Chrome; without this
+  // fallback the invite image silently fails to generate on those devices.
+  if (typeof context.roundRect === 'function') {
+    context.roundRect(x, y, width, height, r)
+    return
+  }
+
+  context.moveTo(x + r, y)
+  context.arcTo(x + width, y, x + width, y + height, r)
+  context.arcTo(x + width, y + height, x, y + height, r)
+  context.arcTo(x, y + height, x, y, r)
+  context.arcTo(x, y, x + width, y, r)
+  context.closePath()
+}
+
 function canvasToBlob(canvas: HTMLCanvasElement) {
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
@@ -80,8 +99,7 @@ export async function createFriendChallengeShare({ phrase, inviterUsername }: Fr
   context.fillStyle = '#f2c230'
   context.strokeStyle = '#16150f'
   context.lineWidth = 7
-  context.beginPath()
-  context.roundRect(kickerX, 270, kickerWidth, 68, 34)
+  roundedRectangle(context, kickerX, 270, kickerWidth, 68, 34)
   context.fill()
   context.stroke()
   context.fillStyle = '#16150f'

@@ -37,6 +37,7 @@ import {
   resolveProfileAvatar,
 } from '../../lib/profileAvatars'
 import { completeChallenge } from '../../lib/challengeProgress'
+import { useCampaign } from '../campaign/CampaignProvider'
 
 type DisplayWord = LiveWord & { isDummy?: boolean }
 
@@ -66,6 +67,13 @@ export default function FraseView() {
   const { id = '' } = useParams()
   const [searchParams] = useSearchParams()
   const focusedWordId = searchParams.get('word')
+  const { phase } = useCampaign()
+  const readOnly = phase === 'post'
+  // Pre-campaign has no Woordeboek entry in the main nav (only Home is
+  // reachable), so a back link that lands on /woordeboek would strand
+  // visitors somewhere they can't otherwise get to yet.
+  const backTo = phase === 'pre' ? '/' : '/woordeboek'
+  const backLabel = phase === 'pre' ? 'Terug na Tuis' : 'Terug na Woordeboek'
 
   const phrase = frases.find(
     (item) => item.id === id,
@@ -192,10 +200,10 @@ export default function FraseView() {
     return (
       <div className={styles.wrap}>
         <Link
-          to="/woordeboek"
+          to={backTo}
           className={styles.terug}
         >
-          <span aria-hidden="true">←</span> Terug na Woordeboek
+          <span aria-hidden="true">←</span> {backLabel}
         </Link>
 
         <p className={styles.leeg}>
@@ -207,7 +215,20 @@ export default function FraseView() {
 
   const area = phrase.area
 
+  // Typing a word that already exists for this phrase (outside of an active
+  // remix) isn't a "name taken" error — it's someone else's word. Point that
+  // out by name instead of a generic block, and nudge toward Steel &
+  // Verbeter on that word rather than creating a silent duplicate.
+  const matchingWord = remixWord
+    ? undefined
+    : allWords.find((word) =>
+        word.normalisedText ===
+        newWord.trim().toLocaleLowerCase('af-ZA'),
+      )
+
   const submitWord = async () => {
+    if (readOnly) return
+
     if (!user || !profile) {
       setActionError(
         'Jy moet eers aanmeld.',
@@ -217,6 +238,10 @@ export default function FraseView() {
     }
 
     if (!newWord.trim()) return
+
+    // The persistent hint under the input already explains this; the button
+    // is disabled too, but Enter-to-submit still routes through here.
+    if (matchingWord) return
 
     if (
       remixWord &&
@@ -297,6 +322,8 @@ export default function FraseView() {
     word: DisplayWord,
     value: VoteValue,
   ) => {
+    if (readOnly) return
+
     if (!user || !profile) return
 
     if (word.isDummy) {
@@ -353,6 +380,8 @@ export default function FraseView() {
   const startRemix = (
     word: DisplayWord,
   ) => {
+    if (readOnly) return
+
     setRemixLeaving(false)
     setRemixWord(word)
     setNewWord(word.text)
@@ -384,16 +413,16 @@ export default function FraseView() {
   }
 
   return (
-    <section className={styles.page}>
+    <section className={`${styles.page} ${readOnly ? styles.readOnly : ''}`}>
       <CompactHero
         kicker="Die frase"
         title={phrase.beskrywing}
         statement
         detail
         topAction={(
-          <Link to="/woordeboek" viewTransition className={styles.heroTerug}>
+          <Link to={backTo} viewTransition className={styles.heroTerug}>
             <span aria-hidden="true" />
-            Terug na Woordeboek
+            {backLabel}
           </Link>
         )}
       >
@@ -477,6 +506,7 @@ export default function FraseView() {
             disabled={
               submitting ||
               !newWord.trim() ||
+              Boolean(matchingWord) ||
               Boolean(
                 remixWord &&
                 newWord.trim().length <= remixWord.text.trim().length,
@@ -495,6 +525,13 @@ export default function FraseView() {
         <span className={styles.as}>
           as {profile?.username}
         </span>
+
+        {matchingWord && (
+          <p className={styles.dupliserWenk}>
+            {matchingWord.createdByUsername} het “{matchingWord.text}” al ingesit.
+            Jy steel en verbeter dit nou — gebruik eerder die knoppie langs hulle woord.
+          </p>
+        )}
 
         {remixWord && (
           <button
@@ -620,6 +657,7 @@ export default function FraseView() {
                 >
                   <button
                     aria-label={`Gee ${word.text} ’n stem`}
+                    disabled={readOnly}
                     className={`${styles.voteButton} ${
                       word.currentUserVote ===
                       1
@@ -635,6 +673,7 @@ export default function FraseView() {
 
                   <button
                     aria-label={`Gee ${word.text} ’n afstem`}
+                    disabled={readOnly}
                     className={`${styles.voteButton} ${
                       word.currentUserVote ===
                       -1

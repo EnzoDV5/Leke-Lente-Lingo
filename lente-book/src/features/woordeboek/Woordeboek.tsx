@@ -4,13 +4,19 @@ import FilterTabs from '../../components/ui/FilterTabs'
 import PhraseCard from '../../components/ui/PhraseCard'
 import TopWordCard from '../../components/ui/TopWordCard'
 import CompactHero from '../../components/ui/CompactHero'
-import { frases } from '../../lib/mockData'
+import { frases, mockRankedWords } from '../../lib/mockData'
 import toiletIkoon from '../../assets/elements/poster elements/toilet-icon.webp'
 import bekerIkoon from '../../assets/elements/poster elements/cup-icon.webp'
 import luidsprekerIkoon from '../../assets/elements/poster elements/speaker-icon.webp'
 import vapeIkoon from '../../assets/elements/poster elements/vape.webp'
 import wildKaartIkoon from '../../assets/elements/poster titels/WILD CARD 2.webp'
+import poepPodsTitel from '../../assets/elements/locations titles/poep pods.webp'
+import choefHoekTitel from '../../assets/elements/locations titles/choef hoek.webp'
+import dopStopTitel from '../../assets/elements/locations titles/dop stop.webp'
+import beatsBlokTitel from '../../assets/elements/locations titles/beats blok.webp'
+import woordeboekTitelBeeld from '../../assets/elements/pages hero titles/DIE WOORDEBOEK.webp'
 import styles from './Woordeboek.module.css'
+import { useCampaign } from '../campaign/CampaignProvider'
 
 const BORDE = [
   'Die Poep-Pods',
@@ -29,7 +35,18 @@ const BORD_IKONE: Partial<Record<string, string>> = {
   'Wildcard-skeppings': wildKaartIkoon,
 }
 
+// Stylised title art for each physical location, replacing the plain-text
+// h2 next to its icon. Wildcard has no location — it keeps plain text.
+const BORD_TITEL_BEELDE: Partial<Record<string, string>> = {
+  'Die Poep-Pods': poepPodsTitel,
+  'Die Choef-hoek': choefHoekTitel,
+  'Die Dopstop': dopStopTitel,
+  'Die Beats Blok': beatsBlokTitel,
+}
+
 export default function Woordeboek() {
+  const { phase } = useCampaign()
+  const readOnly = phase === 'post'
   const [soek, setSoek] = useState('')
   const [filter, setFilter] = useState('alles')
   const [visibleFilter, setVisibleFilter] = useState('alles')
@@ -139,14 +156,12 @@ export default function Woordeboek() {
 
   const topWords = useMemo(() => {
     const term = soek.toLowerCase()
-    return frases
-      .flatMap((phrase) => phrase.woorde.map((word) => ({ phrase, word })))
+    return mockRankedWords
       .filter(({ phrase, word }) =>
         phrase.beskrywing.toLowerCase().includes(term) ||
         word.woord.toLowerCase().includes(term) ||
         word.handle.toLowerCase().includes(term),
       )
-      .sort((a, b) => b.word.stemme - a.word.stemme)
       .slice(0, 30)
   }, [soek])
 
@@ -155,7 +170,10 @@ export default function Woordeboek() {
       <CompactHero
         kicker="★ Lente Book ★"
         title="Die Woordeboek"
-        subtitle="Kies ’n frase, dink ’n woord en gee die beste een ’n stem"
+        titleImage={woordeboekTitelBeeld}
+        subtitle={readOnly
+          ? 'Lees die fees se finale frases, woorde en stemresultate'
+          : 'Kies ’n frase, dink ’n woord en gee die beste een ’n stem'}
       />
 
       <div className={styles.wrap} data-no-auto-reveal ref={wrapRef}>
@@ -190,7 +208,13 @@ export default function Woordeboek() {
                 ) : (
                   <span className={styles.bordSter} aria-hidden="true">✦</span>
                 )}
-                <h2>{groep.bord}</h2>
+                <h2>
+                  {BORD_TITEL_BEELDE[groep.bord] ? (
+                    <img className={styles.bordTitelBeeld} src={BORD_TITEL_BEELDE[groep.bord]} alt={groep.bord} />
+                  ) : (
+                    groep.bord
+                  )}
+                </h2>
                 <small>{groep.frases.length} frases</small>
               </div>
               <div className={styles.bordFrases}>

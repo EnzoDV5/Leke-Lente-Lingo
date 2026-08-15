@@ -36,6 +36,7 @@ import Skeleton from '../../components/ui/Skeleton'
 import styles from './CollectionsPage.module.css'
 import { db } from '../../lib/firebase'
 import { POSTER_IMAGES } from './posterAssets'
+import lenteBingoTitelBeeld from '../../assets/elements/pages hero titles/LENTE BINGO.webp'
 
 function PosterGridSkeleton() {
   return (
@@ -286,6 +287,7 @@ export default function CollectionsPage() {
         }
         kicker="Lente Book · 2026"
         title="Lente Bingo"
+        titleImage={lenteBingoTitelBeeld}
         subtitle="Vind die posters soos jy deur Lentedag beweeg. Skan, speel en vul jou versameling."
       >
         <div
@@ -502,7 +504,7 @@ export default function CollectionsPage() {
               ? progress.wildcard.collected
                 ? 'Die Wildcard is nou permanent deel van jou versameling.'
                 : 'Geen QR-kode is nodig nie. Maak die uitdaging oop en voltooi jou eie frase en woord.'
-              : 'Versamel Merk Dit, Steel & Verbeter, Raai die Lingo, Foto-doop, Challenge ’n Chommie en Stem.'}
+              : 'Versamel Merk Dit, Steel & Verbeter, Raai die Lingo, Kiekie die Oomblik, Challenge ’n Chommie en Stem.'}
           </p>
         </div>
 

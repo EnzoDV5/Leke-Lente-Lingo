@@ -17,6 +17,11 @@
   color: white;
 }
 
+.preFoot {
+  z-index: 4;
+  margin-top: -30px;
+}
+
 .foot::after {
   content: "";
   position: absolute;
@@ -118,6 +123,7 @@
     border-radius: 30px 30px 0 0;
     background-position: center 58%;
   }
+  .foot.preFoot { margin-top: 0; }
   .inner h2 { font-size: clamp(3rem, 17vw, 4.6rem); text-shadow: 4px 5px 0 var(--color-geel), 7px 8px 0 var(--color-oranje); }
   .logo { width: 135px; margin-top: 1.55rem; }
   .socials { gap: .65rem; margin-top: .8rem; }

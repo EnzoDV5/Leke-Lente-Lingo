@@ -172,6 +172,54 @@
   box-shadow: 0 2px 0 rgba(22, 21, 15, 0.1);
 }
 
+.wordbookLink {
+  min-width: 190px;
+}
+
+.postWordbookLink {
+  position: absolute;
+  z-index: 4;
+  top: 27px;
+  left: calc(clamp(28px, 13vw, 255px) + 240px);
+  animation: navItemsIn 520ms 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.wordbookIcon {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid var(--color-oranje);
+  border-radius: 11px;
+  background: var(--color-geel);
+}
+
+.wordbookIcon svg {
+  width: 27px;
+  height: 27px;
+  fill: var(--color-paper);
+  stroke: var(--color-ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wordbookLink .profileDetails strong {
+  max-width: none;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.compactBar .navRibbon {
+  width: calc(clamp(28px, 13vw, 255px) + 220px);
+}
+
+.compactBar .desktopNav {
+  display: none;
+}
+
 .logoutButton {
   width: 53px;
   height: 53px;
@@ -403,6 +451,14 @@
   .profileDetails strong {
     max-width: 92px;
   }
+
+  .compactBar .navRibbon {
+    width: calc(5vw + 220px);
+  }
+
+  .postWordbookLink {
+    left: calc(5vw + 240px);
+  }
 }
 
 @media (max-width: 900px) {
@@ -453,6 +509,33 @@
     transition:
       transform 160ms ease,
       box-shadow 160ms ease;
+  }
+
+  .compactBar .navRibbon {
+    width: min(48vw, 172px);
+  }
+
+  .wordbookLink {
+    width: 174px;
+    padding-right: 10px;
+  }
+
+  .postWordbookLink {
+    top: 8px;
+    left: calc(17px + min(35vw, 145px) + 28px);
+  }
+
+  .wordbookLink .profileDetails strong {
+    max-width: 108px;
+    font-size: .82rem;
+    line-height: 1.05;
+    white-space: normal;
+  }
+
+  .wordbookIcon {
+    width: 44px;
+    height: 44px;
+    border-radius: 9px;
   }
 
   .profileCard:hover,
@@ -745,6 +828,10 @@
     width: min(42vw, 145px);
   }
 
+  .compactBar .navRibbon {
+    width: min(42vw, 145px);
+  }
+
   .logoLink {
     left: 10px;
   }
@@ -762,6 +849,19 @@
     width: 98px;
     min-width: 0;
     padding-right: 6px;
+  }
+
+  .wordbookLink {
+    width: 160px;
+  }
+
+  .postWordbookLink {
+    left: calc(10px + min(31vw, 132px) + 22px);
+  }
+
+  .wordbookLink .profileDetails strong {
+    max-width: 94px;
+    font-size: .75rem;
   }
 
   .avatar {

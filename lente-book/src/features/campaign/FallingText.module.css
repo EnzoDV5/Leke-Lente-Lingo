@@ -1,0 +1,106 @@
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  border: 3px solid var(--color-oranje);
+  border-radius: 34px;
+  background: rgba(255, 248, 238, .94);
+  box-shadow: 8px 10px 0 rgba(22, 21, 15, .16);
+  box-sizing: border-box;
+  cursor: grab;
+  isolation: isolate;
+  text-align: center;
+}
+
+.container:active { cursor: grabbing; }
+
+.container::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: var(--texture-grain);
+  background-repeat: repeat;
+  background-size: 800px;
+  content: '';
+  opacity: .48;
+  pointer-events: none;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: clamp(1rem, 2.5vw, 2.5rem);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.backdrop::before {
+  display: none;
+}
+
+.backdrop .text {
+  opacity: 0;
+}
+
+.started .text {
+  position: static;
+}
+
+.backdrop.started[data-physics-ready="true"] .text {
+  opacity: 1;
+}
+
+.text {
+  position: relative;
+  z-index: 2;
+  display: inline;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+
+.word {
+  display: inline-block;
+  padding: .18em .35em;
+  user-select: none;
+  white-space: nowrap;
+  text-shadow: 1px 2px 0 rgba(255, 255, 255, .8);
+}
+
+.backdrop .word {
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.backdrop .word:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding: 1.15rem .7rem;
+    border-radius: 24px;
+    box-shadow: 5px 6px 0 rgba(22, 21, 15, .15);
+  }
+
+  .word {
+    padding: .2em .28em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    height: auto;
+    min-height: 20rem;
+    cursor: default;
+  }
+}

@@ -76,6 +76,7 @@
 .bordOpskrif { display: flex; align-items: center; gap: .25rem; padding: .2rem .15rem; color: var(--color-oranje); }
 .bordSter { color: var(--color-geel); font-size: 1.25rem; text-shadow: 1px 1px 0 var(--color-ink); }
 .bordOpskrif h2 { margin: 0; font-family: var(--font-brush), var(--font-pixel), sans-serif; font-weight: 500; font-variation-settings: normal; font-size: clamp(1.3rem, 3vw, 1.7rem); line-height: 1; text-transform: uppercase; }
+.bordTitelBeeld { display: block; height: clamp(1.3rem, 3vw, 1.7rem); width: auto; object-fit: contain; }
 .bordOpskrif small { margin-left: auto; font-family: var(--font-body); font-size: .82rem; font-weight: 700; text-transform: uppercase; }
 
 /* Poster-element badge shown next to a bord's title (toilet/cup/speaker etc.),

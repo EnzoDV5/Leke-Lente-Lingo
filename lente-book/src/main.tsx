@@ -22,13 +22,14 @@ import AppShell from './components/layout/AppShell'
 import Placeholder from './components/ui/Placeholder'
 
 import ScanRouter from './features/challenges/ScanRouter'
+import { CampaignProvider } from './features/campaign/CampaignProvider'
 
 // Onboarding and the QR scan handler are the two entry points people land
 // on directly (from a link or a scanned poster), so they stay eagerly
 // bundled. Everything reached only via in-app navigation (rendered inside
 // AppShell) is lazy-loaded; AppShell wraps its own Suspense boundary around
 // just the routed content, so the header/footer never unmount for it.
-const Home = lazy(() => import('./features/home/Home'))
+const CampaignHome = lazy(() => import('./features/campaign/CampaignHome'))
 const Woordeboek = lazy(() => import('./features/woordeboek/Woordeboek'))
 const FraseView = lazy(() => import('./features/woordeboek/FraseView'))
 const CollectionsPage = lazy(() => import('./features/collections/CollectionsPage'))
@@ -48,8 +49,9 @@ function LegacyCollectionsRedirect() {
 createRoot(
   document.getElementById('root')!,
 ).render(
-  <AuthProvider>
-    <BrowserRouter>
+  <CampaignProvider>
+    <AuthProvider>
+      <BrowserRouter>
       <OnboardingBackground />
 
         <Routes>
@@ -68,7 +70,7 @@ createRoot(
             <Route element={<AppShell />}>
               <Route
                 path="/"
-                element={<Home />}
+                element={<CampaignHome />}
               />
 
               <Route
@@ -133,6 +135,7 @@ createRoot(
             </Route>
           </Route>
         </Routes>
-    </BrowserRouter>
-  </AuthProvider>,
+      </BrowserRouter>
+    </AuthProvider>
+  </CampaignProvider>,
 )

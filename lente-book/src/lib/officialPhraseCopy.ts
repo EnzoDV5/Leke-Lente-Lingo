@@ -1,19 +1,25 @@
-/** Canonical display copy for the 12 official board scenarios.
+/** Canonical display copy for the 13 official board scenarios.
  * IDs, locations and meanings stay stable so QR links and saved words keep
- * working even when the writing is refreshed. */
+ * working even when the writing is refreshed.
+ *
+ * Wording here must stay word-for-word identical to whatever phrasing runs
+ * on the matching Instagram post — this is the single source of truth that
+ * every campaign phase (pre/live/post) and every surface (mock data, live
+ * Firestore fallbacks) pulls from via officialPhraseText(). */
 export const OFFICIAL_PHRASE_COPY: Record<string, string> = {
-  'poep-pods-warm-seat': 'Wat noem jy dit wanneer die toilet seat nog warm is en daai ongemaklike gevoel inskop?',
+  'poep-pods-warm-seat': 'Wat noem jy daai ongemaklike gevoel wanneer die toilet seat nog warm is?',
   'poep-pods-deure': 'Iemand probeer elke toiletdeur sonder om eers te klop. Gee dié persoon ’n naam.',
   'poep-pods-twee': 'Twee mense probeer saam in een portable toilet pas. Watter woord beskryf dit?',
-  'choef-hoek-pull': 'Hulle bring nooit hulle eie choef nie, maar vra altyd vir ’n pull. Wat noem jy so iemand?',
-  'choef-hoek-lighter': 'Altyd sigarette, nooit ’n lighter nie, gee dié persoon ’n naam.',
-  'choef-hoek-crowded': 'Wat noem jy dit wanneer die smoking area skielik meer crowded as die stage raak?',
-  'dopstop-bankkaart': 'Daai oomblik wanneer iemand hulle bankkaart tap en net vir die beste hoop, watter woord pas?',
+  'choef-hoek-pull': 'Wat noem jy iemand wat nooit hulle eie choef bring nie, maar altyd vra vir ’n pull?',
+  'choef-hoek-lighter': 'Altyd sigarette, maar nooit ’n lighter nie. Gee dié persoon ’n naam.',
+  'choef-hoek-crowded': 'Wat noem jy dit wanneer die smoking area meer crowded as die stage raak?',
+  'dopstop-bankkaart': 'Wat noem jy iemand wat hulle bankkaart tik en hoop vir die beste?',
   'dopstop-rondte': 'Hulle koop nooit hulle eie rondte nie, maar drink altyd eerste. Gee dié persoon ’n naam.',
-  'dopstop-verdwyn': 'Sodra dit hulle beurt is om te betaal, verdwyn hulle by die bar. Wat noem jy dié persoon?',
-  'beats-blok-skouers': 'Iemand klim op iemander ander se skouers en dit veroorsaak dat die mense agter hulle nie kan sien nie. Watter woord pas?',
-  'beats-blok-drinks': 'Een wilde dansmove later lê almal se drinks op die grond. Wat doop jy dié danser?',
-  'beats-blok-screens': 'Wat noem jy dit wanneer jy só ver agter staan dat jy die hele show net op die screens kyk?',
+  'dopstop-verdwyn': 'Wat noem jy die persoon wat altyd by die bar verdwyn wanneer dit hulle beurt is om te betaal?',
+  'beats-blok-skouers': 'Iemand klim op iemand se skouers en niemand agter hulle kan sien nie. Watter woord pas?',
+  'beats-blok-drinks': 'Wat noem jy iemand wat almal se drinks uitstamp met hulle dansmoves?',
+  'beats-blok-screens': 'Wat noem jy dit wanneer jy so ver agter staan dat jy net die screens kyk?',
+  'beats-blok-bass': 'Wat noem jy dit wanneer die bass jou drink laat bewe?',
 }
 
 export function officialPhraseText(phraseId: string, fallback = '') {

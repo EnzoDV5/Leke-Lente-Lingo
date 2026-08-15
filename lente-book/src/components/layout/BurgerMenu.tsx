@@ -4,18 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import OptionWheel from '../ui/OptionWheel'
 import styles from './BurgerMenu.module.css'
+import { useCampaign } from '../../features/campaign/CampaignProvider'
+import { CAMPAIGN_NAVIGATION } from '../../features/campaign/campaignConfig'
 
 type Props = {
   open: boolean
   onClose: () => void
 }
-
-const LINKS = [
-  { to: '/', label: 'Tuis' },
-  { to: '/woordeboek', label: 'Woordeboek' },
-  { to: '/collections', label: 'Lente Bingo' },
-  { to: '/foto', label: 'Voeg Foto' },
-]
 
 const SOCIALS = [
   {
@@ -51,6 +46,8 @@ export default function BurgerMenu({
 }: Props) {
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const { phase } = useCampaign()
+  const links = CAMPAIGN_NAVIGATION[phase]
 
   useEffect(() => {
     if (!open) return
@@ -74,7 +71,7 @@ export default function BurgerMenu({
 
   const currentIndex = Math.max(
     0,
-    LINKS.findIndex((link) =>
+    links.findIndex((link) =>
       link.to === '/'
         ? pathname === '/'
         : pathname.startsWith(link.to),
@@ -82,7 +79,7 @@ export default function BurgerMenu({
   )
 
   const selectWheelItem = (index: number) => {
-    const link = LINKS[index]
+    const link = links[index]
     if (!link) return
     onClose()
 
@@ -117,7 +114,7 @@ export default function BurgerMenu({
         <OptionWheel
           key={`${pathname}-${open ? 'open' : 'closed'}`}
           items={[
-            ...LINKS.map((link) => link.label),
+            ...links.map((link) => link.label),
           ]}
           defaultSelected={currentIndex}
           textColor="#f8e42b"

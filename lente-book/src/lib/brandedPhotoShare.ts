@@ -55,8 +55,23 @@ function roundedRectangle(
   height: number,
   radius: number,
 ) {
+  const r = Math.min(radius, width / 2, height / 2)
   context.beginPath()
-  context.roundRect(x, y, width, height, Math.min(radius, width / 2, height / 2))
+
+  // roundRect() is unsupported on older Safari/Firefox/Chrome (pre-2022ish);
+  // without this fallback the share image silently fails to generate on
+  // those devices. Trace the same rounded path manually via arcTo.
+  if (typeof context.roundRect === 'function') {
+    context.roundRect(x, y, width, height, r)
+    return
+  }
+
+  context.moveTo(x + r, y)
+  context.arcTo(x + width, y, x + width, y + height, r)
+  context.arcTo(x + width, y + height, x, y + height, r)
+  context.arcTo(x, y + height, x, y, r)
+  context.arcTo(x, y, x + width, y, r)
+  context.closePath()
 }
 
 function drawCover(

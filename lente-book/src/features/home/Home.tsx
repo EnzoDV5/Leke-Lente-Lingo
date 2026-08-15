@@ -78,21 +78,26 @@ export default function Home() {
   const highlightedPhotoId = routeState?.photoUploaded ? routeState.photoId : undefined
   const { photos: livePhotos } = useLivePhotos()
   const hasLivePhotos = livePhotos.length > 0
-  const heroPhotos = hasLivePhotos
-    ? livePhotos.slice(0, MOBILE_PHOTO_POSITIONS.length).map((photo) => ({
-        id: photo.id,
-        word: photo.word,
-        name: photo.createdByUsername,
-        image: photo.downloadUrl,
-        avatar: resolveProfileAvatar(photo.createdByAvatar) ?? fallbackProfileAvatar(photo.createdByUid),
-      }))
-    : FESTIVAL_PHOTOS.map(([word, name, image], index) => ({
-        id: `demo-${index}`,
-        word,
-        name,
-        image: `https://images.unsplash.com/${image}?auto=format&fit=crop&w=600&q=82`,
-        avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(name)}`,
-      }))
+  // DEMO: keep the dummy wall fully populated even once real photos exist —
+  // live uploads lead the wall (so a freshly added photo is always visible)
+  // and demo cards fill the remaining slots, instead of the demo wall
+  // disappearing the moment a single real photo comes in.
+  const heroPhotos = [
+    ...livePhotos.map((photo) => ({
+      id: photo.id,
+      word: photo.word,
+      name: photo.createdByUsername,
+      image: photo.downloadUrl,
+      avatar: resolveProfileAvatar(photo.createdByAvatar) ?? fallbackProfileAvatar(photo.createdByUid),
+    })),
+    ...FESTIVAL_PHOTOS.map(([word, name, image], index) => ({
+      id: `demo-${index}`,
+      word,
+      name,
+      image: `https://images.unsplash.com/${image}?auto=format&fit=crop&w=600&q=82`,
+      avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(name)}`,
+    })),
+  ].slice(0, MOBILE_PHOTO_POSITIONS.length)
   const photoTarget = hasLivePhotos ? livePhotos.length : PHOTO_TOTAL
   const wallRef = useRef<HTMLDivElement>(null)
   const heroLogoRef = useRef<HTMLImageElement>(null)
@@ -155,14 +160,23 @@ export default function Home() {
 
     if (!sharedPieces.length) return
 
+    // Hide the real hero pieces synchronously, before the browser paints this
+    // frame. Deferring this into the rAF below (as it used to be) let the
+    // real logo/mouth flash fully visible for a frame while the shared clone
+    // sat on top of it, reading as two overlapping logos swapping places.
+    sharedPieces.forEach((sharedPiece) => {
+      const piece =
+        sharedPiece.dataset.sharedBrandPiece as keyof typeof targets
+      const target = targets[piece]
+      if (target) target.style.visibility = 'hidden'
+    })
+
     const firstFrame = window.requestAnimationFrame(() => {
       sharedPieces.forEach((sharedPiece) => {
         const piece =
           sharedPiece.dataset.sharedBrandPiece as keyof typeof targets
         const target = targets[piece]
         if (!target) return
-
-        target.style.visibility = 'hidden'
 
         const source = sharedPiece.getBoundingClientRect()
         const destination = target.getBoundingClientRect()
@@ -202,6 +216,7 @@ export default function Home() {
     return () => {
       window.cancelAnimationFrame(firstFrame)
       animations.forEach((animation) => animation.cancel())
+      sharedPieces.forEach((sharedPiece) => sharedPiece.remove())
       Object.values(targets).forEach((target) => {
         if (target) target.style.visibility = ''
       })

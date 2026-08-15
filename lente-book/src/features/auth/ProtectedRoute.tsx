@@ -6,6 +6,7 @@ import {
 
 import { useAuth } from './AuthContext'
 import PageLoader from '../../components/ui/PageLoader'
+import { useCampaign } from '../campaign/CampaignProvider'
 
 export default function ProtectedRoute() {
   const {
@@ -16,6 +17,18 @@ export default function ProtectedRoute() {
   } = useAuth()
 
   const location = useLocation()
+  const { phase } = useCampaign()
+  const isPublicPostRoute = phase === 'post' && (
+    location.pathname === '/' ||
+    location.pathname === '/woordeboek' ||
+    location.pathname.startsWith('/woordeboek/')
+  )
+
+  if (isPublicPostRoute) return <Outlet />
+
+  if (phase === 'post') {
+    return <Navigate to="/" replace />
+  }
 
   if (loading || profileLoading) {
     return <PageLoader />

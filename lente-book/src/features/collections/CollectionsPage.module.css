@@ -686,7 +686,11 @@
   .wildcardPosterLocked img { filter: grayscale(1); }
   .rewardEntrance .wildcardPosterLocked { opacity: .72; filter: grayscale(1); }
   .wildcardPoster > strong { display: none; }
-  .rewardCard > button { order: 3; width: min(350px, 100%); margin: 1.5rem auto 3rem; }
+  /* .footerFlush pulls the footer up by 5rem on this breakpoint (AppShell.module.css).
+     The button needs to clear that pull with room to spare, or the footer sits in
+     front of it (same stacking context as .page, which outranks anything in here)
+     and swallows the tap. */
+  .rewardCard > button { order: 3; width: min(260px, 80%); margin: 1.5rem auto 6.5rem; padding: .7rem 1.1rem; font-size: .85rem; }
   .rewardCard > button:disabled { display: none; }
 }
 

@@ -23,7 +23,7 @@ import {
   ref,
   uploadBytes,
 } from 'firebase/storage'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import {
   db,
@@ -44,6 +44,7 @@ import ChallengeSuccess from '../challenges/ChallengeSuccess'
 import { useScannedPosterClaim } from '../../hooks/useScannedPosterClaim'
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock'
 import { useScrollSyncedBackground } from '../../hooks/useScrollSyncedBackground'
+import voegFotoTitelBeeld from '../../assets/elements/pages hero titles/VOEG N FOTO BY.webp'
 
 const MAX_SIZE = 10 * 1024 * 1024
 const PHOTO_FRAME_COLOUR = '#fbf7ef'
@@ -420,17 +421,35 @@ export default function FotoDoopPage({ challengeMode = false }: FotoDoopPageProp
       }
       const canShareFile = navigator.canShare?.({ files: [brandedPhoto] }) ?? false
 
-      if (navigator.share && canShareFile) {
-        await navigator.share(shareData)
-        setMessage(format === 'story' ? 'Jou Instagram Story-prent is gereed om by jou storie te voeg!' : 'Jou vierkantige Leke Lente Lingo-feeskaart is gedeel!')
-      } else {
+      const downloadInstead = () => {
         const downloadUrl = URL.createObjectURL(brandedPhoto)
         const download = document.createElement('a')
         download.href = downloadUrl
         download.download = brandedPhoto.name
+        // Safari and some other browsers don't reliably fire a click-
+        // triggered download unless the link is actually in the document.
+        document.body.appendChild(download)
         download.click()
+        download.remove()
         window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000)
         setMessage(format === 'story' ? 'Jou Story-prent is afgelaai. Voeg dit nou by jou Instagram- of WhatsApp-storie.' : 'Jou vierkantige feeskaart is afgelaai en gereed vir WhatsApp of enige ander app.')
+      }
+
+      if (navigator.share && canShareFile) {
+        try {
+          await navigator.share(shareData)
+          setMessage(format === 'story' ? 'Jou Instagram Story-prent is gereed om by jou storie te voeg!' : 'Jou vierkantige Leke Lente Lingo-feeskaart is gedeel!')
+        } catch (shareError) {
+          if (shareError instanceof DOMException && shareError.name === 'AbortError') return
+          // Some browsers (Safari especially, once too much async work has
+          // happened between the tap and this call) reject navigator.share()
+          // even though canShare() said yes moments earlier. The branded
+          // image is already sitting in memory either way, so fall back to
+          // downloading it instead of just failing outright.
+          downloadInstead()
+        }
+      } else {
+        downloadInstead()
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return
@@ -443,8 +462,8 @@ export default function FotoDoopPage({ challengeMode = false }: FotoDoopPageProp
 
   return (
     <section className={styles.page}>
-      {previouslyCompletedClaimed && <ChallengeSuccess challengeId="photo" icon="📸" unlockOnly title="Foto-doop ontsluit!" text="Jy het reeds ’n oomblik gedoop, so hierdie QR-kode het jou poster onmiddellik ontsluit." />}
-      {challengeCompleted && <ChallengeSuccess challengeId="photo" icon="📸" title="Oomblik gedoop!" text="Jou feesfoto het nou sy eie woord en jou Foto-doop-poster is verdien." />}
+      {previouslyCompletedClaimed && <ChallengeSuccess challengeId="photo" icon="📸" unlockOnly title="Kiekie die Oomblik ontsluit!" text="Jy het reeds ’n oomblik gedoop, so hierdie QR-kode het jou poster onmiddellik ontsluit." />}
+      {challengeCompleted && <ChallengeSuccess challengeId="photo" icon="📸" title="Oomblik gedoop!" text="Jou feesfoto het nou sy eie woord en jou Kiekie die Oomblik-poster is verdien." />}
       {sharePickerOpen && createPortal(
         <div className={styles.shareBackdrop} role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setSharePickerOpen(false)}>
           <section className={styles.sharePicker} role="dialog" aria-modal="true" aria-labelledby="share-format-title">
@@ -467,9 +486,12 @@ export default function FotoDoopPage({ challengeMode = false }: FotoDoopPageProp
         document.body,
       )}
       <CompactHero
-        kicker={challengeMode ? '04 · FOTO-DOOP' : '★ Foto-doop ★'}
+        kicker={challengeMode ? '04 · KIEKIE DIE OOMBLIK' : '★ Kiekie die Oomblik ★'}
         title={challengeMode ? 'Doop jou feesoomblik' : 'Voeg ’n Foto By'}
+        titleImage={challengeMode ? undefined : voegFotoTitelBeeld}
         subtitle="Vang die oomblik, gee dit ’n woord en sit dit op die oomblikmuur."
+        detail={challengeMode}
+        topAction={challengeMode ? <Link to="/collections" className={styles.back}><span aria-hidden="true">←</span> My posters</Link> : undefined}
       />
 
       <div className={styles.wrap}>

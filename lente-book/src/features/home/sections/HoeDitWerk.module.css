@@ -8,7 +8,45 @@
 .section > div {
   padding-top: clamp(6rem, 8vw, 7.5rem);
 }
-.layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: start; }
+.preSection > div {
+  padding-bottom: clamp(18rem, 27vw, 23rem);
+}
+.layout { position: relative; display: grid; grid-template-columns: minmax(0, .9fr) minmax(460px, 1.1fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: start; }
+
+.artistStage {
+  position: absolute;
+  z-index: 0;
+  right: clamp(5rem, 11vw, 12rem);
+  bottom: 0;
+  width: min(56vw, 760px);
+  aspect-ratio: 1337 / 585;
+  pointer-events: none;
+}
+
+.artistBackdrop {
+  position: absolute;
+  inset: 0;
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0;
+  transform: translateY(calc(100% + 18px));
+  transition:
+    opacity 320ms ease,
+    transform 980ms cubic-bezier(.16, 1, .3, 1);
+  will-change: transform, opacity;
+}
+
+.artistBackdropVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.story,
+.accordions {
+  position: relative;
+  z-index: 2;
+}
 
 .story { position: relative; max-width: 520px; }
 .mouth { position: absolute; z-index: 0; width: clamp(3.4rem, 6vw, 5.9rem); height: auto; pointer-events: none; filter: drop-shadow(3px 4px 0 rgba(22,21,15,.12)); animation: mouthFloat 3.4s cubic-bezier(.45,0,.25,1) infinite; }
@@ -51,8 +89,33 @@
 .toggle { position: relative; z-index: 1; width: 100%; min-width: 0; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .72rem .8rem .72rem 1rem; border: 0; background: transparent; color: white; text-align: left; cursor: pointer; touch-action: manipulation; }
 .toggle > * { pointer-events: none; }
 .toggle > span { min-width: 0; display: grid; gap: .12rem; }
-.toggle strong { font-family: var(--font-pixel); font-size: 1rem; font-weight: 800; letter-spacing: .01em; }
+.toggle strong { font-family: var(--font-pixel); font-size: 1.2rem; font-weight: 800; letter-spacing: .01em; text-transform: uppercase; }
 .toggle small { display: none; }
+.archiveAccordions .toggle {
+  padding-block: .55rem;
+}
+.archiveAccordions .toggle strong {
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.05;
+}
+.archiveAccordions .toggle small {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: .18rem;
+  padding: .14rem .42rem .16rem;
+  overflow: hidden;
+  border-radius: .35rem;
+  background: rgba(255, 255, 255, .82);
+  color: #453f38;
+  font-family: var(--font-body);
+  font-size: clamp(.72rem, .9vw, .8rem);
+  font-weight: 900;
+  line-height: 1.15;
+  opacity: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .toggle i { display: grid; place-items: center; width: 29px; height: 29px; flex: 0 0 auto; border: 2px solid var(--color-oranje); border-radius: 50%; background: var(--color-paper); color: var(--color-oranje); font-family: var(--font-body); font-size: 1.35rem; font-style: normal; font-weight: 800; line-height: 1; transition: transform 260ms ease; }
 .open .toggle i { transform: rotate(135deg); }
 .action { border: 2px solid var(--color-ink); border-radius: var(--radius-control); background: var(--color-paper); color: var(--color-ink); font-family: var(--font-pixel); font-size: 1.05rem; font-weight: 800; letter-spacing: 0; text-decoration: none; white-space: nowrap; }
@@ -97,6 +160,12 @@
     border-top-right-radius: 44px;
   }
   .section > div { padding-top: 5.5rem; }
+  .preSection > div { padding-bottom: clamp(13rem, 58vw, 19rem); }
+  .artistStage {
+    right: -14vw;
+    bottom: 0;
+    width: 112vw;
+  }
   .story { text-align: center; }
   .story h2, .story p { margin-inline: auto; }
   .story h2 { font-size: clamp(2.8rem, 15vw, 4.25rem); }
@@ -107,7 +176,8 @@
   .yearNote strong { justify-content: center; }
   .yearNote strong img { width: clamp(2rem, 10vw, 2.75rem); }
   .toggle { padding-left: .8rem; }
-  .toggle strong { font-size: .86rem; }
+  .toggle strong { font-size: 1.05rem; }
+  .archiveAccordions .toggle strong { font-size: 1.15rem; }
 }
 
 @keyframes mouthFloat {
@@ -121,4 +191,5 @@
   .answer > div,
   .toggle i { transition: none; }
   .mouth { animation: none; }
+  .artistBackdrop { transition: none; opacity: 1; transform: none; }
 }

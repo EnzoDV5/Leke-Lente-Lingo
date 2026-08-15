@@ -5,9 +5,9 @@ import Section from '../../../components/ui/Section'
 import DataSkeleton from '../../../components/ui/DataSkeleton'
 import {
   fallbackProfileAvatar,
-  profileAvatar,
   resolveProfileAvatar,
 } from '../../../lib/profileAvatars'
+import { mockRankedWords } from '../../../lib/mockData'
 import {
   useLeaderboard,
   type LeaderboardWord,
@@ -22,17 +22,40 @@ type WordTotalVars = CSSProperties & {
   '--word-total-spark': string
 }
 
-const FALLBACK_TOP: LeaderboardWord[] = [
-  { id: 'skouer-1', phraseId: 'beats-blok-skouers', text: 'Uitsigvreter', createdByUid: '', createdByUsername: '@fees_flits', createdByAvatar: profileAvatar(2), upVotes: 745, downVotes: 12, score: 733, totalVotes: 757 },
-  { id: 'kaart-1', phraseId: 'dopstop-bankkaart', text: 'Tikgeloof', createdByUid: '', createdByUsername: '@miela_lig', createdByAvatar: profileAvatar(3), upVotes: 703, downVotes: 20, score: 683, totalVotes: 723 },
-  { id: 'dans-1', phraseId: 'beats-blok-drinks', text: 'Dopklapper', createdByUid: '', createdByUsername: '@dansvloer_daan', createdByAvatar: profileAvatar(4), upVotes: 682, downVotes: 30, score: 652, totalVotes: 712 },
-]
+const FALLBACK_WORDS: LeaderboardWord[] = mockRankedWords.map(({ phrase, word }) => ({
+  id: word.id,
+  phraseId: phrase.id,
+  phraseText: phrase.beskrywing,
+  area: phrase.area,
+  text: word.woord,
+  createdByUid: '',
+  createdByUsername: word.handle,
+  createdByAvatar: '',
+  upVotes: word.stemme,
+  downVotes: 0,
+  score: word.stemme,
+  totalVotes: word.stemme,
+}))
 
-const FALLBACK_WORST: LeaderboardWord[] = [
-  { id: 'kaart-remix-3', phraseId: 'dopstop-bankkaart', text: 'Kaartgebed-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(4), upVotes: 4, downVotes: 120, score: -116, totalVotes: 124 },
-  { id: 'twee-remix-3', phraseId: 'poep-pods-twee', text: 'Poep-pasmaat-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(5), upVotes: 8, downVotes: 90, score: -82, totalVotes: 98 },
-  { id: 'rook-remix-3', phraseId: 'choef-hoek-crowded', text: 'Pofpodium-kabaal', createdByUid: '', createdByUsername: '@fees_fabriek', createdByAvatar: profileAvatar(6), upVotes: 12, downVotes: 70, score: -58, totalVotes: 82 },
-]
+const FALLBACK_TOP = FALLBACK_WORDS.slice(0, 3)
+
+function fallbackWithDownVotes(id: string, downVotes: number) {
+  const word = FALLBACK_WORDS.find((candidate) => candidate.id === id)
+  if (!word) return null
+
+  return {
+    ...word,
+    downVotes,
+    score: word.upVotes - downVotes,
+    totalVotes: word.upVotes + downVotes,
+  }
+}
+
+const FALLBACK_WORST = [
+  fallbackWithDownVotes('kaart-remix-3', 180),
+  fallbackWithDownVotes('twee-remix-3', 145),
+  fallbackWithDownVotes('rook-remix-3', 125),
+].filter((word): word is LeaderboardWord => Boolean(word))
 
 function isImage(value: string) {
   return (
@@ -156,15 +179,13 @@ export default function Leaderboard() {
   }
 
   const liveWords = mode === 'top' ? topWords : worstWords
-  const words = liveWords.length
-    ? liveWords
-    : mode === 'top'
-      ? FALLBACK_TOP
-      : FALLBACK_WORST
-  const usingFallback = liveWords.length === 0
+  const fallbackWords = mode === 'top' ? FALLBACK_TOP : FALLBACK_WORST
+  const hasCompleteLivePodium = liveWords.length >= 3
+  const words = hasCompleteLivePodium ? liveWords.slice(0, 3) : fallbackWords
+  const usingFallback = !hasCompleteLivePodium
   const voteValue = (word: LeaderboardWord) =>
     mode === 'top' ? word.upVotes : word.downVotes
-  const displayedTotalWords = totalWords || 1284
+  const displayedTotalWords = totalWords || mockRankedWords.length
   const voteValues = words.map(voteValue)
   const lowestVotes = Math.min(...voteValues)
   const highestVotes = Math.max(...voteValues)
@@ -238,10 +259,22 @@ export default function Leaderboard() {
               if (!word) return null
               const votes = voteValue(word)
               const heights = podiumHeight(word)
+              const winnerWordLength = word.text.trim().length
+              const winnerWordSize = rank !== 1
+                ? ''
+                : winnerWordLength > 22
+                  ? styles.winnerWordLong
+                  : winnerWordLength > 13
+                    ? styles.winnerWordMedium
+                    : styles.winnerWordShort
+              const winnerMobileFontSize = Math.max(
+                .52,
+                Math.min(1.05, 1.28 - winnerWordLength * .04),
+              )
 
               return (
                 <Link
-                  className={styles.column}
+                  className={`${styles.column} ${styles[`columnRank${rank}`]}`}
                   key={`${mode}-${rank}-${word.id}`}
                   to={`/woordeboek/${word.phraseId}?word=${word.id}`}
                   viewTransition
@@ -263,12 +296,23 @@ export default function Leaderboard() {
                     } as CSSProperties}
                   >
                     <span className={styles.place}>{rank}</span>
-                    <span className={styles.word}>{word.text}</span>
-                    <span className={styles.votes}>
-                      <span className={styles.voteIcon} aria-hidden="true">
-                        {mode === 'top' ? '👍' : '👎'}
+                    <span className={`${styles.podiumContent} ${rank === 1 ? styles.winnerContent : ''}`}>
+                      <span
+                        className={`${styles.word} ${winnerWordSize}`}
+                        style={rank === 1
+                          ? { '--winner-mobile-font-size': `${winnerMobileFontSize}rem` } as CSSProperties
+                          : undefined}
+                      >
+                        {word.text}
                       </span>
-                      <strong><AnimatedNumber value={votes} active={entered} /></strong>
+                      <span className={styles.votes}>
+                        <span className={styles.voteIcon} aria-hidden="true">
+                          {mode === 'top' ? '👍' : '👎'}
+                        </span>
+                        <span className={styles.voteCopy}>
+                          <strong><AnimatedNumber value={votes} active={entered} /></strong>
+                        </span>
+                      </span>
                     </span>
                   </div>
                 </Link>

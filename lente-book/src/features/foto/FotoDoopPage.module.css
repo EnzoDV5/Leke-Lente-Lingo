@@ -4,6 +4,22 @@
   background: transparent;
 }
 
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .65rem .9rem;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: 3px solid var(--color-ink);
+  border-radius: 999px;
+  box-shadow: 4px 5px 0 var(--challenge-colour, #2858df);
+  font-family: var(--font-pixel);
+  font-weight: 900;
+  text-decoration: none;
+}
+.back span { color: var(--challenge-colour, #2858df); font-size: 1.25rem; }
+
 .wrap {
   position: relative;
   width: min(1120px, calc(100% - 2rem));
@@ -510,5 +526,5 @@
   .sharePicker { animation: none; }
 }
 
-/* Challenge palette sampled from the Foto-doop poster. */
+/* Challenge palette sampled from the Kiekie die Oomblik poster. */
 .page { --challenge-colour: #2858df; }
