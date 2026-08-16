@@ -283,46 +283,6 @@ Incwadi
 
 The project treats language as something social, playful and constantly changing rather than something that only lives in a formal dictionary.
 
-<br />
-
-
-<div align="center">
-
-<img
-  src="lente-book/src/assets/elements/poster%20elements/Mouth.webp"
-  alt="Leke Lente Lingo mouth"
-  width="80"
-/>
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
-<img
-  src="lente-book/src/assets/elements/poster%20elements/binuculars.webp"
-  alt="Leke Lente Lingo binoculars"
-  width="120"
-/>
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
-<img
-  src="lente-book/src/assets/elements/poster%20elements/sun.webp"
-  alt="Leke Lente Lingo sun"
-  width="80"
-/>
-
-&nbsp;&nbsp;&nbsp;&nbsp;
-
-<img
-  src="lente-book/src/assets/elements/poster%20elements/cup-icon.webp"
-  alt="Leke Lente Lingo cup"
-  width="70"
-/>
-
-</div>
-
-<br />
-
-
 ### Built With
 
 Lente Book combines a component-based React application with Firebase's real-time backend and a highly visual campaign UI.
